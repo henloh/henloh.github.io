@@ -1,5 +1,5 @@
 # Avorion Production
-[Overview](https://henloh.github.io/)
+[Overview](https://henloh.github.io/dist/index.html)
 
 ## Description
 See what station buys which product and the other way round. 
