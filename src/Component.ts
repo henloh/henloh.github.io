@@ -7,7 +7,7 @@ import models from "./model/models";
  */
 export default class Component extends UIComponent {
 
-	public static metadata = {
+	public metadata = {
 		manifest: "json"
 	};
 
