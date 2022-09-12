@@ -1,13 +1,13 @@
 {
 	"name": "de.henloh.prodts",
 	"version": "1.0.0",
-	"buildTimestamp": "202209121610",
+	"buildTimestamp": "202209121617",
 	"scmRevision": "",
 	"libraries": [
 		{
 			"name": "sap.m",
 			"version": "1.106.0",
-			"buildTimestamp": "202209121610",
+			"buildTimestamp": "202209121617",
 			"scmRevision": "",
 			"manifestHints": {
 				"dependencies": {
@@ -26,13 +26,13 @@
 		{
 			"name": "sap.ui.core",
 			"version": "1.106.0",
-			"buildTimestamp": "202209121610",
+			"buildTimestamp": "202209121617",
 			"scmRevision": ""
 		},
 		{
 			"name": "sap.ui.layout",
 			"version": "1.106.0",
-			"buildTimestamp": "202209121610",
+			"buildTimestamp": "202209121617",
 			"scmRevision": "",
 			"manifestHints": {
 				"dependencies": {
@@ -45,7 +45,7 @@
 		{
 			"name": "sap.ui.unified",
 			"version": "1.106.0",
-			"buildTimestamp": "202209121610",
+			"buildTimestamp": "202209121617",
 			"scmRevision": "",
 			"manifestHints": {
 				"dependencies": {
