@@ -1,11 +1,23 @@
 import UIComponent from "sap/ui/core/UIComponent";
 import { support } from "sap/ui/Device";
 import models from "./model/models";
+import JSONModel from "sap/ui/model/json/JSONModel";
+import IconPool from "sap/ui/core/IconPool";
+
+// import additional dependencies to bundle them properly
+import "sap/ui/core/ComponentSupport";
+import "sap/ui/core/date/Gregorian";
+import "sap/ui/model/type/Date";
+import Log from "sap/base/Log";
 
 /**
  * @namespace de.henloh.prodts
  */
 export default class Component extends UIComponent {
+
+	public static metadata = {
+		manifest: "json"
+	};
 
 	private contentDensityClass : string;
 
