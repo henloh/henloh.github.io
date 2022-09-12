@@ -14,4 +14,4 @@ framework:
     - name: sap.ui.core
     - name: sap.ui.unified
     - name: sap.ui.layout
-    - name: themelib_sap_fiori_3
+    - name: themelib_sap_fiori_3_dark
