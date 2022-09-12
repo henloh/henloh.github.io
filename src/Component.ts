@@ -7,10 +7,6 @@ import models from "./model/models";
  */
 export default class Component extends UIComponent {
 
-	public metadata = {
-		manifest: "json"
-	};
-
 	private contentDensityClass : string;
 
 	public init() : void {
