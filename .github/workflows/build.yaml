@@ -20,8 +20,8 @@ jobs:
           npm install
       - name: build ui
         run: |
-          npm run build
-      - name: Commit/Push build to docs branch
+          npm run build:opt
+      - name: Commit/Push
         run: |
           git config --global user.name 'henloh'
           git config --global user.email 'henloh@users.noreply.github.com'
