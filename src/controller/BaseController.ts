@@ -1495,7 +1495,9 @@ export default abstract class BaseController extends Controller {
 				[ 
 					"Aluminium",
 				], 
-				[]),
+				[
+					"Acid", "Antigrav Unit", "Drill", "Fusion Generator", "Medical Supplies", "Mining Robot", "Solvent"
+				]),
 			new Factory("Ammunition Factory 1",
 				3376,
 				16815000,
@@ -1652,7 +1654,9 @@ export default abstract class BaseController extends Controller {
 				[ 
 					"Coal",
 				], 
-				[]),
+				[
+					"Acid", "Antigrav Unit", "Drill", "Fusion Generator", "Medical Supplies", "Mining Robot", "Solvent"
+				]),
 			new Factory("Cocoa Farm",
 				586,
 				6636000,
@@ -1708,7 +1712,9 @@ export default abstract class BaseController extends Controller {
 				[ 
 					"Copper",
 				], 
-				[]),
+				[
+					"Acid", "Antigrav Unit", "Drill", "Fusion Generator", "Medical Supplies", "Mining Robot", "Solvent"
+				]),
 			new Factory("Corn Farm",
 				134,
 				3480000,
@@ -2041,7 +2047,7 @@ export default abstract class BaseController extends Controller {
 					"Water",
 				], 
 				[
-					"Acid", "Drill", "Medical Supplies", "Mining Robot", "Solvent"
+					"Acid", "Antigrav Unit", "Drill", "Fusion Generator", "Medical Supplies", "Mining Robot", "Solvent"
 				]),
 			new Factory("Jewelry Manufacturer 1",
 				336,
@@ -2176,7 +2182,9 @@ export default abstract class BaseController extends Controller {
 					"Gold",
 					"Platinum",
 				], 
-				[]),
+				[
+					"Acid", "Antigrav Unit", "Drill", "Fusion Generator", "Medical Supplies", "Mining Robot", "Solvent"
+				]),
 			new Factory("Noble Metal Mine 2",
 				0,
 				6175000,
@@ -2184,7 +2192,9 @@ export default abstract class BaseController extends Controller {
 					"Silver",
 					"Platinum",
 				], 
-				[]),
+				[
+					"Acid", "Antigrav Unit", "Drill", "Fusion Generator", "Medical Supplies", "Mining Robot", "Solvent"
+				]),
 			new Factory("Noble Metal Mine 1",
 				0,
 				5650000,
@@ -2192,7 +2202,9 @@ export default abstract class BaseController extends Controller {
 					"Silver",
 					"Gold",
 				], 
-				[]),
+				[
+					"Acid", "Antigrav Unit", "Drill", "Fusion Generator", "Medical Supplies", "Mining Robot", "Solvent"
+				]),
 			new Factory("Oil Refinery",
 				164,
 				4950000,
@@ -2208,14 +2220,18 @@ export default abstract class BaseController extends Controller {
 				[ 
 					"Raw Oil",
 				], 
-				[]),
+				[
+					"Acid", "Antigrav Unit", "Drill", "Fusion Generator", "Medical Supplies", "Mining Robot", "Solvent"
+				]),
 			new Factory("Ore Mine",
 				140,
 				9850000,
 				[ 
 					"Ore",
 				], 
-				[]),
+				[
+					"Acid", "Antigrav Unit", "Drill", "Fusion Generator", "Medical Supplies", "Mining Robot", "Solvent"
+				]),
 			new Factory("Paint Manufacturer",
 				642,
 				5880000,
@@ -2399,7 +2415,9 @@ export default abstract class BaseController extends Controller {
 				[ 
 					"Silicon",
 				], 
-				[]),
+				[
+					"Acid", "Antigrav Unit", "Drill", "Fusion Generator", "Medical Supplies", "Mining Robot", "Solvent"
+				]),
 			new Factory("Solar Cell Factory",
 				313,
 				7015000,
@@ -2555,7 +2573,7 @@ export default abstract class BaseController extends Controller {
 					"Scrap Metal",
 				], 
 				[
-					"Rubber", "Power Unit", "Energy Generator", "Metal Plate", "Antigav Unit", "Display"
+					"Rubber", "Power Unit", "Energy Generator", "Metal Plate", "Antigrav Unit", "Display"
 				]),
 			new Factory("War Robot Factory",
 				55314,
@@ -2628,7 +2646,9 @@ export default abstract class BaseController extends Controller {
 				[ 
 					"Zinc",
 				], 
-				[]),
+				[
+					"Acid", "Antigrav Unit", "Drill", "Fusion Generator", "Medical Supplies", "Mining Robot", "Solvent"
+				]),
 			new Factory("Biotope",
 				0,
 				0,
@@ -2668,20 +2688,19 @@ export default abstract class BaseController extends Controller {
 				0,
 				[],
 				[
+					"Ammunition",
+					"Ammunition L",
+					"Ammunition M",
+					"Ammunition S",
 					"Antigrav Generator",
 					"Drone",
 					"Fusion Core",
 					"Laser Compressor",
 					"Laser Head",
-					"Ammunition",
-					"Ammunition L",
-					"Ammunition M",
-					"Ammunition S",
 					"Rocket",
 					"Satellite",
-					"Warhead",
-					"Fuel",
-					"Tools"
+					"Tools",
+					"Warhead"
 				]),
 			new Factory("Habitat",
 				0,
@@ -2713,29 +2732,31 @@ export default abstract class BaseController extends Controller {
 					"Ammunition M",
 					"Ammunition S",
 					"Body Armor",
+					"Electromagnetic Charge",
 					"Explosive Charge",
 					"Food Bar",
 					"Gun",
+					"Medical Supplies",
+					"Military Tesla Coil",
 					"Targeting System",
 					"Vehicle",
-					"War Robot",
-					"Medical Supplies"
+					"War Robot"
 				]),
 			new Factory("Repair Dock",
 				0,
 				0,
 				[],
 				[					
-					"Medical Supplies",
-					"Wire",
 					"Force Generator",
+					"Fuel",
+					"Medical Supplies",
 					"Metal Plate",
 					"Nanobot",
 					"Oxygen",
 					"Solar Cell",
 					"Solar Panel",
 					"Steel",
-					"Fuel"
+					"Wire"
 				]),
 			new Factory("Research Station",
 				0,
@@ -2789,13 +2810,13 @@ export default abstract class BaseController extends Controller {
 				[
 					"Aluminium",
 					"Antigrav Generator",
-					"Medical Supplies",
+					"Computation Mainframe",
 					"Display",
-					"Computer Mainframe",
 					"Energy Container",
 					"Energy Tube",
 					"Fusion Core",
 					"Industrial Tesla Coil",
+					"Medical Supplies",
 					"Metal Plate",
 					"Turbine",
 				]),
