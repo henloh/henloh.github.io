@@ -1,13 +1,13 @@
 {
 	"name": "de.henloh.prodts",
 	"version": "1.0.0",
-	"buildTimestamp": "202209141155",
+	"buildTimestamp": "202209141551",
 	"scmRevision": "",
 	"libraries": [
 		{
 			"name": "sap.m",
 			"version": "1.106.0",
-			"buildTimestamp": "202209141155",
+			"buildTimestamp": "202209141551",
 			"scmRevision": "",
 			"manifestHints": {
 				"dependencies": {
@@ -24,15 +24,74 @@
 			}
 		},
 		{
+			"name": "sap.ui.codeeditor",
+			"version": "1.106.0",
+			"buildTimestamp": "202209141551",
+			"scmRevision": "",
+			"manifestHints": {
+				"dependencies": {
+					"libs": {
+						"sap.ui.core": {}
+					}
+				}
+			}
+		},
+		{
 			"name": "sap.ui.core",
 			"version": "1.106.0",
-			"buildTimestamp": "202209141155",
+			"buildTimestamp": "202209141551",
 			"scmRevision": ""
+		},
+		{
+			"name": "sap.ui.fl",
+			"version": "1.106.0",
+			"buildTimestamp": "202209141551",
+			"scmRevision": "",
+			"manifestHints": {
+				"dependencies": {
+					"libs": {
+						"sap.m": {},
+						"sap.ui.core": {},
+						"sap.ui.layout": {
+							"lazy": true
+						},
+						"sap.ui.unified": {
+							"lazy": true
+						}
+					}
+				}
+			}
 		},
 		{
 			"name": "sap.ui.layout",
 			"version": "1.106.0",
-			"buildTimestamp": "202209141155",
+			"buildTimestamp": "202209141551",
+			"scmRevision": "",
+			"manifestHints": {
+				"dependencies": {
+					"libs": {
+						"sap.ui.core": {}
+					}
+				}
+			}
+		},
+		{
+			"name": "sap.ui.support",
+			"version": "1.106.0",
+			"buildTimestamp": "202209141551",
+			"scmRevision": "",
+			"manifestHints": {
+				"dependencies": {
+					"libs": {
+						"sap.ui.core": {}
+					}
+				}
+			}
+		},
+		{
+			"name": "sap.ui.testrecorder",
+			"version": "1.106.0",
+			"buildTimestamp": "202209141551",
 			"scmRevision": "",
 			"manifestHints": {
 				"dependencies": {
@@ -45,7 +104,7 @@
 		{
 			"name": "sap.ui.unified",
 			"version": "1.106.0",
-			"buildTimestamp": "202209141155",
+			"buildTimestamp": "202209141551",
 			"scmRevision": "",
 			"manifestHints": {
 				"dependencies": {
@@ -55,5 +114,41 @@
 				}
 			}
 		}
-	]
+	],
+	"components": {
+		"sap.ui.fl.support.apps.contentbrowser.app": {
+			"hasOwnPreload": true,
+			"library": "sap.ui.fl",
+			"manifestHints": {
+				"dependencies": {
+					"libs": {
+						"sap.m": {},
+						"sap.ui.core": {},
+						"sap.ui.layout": {},
+						"sap.ui.unified": {
+							"lazy": true
+						}
+					}
+				}
+			}
+		},
+		"sap.ui.fl.variants.context": {
+			"hasOwnPreload": true,
+			"library": "sap.ui.fl",
+			"manifestHints": {
+				"dependencies": {
+					"libs": {
+						"sap.m": {},
+						"sap.ui.core": {},
+						"sap.ui.layout": {
+							"lazy": true
+						},
+						"sap.ui.unified": {
+							"lazy": true
+						}
+					}
+				}
+			}
+		}
+	}
 }

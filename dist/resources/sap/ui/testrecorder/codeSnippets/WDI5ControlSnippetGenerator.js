@@ -1,0 +1,6 @@
+/*!
+ * OpenUI5
+ * (c) Copyright 2009-2022 SAP SE or an SAP affiliate company.
+ * Licensed under the Apache License, Version 2.0 - see LICENSE.txt.
+ */
+sap.ui.define(["sap/ui/testrecorder/codeSnippets/ControlSnippetGenerator","sap/ui/testrecorder/interaction/Commands"],function(e,t){"use strict";var r=e.extend("sap.ui.testrecorder.codeSnippets.WDI5ControlSnippetGenerator",{});r.prototype._generate=function(e){var t="await browser.asControl({\n\tselector: "+this._getSelectorAsString(e.controlSelector)+"})";var r=this._getSelectorWithAssertion(t,e.assertion);return r+this._getActionAsString(e.action)+";"};r.prototype._getSelectorAsString=function(e){var t=JSON.stringify(e,undefined,8);return t.replace(/\"([^(\")"]+)\":/g,"$1:")};r.prototype._getActionAsString=function(e){switch(e){case t.PRESS:return".press()";case t.ENTER_TEXT:return'.enterText("test")';default:return""}};r.prototype._getSelectorWithAssertion=function(e,t){if(t){var r;if(!t.expectedValue||t.expectedValue==="false"){r=".toBeFalsy()"}else if(t.propertyType==="boolean"){r=".toBeTruthy()"}else{var o=this._escapeQuotes(t.expectedValue);r='.toEqual("'+o+'")'}var n=t.propertyName[0].toUpperCase()+t.propertyName.slice(1);return"const "+t.propertyName+" = "+e+".get"+n+"();\nexpect("+t.propertyName+")"+r}else{return e}};return new r});

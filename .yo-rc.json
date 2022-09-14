@@ -1,0 +1,14 @@
+{
+  "generator-ui5-ts-app": {
+    "application": "prodts",
+    "namespace": "de.henloh",
+    "framework": "OpenUI5",
+    "frameworkVersion": "1.106.0",
+    "author": "Henloh",
+    "initrepo": false,
+    "tstypes": "@openui5/ts-types-esm",
+    "tstypesVersion": "1.106.0",
+    "appId": "de.henloh.prodts",
+    "appURI": "de/henloh/prodts"
+  }
+}
