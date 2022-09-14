@@ -8,6 +8,16 @@
         "description": "{{appDescription}}",
         "applicationVersion": {
             "version": "1.0.0"
+        },
+        "dataSources": {
+            "products": {
+                "uri": "data/Products.json",
+                "type": "JSON"
+            },
+            "factories": {
+                "uri": "data/Factories.json",
+                "type": "JSON"
+            }
         }
     },
     "sap.ui": {
@@ -35,12 +45,12 @@
                 "sap.m": {}
             }
         },
-		"resources": {
-			"css": [{
-				"uri": "css/style.css"
-			}],
-			"js": []
-		},
+        "resources": {
+            "css": [{
+                "uri": "css/style.css"
+            }],
+            "js": []
+        },
         "handleValidation": true,
         "contentDensities": {
             "compact": true,
@@ -52,6 +62,14 @@
                 "settings": {
                     "bundleName": "de.henloh.prodts.i18n.i18n"
                 }
+            },
+            "Goods": {
+                "type": "sap.ui.model.json.JSONModel",
+                "dataSource": "products"
+            },
+            "Factories": {
+                "type": "sap.ui.model.json.JSONModel",
+                "dataSource": "factories"
             }
         },
         "routing": {
@@ -64,7 +82,7 @@
                 "async": true
             },
             "routes": [{
-                "pattern": "",
+                "pattern": ":?query:",
                 "name": "main",
                 "target": "main"
             }],

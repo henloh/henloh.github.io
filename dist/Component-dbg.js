@@ -1,4 +1,4 @@
-sap.ui.define(["sap/ui/core/UIComponent", "sap/ui/Device", "./model/models"], function (UIComponent, sap_ui_Device, __models) {
+sap.ui.define(["sap/ui/core/UIComponent", "sap/ui/Device", "./model/models", "sap/ui/core/ComponentSupport", "sap/ui/core/date/Gregorian", "sap/ui/model/type/Date"], function (UIComponent, sap_ui_Device, __models, sap_ui_core_ComponentSupport, sap_ui_core_date_Gregorian, sap_ui_model_type_Date) {
   function _interopRequireDefault(obj) {
     return obj && obj.__esModule && typeof obj.default !== "undefined" ? obj.default : obj;
   }
@@ -6,14 +6,14 @@ sap.ui.define(["sap/ui/core/UIComponent", "sap/ui/Device", "./model/models"], fu
   const support = sap_ui_Device["support"];
 
   const models = _interopRequireDefault(__models);
+
   /**
    * @namespace de.henloh.prodts
    */
-
-
   const Component = UIComponent.extend("de.henloh.prodts.Component", {
     metadata: {
-      manifest: "json"
+      manifest: "json",
+      interfaces: ["sap.ui.core.IAsyncContentCreation"]
     },
     init: function _init() {
       // call the base component's init function

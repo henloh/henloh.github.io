@@ -35,11 +35,6 @@ sap.ui.define(["./BaseController", "../model/formatter", "sap/ui/model/json/JSON
       });
       this.getView().setModel(Model, "View");
       this.getRouter().getRoute("main").attachPatternMatched(this.onPatternMatched, this);
-    },
-    onPatternMatched: function _onPatternMatched(event) {
-      var Model = new JSONModel();
-      Model.setData(this.getData());
-      this.getView().setModel(Model, "Data");
       var inputG = this.byId("productInput");
       var inputF = this.byId("factoryInput");
       inputG.setFilterFunction(function (sTerm, oItem) {
@@ -48,6 +43,28 @@ sap.ui.define(["./BaseController", "../model/formatter", "sap/ui/model/json/JSON
       inputF.setFilterFunction(function (sTerm, oItem) {
         return oItem.getText().match(new RegExp("^" + sTerm, "i"));
       });
+    },
+    onPatternMatched: function _onPatternMatched(event) {
+      var Model = new JSONModel();
+      Model.setData(this.getData());
+      this.getView().setModel(Model, "Data");
+      var ViewModel = this.getView().getModel("View");
+
+      try {
+        var query = event.getParameter("arguments")["?query"];
+
+        if (query.factory) {
+          ViewModel.setProperty("/Factory", query.factory.replace("%2520", " "));
+          this.submitFactory(event);
+        }
+
+        if (query.good) {
+          ViewModel.setProperty("/Product", query.good.replace("%2520", " "));
+          this.submitGood(event);
+        }
+      } catch (error) {
+        console.error(error);
+      }
     },
     submitGood: function _submitGood(event) {
       var Data = this.getData();
@@ -61,6 +78,11 @@ sap.ui.define(["./BaseController", "../model/formatter", "sap/ui/model/json/JSON
       Model.setProperty("/Level", Product.Level);
       Model.setProperty("/BoughtBy", Data.getCustomersOfProduct(Product.Name));
       Model.setProperty("/ProducedBy", Data.getFactoriesFromProduct(Product.Name));
+      this.getRouter().navTo("main", {
+        query: {
+          good: Model.getProperty("/Product")
+        }
+      }, {}, true);
     },
     submitFactory: function _submitFactory(event) {
       var Data = this.getData();
@@ -72,6 +94,11 @@ sap.ui.define(["./BaseController", "../model/formatter", "sap/ui/model/json/JSON
       Model.setProperty("/ProductionCap", Factory.ProductionCap);
       Model.setProperty("/Materials", Data.getMaterialsForFactory(Factory.Name));
       Model.setProperty("/Products", Data.getProductsFromFactory(Factory.Name));
+      this.getRouter().navTo("main", {
+        query: {
+          factory: Model.getProperty("/Factory")
+        }
+      }, {}, true);
     },
     onSelectNewFactory: function _onSelectNewFactory(event, Factory) {
       var Model = this.getView().getModel("View");
@@ -90,6 +117,32 @@ sap.ui.define(["./BaseController", "../model/formatter", "sap/ui/model/json/JSON
         groupingSeparator: ","
       });
       return format.format(number);
+    },
+    showAllProducts: function _showAllProducts(event) {
+      var Model = this.getView().getModel("View");
+      var that = this;
+      Model.setProperty("/isProduct", false);
+      Model.setProperty("/isFactory", true);
+      Model.setProperty("/Cost", "");
+      Model.setProperty("/ProductionCap", "");
+      Model.setProperty("/Materials", []);
+      var data = that.getData().Goods; //console.log(data);
+
+      Model.setProperty("/Products", data);
+    },
+    showAllFactories: function _showAllFactories(event) {
+      var Model = this.getView().getModel("View");
+      var that = this;
+      Model.setProperty("/isProduct", true);
+      Model.setProperty("/isFactory", false);
+      Model.setProperty("/Illegal", false);
+      Model.setProperty("/Dangerous", false);
+      Model.setProperty("/AvgPrice", "");
+      Model.setProperty("/Level", "");
+      Model.setProperty("/BoughtBy", []);
+      var data = that.getData().Factories; //console.log(data);
+
+      Model.setProperty("/ProducedBy", data);
     }
   });
   return Main;

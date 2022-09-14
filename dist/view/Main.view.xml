@@ -47,6 +47,11 @@
 							</Input>
                         </f:fields>
                     </f:FormElement>
+                    <f:FormElement label="">
+                        <f:fields>
+							<Button press="showAllProducts" text="Show all" />
+                        </f:fields>
+                    </f:FormElement>
 				</f:formElements>
 			</f:FormContainer>
             <f:FormContainer title="Factory">
@@ -64,6 +69,11 @@
 									<SuggestionItem text="{Data>Name}" />
 								</suggestionItems>
 							</Input>
+                        </f:fields>
+                    </f:FormElement>
+                    <f:FormElement label="">
+                        <f:fields>
+							<Button press="showAllFactories" text="Show all" />
                         </f:fields>
                     </f:FormElement>
 				</f:formElements>
@@ -99,7 +109,8 @@
         width="100%"
         noDataText="Error"
         items="{
-            path: 'View>/ProducedBy'
+            path: 'View>/ProducedBy',
+            length: 200
         }"
         visible="{View>/isProduct}"
         showNoData="true">
@@ -131,7 +142,8 @@
         class="sapUiSmallMarginTop"
         noDataText="Error"
         items="{
-            path: 'View>/BoughtBy'
+            path: 'View>/BoughtBy',
+            length: 200
         }"
         visible="{View>/isProduct}"
         showNoData="true">
@@ -177,7 +189,8 @@
         width="100%"
         noDataText="No Products"
         items="{
-            path: 'View>/Products'
+            path: 'View>/Products',
+            length: 200
         }"
         visible="{View>/isFactory}"
         showNoData="true">
@@ -214,7 +227,8 @@
         class="sapUiSmallMarginTop sapUiLargeMarginBottom"
         noDataText="No Requirements"
         items="{
-            path: 'View>/Materials'
+            path: 'View>/Materials',
+            length: 200
         }"
         visible="{View>/isFactory}"
         showNoData="true">
