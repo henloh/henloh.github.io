@@ -7,6 +7,7 @@ import ResourceBundle from "sap/base/i18n/ResourceBundle";
 import Router from "sap/ui/core/routing/Router";
 import {Game, Product, Factory} from "./Types";
 import History from "sap/ui/core/routing/History";
+import JSONModel from "sap/ui/model/json/JSONModel";
 
 /**
  * @namespace de.henloh.prodts.controller
@@ -85,7 +86,18 @@ export default abstract class BaseController extends Controller {
 	}
 
 	public getData(): Game {
+
+		var products = this.getOwnerComponent().getModel("Goods") as JSONModel;
+		var factories = this.getOwnerComponent().getModel("Factories") as JSONModel;
+		//console.log(products);
+		//console.log(
+		//	factories.getProperty("/"));
+		
 		return new Game(
+			products.getData().Goods,
+			factories.getData().Factories
+		);
+		/*return new Game(
 			[
 				new Product("Acid",
 					false,
@@ -2834,7 +2846,7 @@ export default abstract class BaseController extends Controller {
 				[
 					"Turbine"
 				])
-		])
+		])*/
 	}
 
 }

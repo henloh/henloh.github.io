@@ -34,12 +34,6 @@ export default class Main extends BaseController {
 		});
 		this.getView().setModel(Model, "View");
 		this.getRouter().getRoute("main").attachPatternMatched(this.onPatternMatched, this);
-	}
-
-	public onPatternMatched(event: Event): void {
-		var Model = new JSONModel()
-		Model.setData(this.getData())
-		this.getView().setModel(Model, "Data")
 
 		var inputG = this.byId("productInput") as Input
 		var inputF = this.byId("factoryInput") as Input
@@ -49,6 +43,29 @@ export default class Main extends BaseController {
 		inputF.setFilterFunction(function (sTerm: string, oItem:SuggestionItem) {
 			return oItem.getText().match(new RegExp("^"+sTerm, "i"));
 		});
+	}
+
+	public onPatternMatched(event: Event): void {
+		var Model = new JSONModel()
+		Model.setData(this.getData())
+		this.getView().setModel(Model, "Data")
+
+		var ViewModel = this.getView().getModel("View") as JSONModel;
+
+		try {
+			var query = event.getParameter("arguments")["?query"];
+			if (query.factory) {
+				ViewModel.setProperty("/Factory", query.factory.replace("%2520", " "));
+				this.submitFactory(event);
+			}
+			if (query.good) {
+				ViewModel.setProperty("/Product", query.good.replace("%2520", " "));
+				this.submitGood(event);
+			}
+		} catch (error) {
+			console.error(error);
+			
+		}
 	}
 	public submitGood(event: Event): void {
 		var Data = this.getData();
@@ -62,6 +79,10 @@ export default class Main extends BaseController {
 		Model.setProperty("/Level", Product.Level);
 		Model.setProperty("/BoughtBy", Data.getCustomersOfProduct(Product.Name));
 		Model.setProperty("/ProducedBy", Data.getFactoriesFromProduct(Product.Name));
+
+		this.getRouter().navTo("main", {query: {
+			good: Model.getProperty("/Product")
+			}}, {}, true)
 	}
 	public submitFactory(event: Event): void {
 		var Data = this.getData();
@@ -73,6 +94,10 @@ export default class Main extends BaseController {
 		Model.setProperty("/ProductionCap", Factory.ProductionCap);
 		Model.setProperty("/Materials", Data.getMaterialsForFactory(Factory.Name));
 		Model.setProperty("/Products", Data.getProductsFromFactory(Factory.Name));
+
+		this.getRouter().navTo("main", {query: {
+			factory: Model.getProperty("/Factory")
+			}}, {}, true)
 	}
 	public onSelectNewFactory(event: Event, Factory: string) {
 		var Model = this.getView().getModel("View") as JSONModel;
@@ -91,5 +116,31 @@ export default class Main extends BaseController {
 			groupingSeparator: ","
 		});
 		return format.format(number);
+	}
+	public showAllProducts(event: Event): void {
+		var Model = this.getView().getModel("View") as JSONModel;
+		var that = this;
+		Model.setProperty("/isProduct", false);
+		Model.setProperty("/isFactory", true);
+		Model.setProperty("/Cost", "");
+		Model.setProperty("/ProductionCap", "");
+		Model.setProperty("/Materials", []);
+		var data = that.getData().Goods;
+		//console.log(data);
+		Model.setProperty("/Products", data);
+	}
+	public showAllFactories(event: Event): void {
+		var Model = this.getView().getModel("View") as JSONModel;
+		var that = this;
+		Model.setProperty("/isProduct", true);
+		Model.setProperty("/isFactory", false);
+		Model.setProperty("/Illegal", false);
+		Model.setProperty("/Dangerous", false);
+		Model.setProperty("/AvgPrice", "");
+		Model.setProperty("/Level", "");
+		Model.setProperty("/BoughtBy", []);
+		var data = that.getData().Factories;
+		//console.log(data);
+		Model.setProperty("/ProducedBy", data);
 	}
 }

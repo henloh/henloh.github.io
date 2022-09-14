@@ -39,6 +39,7 @@ build/Release
 node_modules/
 gen/
 mta_archives/
+webapp
 webapp/
 
 # Typescript v1 declaration files

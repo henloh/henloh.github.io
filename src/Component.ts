@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable no-case-declarations */
 import UIComponent from "sap/ui/core/UIComponent";
 import { support } from "sap/ui/Device";
 import models from "./model/models";
@@ -16,7 +18,8 @@ import Log from "sap/base/Log";
 export default class Component extends UIComponent {
 
 	public static metadata = {
-		manifest: "json"
+		manifest: "json",
+		interfaces: ["sap.ui.core.IAsyncContentCreation"],
 	};
 
 	private contentDensityClass : string;
