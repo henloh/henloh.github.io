@@ -44,7 +44,9 @@ export default class Main extends BaseController {
 			return oItem.getText().match(new RegExp("^"+sTerm, "i"));
 		});
 	}
-
+	public buildProdLine(event: Event): void {
+		this.getRouter().navTo("productionLine");
+	}
 	public onPatternMatched(event: Event): void {
 		var Model = new JSONModel()
 		Model.setData(this.getData())
@@ -64,7 +66,6 @@ export default class Main extends BaseController {
 			}
 		} catch (error) {
 			console.error(error);
-			
 		}
 	}
 	public submitGood(event: Event): void {

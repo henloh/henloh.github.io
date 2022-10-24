@@ -5,7 +5,10 @@
 	xmlns:f="sap.ui.layout.form"
     xmlns:c="sap.ui.core"
 	xmlns:mvc="sap.ui.core.mvc">
-	<Page title="Avorion Production Information" id="mainPage">
+<Page title="Avorion Production Information" id="mainPage">
+    <headerContent>
+        <Button text="Build production line" press="buildProdLine" />
+    </headerContent>
 <content>
 	
 	<f:Form id="FormDisplay480_12120"
@@ -40,9 +43,9 @@
 								placeholder="Enter product"
 								showSuggestion="true"
 								submit="submitGood"
-								suggestionItems="{path:'Data>/Goods', length:200}">
+								suggestionItems="{path:'GoodModel>/Goods', length:200}">
 								<suggestionItems>
-									<SuggestionItem text="{Data>Name}" />
+									<SuggestionItem text="{GoodModel>Name}" />
 								</suggestionItems>
 							</Input>
                         </f:fields>
@@ -64,9 +67,9 @@
 								placeholder="Enter product"
 								showSuggestion="true"
 								submit="submitFactory"
-								suggestionItems="{path:'Data>/Factories', length:200}">
+								suggestionItems="{path:'FactorieModel>/Factories', length:200}">
 								<suggestionItems>
-									<SuggestionItem text="{Data>Name}" />
+									<SuggestionItem text="{FactorieModel>Name}" />
 								</suggestionItems>
 							</Input>
                         </f:fields>

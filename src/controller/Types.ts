@@ -74,6 +74,14 @@ export class Game {
 		}
 		return result;
 	}
+	public getFactoriesForProduct(ProductName: string): Factory[] {
+		var result: Factory[] = [];
+		const product = this.getProduct(ProductName);
+		for (const factoryName of product.Manufacturer) {
+			result.push(this.getFactory(factoryName));
+		}
+		return result;
+	}
 	public getCustomersOfProduct(Name: string): Factory[] {
 		var result: Factory[] = [];
 		const product = this.getProduct(Name);

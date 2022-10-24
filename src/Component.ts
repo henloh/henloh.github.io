@@ -28,6 +28,13 @@ export default class Component extends UIComponent {
 		// call the base component's init function
 		super.init();
 
+		var GoodModel = new JSONModel("./data/Products.json")
+		var FactorieModel = new JSONModel("./data/Factories.json")
+		GoodModel.setDefaultBindingMode("TwoWay");
+		FactorieModel.setDefaultBindingMode("TwoWay");
+
+		this.setModel(GoodModel, "GoodModel");
+		this.setModel(FactorieModel, "FactorieModel");
 		this.setModel(models.createDeviceModel(), "device");
 
 		// create the views based on the url/hash

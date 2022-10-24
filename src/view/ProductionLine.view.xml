@@ -1,0 +1,48 @@
+<mvc:View
+	controllerName="de.henloh.prodts.controller.ProductionLine"
+	displayBlock="true"
+	xmlns="sap.m"
+	xmlns:f="sap.ui.layout.form"
+    xmlns:c="sap.ui.core"
+	xmlns:mvc="sap.ui.core.mvc">
+<Page title="Avorion Production Line" id="prodPage" showNavButton="true" navButtonPress="onNavBack">
+<content>
+	
+    <Title text="Target Factory" 
+        width="90%"
+        class="sapUiSmallMargin" />
+    <Input
+        id="targetFactoryInput"
+        width="300px"
+        class="sapUiSmallMarginBegin sapUiSmallMarginEnd"
+        value="{View>/TargetFactory}"
+        placeholder="Target Factory"
+        showSuggestion="true"
+        submit="generateProductionLine"
+        suggestionItems="{path:'FactorieModel>/Factories', length:200}">
+        <suggestionItems>
+            <SuggestionItem text="{FactorieModel>Name}" />
+        </suggestionItems>
+    </Input>
+    <Button text="Show Production Line" press="generateProductionLine" />
+    <!--
+    .########....###.....######..########..#######..########..##....##
+    .##.........##.##...##....##....##....##.....##.##.....##..##..##.
+    .##........##...##..##..........##....##.....##.##.....##...####..
+    .######...##.....##.##..........##....##.....##.########.....##...
+    .##.......#########.##..........##....##.....##.##...##......##...
+    .##.......##.....##.##....##....##....##.....##.##....##.....##...
+    .##.......##.....##..######.....##.....#######..##.....##....##...
+    -->
+    <List headerText="Products" items="{View>/products}">
+        <StandardListItem title="{View>Name}"></StandardListItem>
+    </List>
+    <Button press="checkSanity" text="check Sanity" />
+    <VBox id="DetailedProdList" />
+    <!--List items="{path:'FactorieModel>/Factories', length:200}">
+        <StandardListItem title="{FactorieModel>Name}" />
+    </List-->
+</content>
+</Page>
+
+</mvc:View>
