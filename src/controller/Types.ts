@@ -7,7 +7,7 @@ export class Product {
 	Customers: string[];
 	Manufacturer: string[];
 
-	constructor(Name: string,Dangerous: boolean,Illegal: boolean,AvgPrice: number,Level: number,Manufacturer: string[],Customers: string[]) {
+	constructor(Name: string,Dangerous: boolean,Illegal: boolean,AvgPrice: number,Level: number,Customers: string[],Manufacturer: string[]) {
 		this.Name = Name
 		this.Dangerous = Dangerous
 		this.Illegal = Illegal

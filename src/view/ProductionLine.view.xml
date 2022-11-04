@@ -1,4 +1,4 @@
-<mvc:View
+<mvc:View xmlns:dnd="sap.ui.core.dnd"
 	controllerName="de.henloh.prodts.controller.ProductionLine"
 	displayBlock="true"
 	xmlns="sap.m"
@@ -37,11 +37,35 @@
     <List headerText="Products" items="{View>/products}">
         <StandardListItem title="{View>Name}"></StandardListItem>
     </List>
-    <Button press="checkSanity" text="check Sanity" />
+    <!--  
+        <Button press="checkSanity" text="check Sanity" />
+    -->
     <VBox id="DetailedProdList" />
-    <!--List items="{path:'FactorieModel>/Factories', length:200}">
-        <StandardListItem title="{FactorieModel>Name}" />
-    </List-->
+
+    <List items="{path:'View>/requiredFactories'}"
+        headerText="Required Factories"
+        width="42.5%"
+        class="sapUiLargeMarginTop bottomTwoListLeft" >
+        <items>
+            <StandardListItem title="{View>}" />
+        </items>
+        <dragDropConfig>
+            <dnd:DragInfo sourceAggregation="items" />
+            <dnd:DropInfo targetAggregation="items" dropPosition="Between" drop="onDropNeed" />
+        </dragDropConfig>
+    </List>
+    <List items="{path:'View>/ownedFactories'}"
+        headerText="Owned Factories"
+        width="42.5%"
+        class="sapUiLargeMarginTop bottomTwoListRight" >
+        <items>
+            <StandardListItem title="{View>}" />
+        </items>
+        <dragDropConfig>
+            <dnd:DragInfo sourceAggregation="items" />
+            <dnd:DropInfo targetAggregation="items" dropPosition="Between" drop="onDropHave" />
+        </dragDropConfig>
+    </List>
 </content>
 </Page>
 
