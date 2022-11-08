@@ -1,3 +1,15 @@
 .LinkTitle {
     font-size: 1.4rem;
 }
+.bottomTwoListLeft {
+    width: 42.5%;
+    margin-left: 5%;
+    float: left;
+    margin-right: 2.4%;
+}
+.bottomTwoListRight {
+    width: 42.5%;
+    float: left;
+    margin-right: 4.9%;
+    margin-left: 2.5%;
+}

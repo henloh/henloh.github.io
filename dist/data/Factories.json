@@ -534,7 +534,8 @@
                 "Energy Cell",
                 "Plastic",
                 "Chemicals",
-                "Acid, Adhesive"
+                "Acid",
+                "Adhesive"
             ]
         },
         {
@@ -690,7 +691,7 @@
             "Materials": [
                 "Hydrogen",
                 "Gold",
-                "Plasma",
+                "Plasma Cell",
                 "Transformator",
                 "Energy Tube"
             ]

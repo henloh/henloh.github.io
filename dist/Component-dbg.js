@@ -1,4 +1,4 @@
-sap.ui.define(["sap/ui/core/UIComponent", "sap/ui/Device", "./model/models", "sap/ui/core/ComponentSupport", "sap/ui/core/date/Gregorian", "sap/ui/model/type/Date"], function (UIComponent, sap_ui_Device, __models, sap_ui_core_ComponentSupport, sap_ui_core_date_Gregorian, sap_ui_model_type_Date) {
+sap.ui.define(["sap/ui/core/UIComponent", "sap/ui/Device", "./model/models", "sap/ui/model/json/JSONModel", "sap/ui/core/ComponentSupport", "sap/ui/core/date/Gregorian", "sap/ui/model/type/Date"], function (UIComponent, sap_ui_Device, __models, JSONModel, sap_ui_core_ComponentSupport, sap_ui_core_date_Gregorian, sap_ui_model_type_Date) {
   function _interopRequireDefault(obj) {
     return obj && obj.__esModule && typeof obj.default !== "undefined" ? obj.default : obj;
   }
@@ -18,6 +18,12 @@ sap.ui.define(["sap/ui/core/UIComponent", "sap/ui/Device", "./model/models", "sa
     init: function _init() {
       // call the base component's init function
       UIComponent.prototype.init.call(this);
+      var GoodModel = new JSONModel("./data/Products.json");
+      var FactorieModel = new JSONModel("./data/Factories.json");
+      GoodModel.setDefaultBindingMode("TwoWay");
+      FactorieModel.setDefaultBindingMode("TwoWay");
+      this.setModel(GoodModel, "GoodModel");
+      this.setModel(FactorieModel, "FactorieModel");
       this.setModel(models.createDeviceModel(), "device"); // create the views based on the url/hash
 
       this.getRouter().initialize();

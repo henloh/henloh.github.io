@@ -44,6 +44,9 @@ sap.ui.define(["./BaseController", "../model/formatter", "sap/ui/model/json/JSON
         return oItem.getText().match(new RegExp("^" + sTerm, "i"));
       });
     },
+    buildProdLine: function _buildProdLine(event) {
+      this.getRouter().navTo("productionLine");
+    },
     onPatternMatched: function _onPatternMatched(event) {
       var Model = new JSONModel();
       Model.setData(this.getData());

@@ -1,6 +1,6 @@
 sap.ui.define([], function () {
   class Product {
-    constructor(Name, Dangerous, Illegal, AvgPrice, Level, Manufacturer, Customers) {
+    constructor(Name, Dangerous, Illegal, AvgPrice, Level, Customers, Manufacturer) {
       this.Name = Name;
       this.Dangerous = Dangerous;
       this.Illegal = Illegal;
@@ -66,6 +66,17 @@ sap.ui.define([], function () {
     getFactoriesFromProduct(Name) {
       var result = [];
       const product = this.getProduct(Name);
+
+      for (const factoryName of product.Manufacturer) {
+        result.push(this.getFactory(factoryName));
+      }
+
+      return result;
+    }
+
+    getFactoriesForProduct(ProductName) {
+      var result = [];
+      const product = this.getProduct(ProductName);
 
       for (const factoryName of product.Manufacturer) {
         result.push(this.getFactory(factoryName));

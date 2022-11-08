@@ -85,11 +85,19 @@
                 "pattern": ":?query:",
                 "name": "main",
                 "target": "main"
+            },{
+                "pattern": "productionLine/:?query:",
+                "name": "productionLine",
+                "target": "productionLine"
             }],
             "targets": {
                 "main": {
                     "viewId": "main",
                     "viewName": "Main"
+                },
+                "productionLine": {
+                    "viewId": "productionLine",
+                    "viewName": "ProductionLine"
                 }
             }
         }
