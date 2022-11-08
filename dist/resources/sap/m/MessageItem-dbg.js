@@ -36,13 +36,12 @@ sap.ui.define([
 		 *
 		 * @extends sap.ui.core.Item
 		 * @author SAP SE
-		 * @version 1.106.0
+		 * @version 1.108.0
 		 *
 		 * @constructor
 		 * @public
 		 * @since 1.46
 		 * @alias sap.m.MessageItem
-		 * @ui5-metamodel This control/element also will be described in the UI5 (legacy) designtime metamodel
 		 */
 
 		var MessageItem = Item.extend("sap.m.MessageItem", /** @lends sap.m.MessageItem.prototype */ {

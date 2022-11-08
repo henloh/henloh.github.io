@@ -42,7 +42,7 @@ sap.ui.define([
 		 * @mixes sap.ui.model.odata.v4.ODataBinding
 		 * @public
 		 * @since 1.37.0
-		 * @version 1.106.0
+		 * @version 1.108.0
 		 * @borrows sap.ui.model.odata.v4.ODataBinding#getGroupId as #getGroupId
 		 * @borrows sap.ui.model.odata.v4.ODataBinding#getRootBinding as #getRootBinding
 		 * @borrows sap.ui.model.odata.v4.ODataBinding#getUpdateGroupId as #getUpdateGroupId
@@ -746,11 +746,11 @@ sap.ui.define([
 	 */
 	ODataPropertyBinding.prototype.setValue = function (vValue, sGroupId) {
 		var oGroupLock,
+			sResolvedPath = this.getResolvedPath(),
 			that = this;
 
 		function reportError(oError) {
-			that.oModel.reportError("Failed to update path " + that.getResolvedPath(), sClassName,
-				oError);
+			that.oModel.reportError("Failed to update path " + sResolvedPath, sClassName, oError);
 
 			return oError;
 		}
@@ -760,7 +760,7 @@ sap.ui.define([
 			throw reportError(new Error("Must not specify a group ID (" + sGroupId
 				+ ") with $$noPatch"));
 		}
-		this.oModel.checkGroupId(sGroupId);
+		_Helper.checkGroupId(sGroupId);
 		if (typeof vValue === "function" || (vValue && typeof vValue === "object")) {
 			throw reportError(new Error("Not a primitive value"));
 		}

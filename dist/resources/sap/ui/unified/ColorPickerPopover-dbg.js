@@ -47,13 +47,12 @@ sap.ui.define([
 		 * A thin wrapper over {@link sap.ui.unified.ColorPicker} allowing the latter to be used in a popover.
 		 *
 		 * @extends sap.ui.core.Control
-		 * @version 1.106.0
+		 * @version 1.108.0
 		 *
 		 * @constructor
 		 * @public
 		 * @since 1.60
 		 * @alias sap.ui.unified.ColorPickerPopover
-		 * @ui5-metamodel This control/element also will be described in the UI5 (legacy) designtime metamodel
 		 */
 		var ColorPickerPopover = Control.extend("sap.ui.unified.ColorPickerPopover", /** @lends sap.ui.unified.ColorPickerPopover.prototype */ {
 			metadata: {
@@ -251,7 +250,6 @@ sap.ui.define([
 		 * is positioned relative to this control
 		 * @returns {sap.m.Popover|sap.m.Dialog} Reference to the opening control
 		 * @public
-		 * @ui5-metamodel This method also will be described in the UI5 (legacy) designtime metamodel
 		 */
 		ColorPickerPopover.prototype.openBy = function (openBy) {
 			return ResponsivePopover.prototype.openBy.apply(this._ensurePopover(), arguments);
@@ -264,7 +262,6 @@ sap.ui.define([
 		 * @function
 		 * @type sap.ui.core.Control
 		 * @public
-		 * @ui5-metamodel This method also will be described in the UI5 (legacy) designtime metamodel
 		 */
 
 

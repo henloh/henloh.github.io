@@ -14,8 +14,8 @@ sap.ui.define([
 	"sap/base/util/restricted/_CancelablePromise",
 	"sap/base/security/URLListValidator",
 	"sap/base/Log",
-	"sap/ui/core/library",
-	"./IFrameRenderer"
+	"./IFrameRenderer",
+	"sap/ui/core/library"
 ], function(
 	library,
 	Control,
@@ -24,7 +24,8 @@ sap.ui.define([
 	extend,
 	CancelablePromise,
 	URLListValidator,
-	Log
+	Log,
+	IFrameRenderer
 ) {
 	"use strict";
 
@@ -52,14 +53,13 @@ sap.ui.define([
 	 * @extends sap.ui.core.Control
 	 *
 	 * @author SAP SE
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 *
 	 * @constructor
 	 * @private
 	 * @alias sap.ui.fl.util.IFrame
 	 */
 	var IFrame = Control.extend("sap.ui.fl.util.IFrame", /** @lends sap.ui.fl.util.IFrame.prototype */ {
-
 		metadata: {
 			library: "sap.ui.fl",
 
@@ -170,8 +170,9 @@ sap.ui.define([
 				this._oUserModel.destroy();
 				delete this._oUserModel;
 			}
-		}
+		},
 
+		renderer: IFrameRenderer
 	});
 
 	IFrame.isValidUrl = function(sUrl) {

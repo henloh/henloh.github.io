@@ -4,8 +4,8 @@
  * Licensed under the Apache License, Version 2.0 - see LICENSE.txt.
  */
 
-sap.ui.define(["sap/m/library", "sap/base/security/encodeCSS"],
-	function(library, encodeCSS) {
+sap.ui.define(["sap/m/library", "sap/base/security/encodeCSS", "sap/ui/core/Configuration"],
+	function(library, encodeCSS, Configuration) {
 	"use strict";
 
 	// shortcut for sap.m.GenericTileMode
@@ -18,8 +18,6 @@ sap.ui.define(["sap/m/library", "sap/base/security/encodeCSS"],
 	var frameTypes = library.FrameType;
 
 	var ValueColor = library.ValueColor;
-
-	var oRb = sap.ui.getCore().getLibraryResourceBundle("sap.m");
 
 	/**
 	 * GenericTile renderer.
@@ -49,6 +47,7 @@ sap.ui.define(["sap/m/library", "sap/base/security/encodeCSS"],
 		var sAriaRole = oControl.getAriaRole();
 		var isHalfFrame = frameType === frameTypes.OneByHalf || frameType === frameTypes.TwoByHalf;
 		var sBGColor = oControl._sBGColor;
+		var bIsIconModeOneByOne = oControl._isIconMode() && frameType === frameTypes.OneByOne;
 
 		// Render a link when URL is provided, not in action scope and the state is enabled
 		var bRenderLink = oControl.getUrl() && (!oControl._isInActionScope() || oControl.getMode() === GenericTileMode.IconMode) && sState !== LoadState.Disabled && !oControl._isNavigateActionEnabled() && !oControl._isActionMode();
@@ -63,7 +62,9 @@ sap.ui.define(["sap/m/library", "sap/base/security/encodeCSS"],
 			oRm.openStart("a", oControl);
 			oRm.attr("href", oControl.getUrl());
 			oRm.attr("rel", "noopener noreferrer");
-			oRm.attr("draggable", "false"); // <a> elements are draggable per default, use UI5 DnD instead
+			if (!this._isDragabble(oControl)) {
+				oRm.attr("draggable", "false"); // <a> elements are draggable per default, use UI5 DnD instead
+			}
 		} else {
 			oRm.openStart("div",oControl );
 		}
@@ -83,6 +84,9 @@ sap.ui.define(["sap/m/library", "sap/base/security/encodeCSS"],
 		if (oControl._isIconMode()){
 			if (frameType === frameTypes.OneByOne) {
 				var sClass = "sapMGTOneByOne";
+				if (!oControl.getSubheader()) {
+					oRm.class("sapMGTNoSubHeader");
+				}
 			} else if (frameType === frameTypes.TwoByHalf) {
 				var sClass = "TwoByHalf";
 			}
@@ -130,11 +134,9 @@ sap.ui.define(["sap/m/library", "sap/base/security/encodeCSS"],
 		}
 		if (sState === LoadState.Loaded) {
 			oRm.attr("aria-label", sAriaText);
-				}
+		}
 		if (sAriaRoleDescription) {
 			oRm.attr("aria-roledescription", sAriaRoleDescription );
-		} else {
-			oRm.attr("aria-roledescription", oRb.getText("GENERIC_TILE_ROLE_DESCRIPTION"));
 		}
 		if (sState !== LoadState.Disabled) {
 			if (!oControl.isInActionRemoveScope() && oControl.getPressEnabled()) {
@@ -161,6 +163,10 @@ sap.ui.define(["sap/m/library", "sap/base/security/encodeCSS"],
 			oRm.class("sapMGTNewsContent");
 		}
 		oRm.openEnd();
+		if (sTooltipText) {
+			oControl.getAggregation("_invisibleText").setText(sTooltipText);
+			oRm.renderControl(oControl.getAggregation("_invisibleText"));
+		}
 		var isFooterPresent = false;
 		var isContentPresent = false;
 		function renderLoadingShimmerIconMode(oRm, bIsLoading) {
@@ -251,6 +257,11 @@ sap.ui.define(["sap/m/library", "sap/base/security/encodeCSS"],
 				if (!oControl.getIconLoaded()) {
 					renderLoadingShimmerIconMode(oRm, false);
 				} else {
+					if (frameType === frameTypes.OneByOne) {
+						oRm.openStart("div");
+						oRm.class("sapMGTIconWrapper");
+						oRm.openEnd();
+					}
 					oRm.openStart("div");
 					if (frameType === frameTypes.OneByOne) {
 						oRm.class("sapMGTOneByOneIcon");
@@ -315,6 +326,10 @@ sap.ui.define(["sap/m/library", "sap/base/security/encodeCSS"],
 			}
 
 			this._renderHeader(oRm, oControl);
+			if (bIsIconModeOneByOne) {
+				oRm.close("div");
+				oRm.close("div");
+			}
 			for (var i = 0; i < iLength; i++) {
 				isFooterPresent = oControl._checkFooter(aTileContent[i], oControl) && (aTileContent[i].getFooter() ||  aTileContent[i].getUnit());
 				var oAggregationContent = aTileContent[i].getContent();
@@ -328,16 +343,12 @@ sap.ui.define(["sap/m/library", "sap/base/security/encodeCSS"],
 				}
 			}
 
-			if (!(isHalfFrame && isContentPresent)) {
-				if (oControl.getSubheader()) {
-					//Restrict creation of SubHeader for IconMode & OneByOne frameType
-					if (!(oControl._isIconMode() && oControl.getFrameType() == frameTypes.OneByOne)) {
-						this._renderSubheader(oRm, oControl);
-					}
-				}
+			if (!(isHalfFrame && isContentPresent) && oControl.getSubheader()) {
+				this._renderSubheader(oRm, oControl);
 			}
-
-			oRm.close("div");
+			if (!bIsIconModeOneByOne) {
+				oRm.close("div");
+			}
 
 			if ( !oControl._isIconMode() ) { //Restrict creation of Footer for IconMode
 				oRm.openStart("div", oControl.getId() + "-content");
@@ -390,6 +401,29 @@ sap.ui.define(["sap/m/library", "sap/base/security/encodeCSS"],
 		} else {
 			oRm.close("div");
 		}
+	};
+
+	/**
+	 * Checks if the GenericTile should be draggable or not.
+	 * @param {sap.m.GenericTile} oControl The GenericTile control
+	 * @returns {boolean} True if the GenericTile is draggable, false otherwise
+	 * @private
+	 */
+	 GenericTileRenderer._isDragabble = function(oControl) {
+		var bDraggable = oControl.getDragDropConfig().some(function(vDragDropInfo){
+			return vDragDropInfo.isDraggable(oControl);
+		});
+
+		if (!bDraggable) {
+			// also check parent config
+			var oParent = oControl.getParent();
+			if (oParent && oParent.getDragDropConfig) {
+				bDraggable = oParent.getDragDropConfig().some(function(vDragDropInfo){
+					return vDragDropInfo.isDraggable(oControl);
+				});
+			}
+		}
+		return bDraggable;
 	};
 
 	/**
@@ -560,7 +594,7 @@ sap.ui.define(["sap/m/library", "sap/base/security/encodeCSS"],
 	 * @private
 	 */
 	GenericTileRenderer._isThemeHighContrast = function() {
-		return /(hcw|hcb)/g.test(sap.ui.getCore().getConfiguration().getTheme());
+		return /(hcw|hcb)/g.test(Configuration.getTheme());
 	};
 
 	GenericTileRenderer._isNewsContentPresent = function(aTileContent,iLength) {

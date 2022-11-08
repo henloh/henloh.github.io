@@ -23,8 +23,10 @@ sap.ui.define([
 	'sap/base/util/UriParameters',
 	'sap/base/util/isPlainObject',
 	'sap/base/util/LoaderExtensions',
+	'sap/ui/core/_UrlResolver',
 	'sap/ui/VersionInfo',
-	'sap/ui/core/mvc/ViewType'
+	'sap/ui/core/mvc/ViewType',
+	'sap/ui/core/Configuration'
 ], function(
 	Manifest,
 	ComponentMetadata,
@@ -43,8 +45,10 @@ sap.ui.define([
 	UriParameters,
 	isPlainObject,
 	LoaderExtensions,
+	_UrlResolver,
 	VersionInfo,
-	ViewType
+	ViewType,
+	Configuration
 ) {
 	"use strict";
 
@@ -65,7 +69,7 @@ sap.ui.define([
 	function addSapParams(oUri) {
 		['sap-client', 'sap-server'].forEach(function(sName) {
 			if (!oUri.hasSearch(sName)) {
-				var sValue = sap.ui.getCore().getConfiguration().getSAPParam(sName);
+				var sValue = Configuration.getSAPParam(sName);
 				if (sValue) {
 					oUri.addSearch(sName, sValue);
 				}
@@ -244,7 +248,7 @@ sap.ui.define([
 	 * @extends sap.ui.base.ManagedObject
 	 * @abstract
 	 * @author SAP SE
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @alias sap.ui.core.Component
 	 * @since 1.9.2
 	 */
@@ -423,7 +427,7 @@ sap.ui.define([
 	function getCustomizingComponent(vObject) {
 		var oComponent, sComponentId;
 
-		if (!sap.ui.getCore().getConfiguration().getDisableCustomizing()) {
+		if (!Configuration.getDisableCustomizing()) {
 			if (typeof vObject === "string") {
 				sComponentId = vObject;
 			} else if (vObject && typeof vObject.isA === "function" && !vObject.isA("sap.ui.core.Component")) {
@@ -1440,7 +1444,7 @@ sap.ui.define([
 	};
 
 	Component._applyCacheToken = function(oUri, oLogInfo, mMetadataUrlParams) {
-		var oConfig = sap.ui.getCore().getConfiguration();
+		var oConfig = Configuration;
 		var sSource = mMetadataUrlParams ? "Model" : "DataSource";
 		var sManifestPath = mMetadataUrlParams ? "[\"sap.ui5\"][\"models\"]" : "[\"sap.app\"][\"dataSources\"]";
 		var sLanguage = mMetadataUrlParams && mMetadataUrlParams["sap-language"] || oUri.search(true)["sap-language"];
@@ -1608,7 +1612,7 @@ sap.ui.define([
 		var bMergeParent = mOptions.mergeParent;
 		var mCacheTokens = mOptions.cacheTokens || {};
 		var sLogComponentName = oComponent ? oComponent.getMetadata().getComponentName() : oManifest.getComponentName();
-		var oConfig = sap.ui.getCore().getConfiguration();
+		var oConfig = Configuration;
 		var aActiveTerminologies = mOptions.activeTerminologies;
 
 		if (!mOptions.models) {
@@ -1759,7 +1763,7 @@ sap.ui.define([
 
 							// resolve relative to component, ui5:// URLs are already resolved upfront
 							var oAnnotationSourceManifest = mConfig.origin.dataSources[aAnnotations[i]] || oManifest;
-							var sAnnotationUri = oAnnotationSourceManifest._resolveUri(oAnnotationUri).toString();
+							var sAnnotationUri = oAnnotationSourceManifest.resolveUri(oAnnotationUri.toString());
 
 							// add uri to annotationURI array in settings (this parameter applies for ODataModel v1 & v2)
 							oModelConfig.settings = oModelConfig.settings || {};
@@ -1805,7 +1809,7 @@ sap.ui.define([
 
 				// resolve URI relative to component which defined it
 				var oUriSourceManifest = (bIsDataSourceUri ? mConfig.origin.dataSources[oModelConfig.dataSource] : mConfig.origin.models[sModelName]) || oManifest;
-				oUri = oUriSourceManifest._resolveUri(oUri);
+				oUri = new URI(oUriSourceManifest.resolveUri(oModelConfig.uri));
 
 				// inherit sap-specific parameters from document (only if "sap.app/dataSources" reference is defined)
 				if (oModelConfig.dataSource) {
@@ -1939,7 +1943,13 @@ sap.ui.define([
 				if (aActiveTerminologies) {
 					oModelConfig.settings.activeTerminologies = aActiveTerminologies;
 				}
-				oManifest._processResourceConfiguration(oModelConfig.settings, /*bundleUrlRelativeTo=*/undefined, /*alreadyResolvedOnRoot=*/true);
+
+				_UrlResolver._processResourceConfiguration(oModelConfig.settings, {
+					alreadyResolvedOnRoot: true,
+					baseURI: oManifest._oBaseUri,
+					manifestBaseURI: oManifest._oManifestBaseUri,
+					relativeTo: undefined
+				});
 			}
 
 			// normalize settings object to array
@@ -2458,8 +2468,17 @@ sap.ui.define([
 	 */
 	function componentFactory(vConfig, bLegacy) {
 		var oOwnerComponent = Component.get(ManagedObject._sOwnerId);
+
+		if (Array.isArray(vConfig.activeTerminologies) && vConfig.activeTerminologies.length &&
+			Array.isArray(Configuration.getActiveTerminologies()) && Configuration.getActiveTerminologies().length) {
+			if (JSON.stringify(vConfig.activeTerminologies) !== JSON.stringify(Configuration.getActiveTerminologies())) {
+				Log.warning(bLegacy ? "sap.ui.component: " : "Component.create: " +
+					"The 'activeTerminolgies' passed to the component factory differ from the ones defined on the global 'sap.ui.core.Configuration#getActiveTerminologies';" +
+					"This might lead to inconsistencies; ResourceModels that are not defined in the manifest and created by the component will use the globally configured terminologies.");
+			}
+		}
 		// get terminologies information: API -> Owner Component -> Configuration
-		var aActiveTerminologies = vConfig.activeTerminologies || (oOwnerComponent && oOwnerComponent.getActiveTerminologies()) || sap.ui.getCore().getConfiguration().getActiveTerminologies();
+		var aActiveTerminologies = vConfig.activeTerminologies || (oOwnerComponent && oOwnerComponent.getActiveTerminologies()) || Configuration.getActiveTerminologies();
 
 		// Inherit cacheTokens from owner component if not defined in asyncHints
 		if (!vConfig.asyncHints || !vConfig.asyncHints.cacheTokens) {
@@ -2761,7 +2780,7 @@ sap.ui.define([
 		var aActiveTerminologies = mOptions.activeTerminologies,
 			sName = oConfig.name,
 			sUrl = oConfig.url,
-			oConfiguration = sap.ui.getCore().getConfiguration(),
+			oConfiguration = Configuration,
 			bComponentPreload = /^(sync|async)$/.test(oConfiguration.getComponentPreload()),
 			vManifest = oConfig.manifest,
 			bManifestFirst,
@@ -2974,7 +2993,7 @@ sap.ui.define([
 		function preload(sComponentName, bAsync) {
 
 			var sController = sComponentName + '.Component',
-				http2 = sap.ui.getCore().getConfiguration().getDepCache(),
+				http2 = Configuration.getDepCache(),
 				sPreloadName,
 				oTransitiveDependencies,
 				aLibs,

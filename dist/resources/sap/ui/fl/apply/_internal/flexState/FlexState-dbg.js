@@ -78,7 +78,7 @@ sap.ui.define([
 	 * @namespace sap.ui.fl.apply._internal.flexState.FlexState
 	 * @experimental
 	 * @since 1.73
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @private
 	 * @ui5-restricted sap.ui.fl.apply._internal
 	 */
@@ -367,6 +367,19 @@ sap.ui.define([
 					_mInstances[mPropertyBag.reference].componentData = oComponent ? oComponent.getComponentData() : mPropertyBag.componentData;
 				}
 			}.bind(null, mPropertyBag));
+	};
+
+	/**
+	 * Checks whether flex state of an associated reference or a control has been initialized or not
+	 *
+	 * @param {object} mPropertyBag - Contains additional data needed for reading and storing changes
+	 * @param {object} [mPropertyBag.control] - ID of the control
+	 * @param {string} [mPropertyBag.reference] - Flex reference of the app
+	 * @returns {boolean} <code>true</code> in case flex state has been initialized
+	 */
+	FlexState.isInitialized = function (mPropertyBag) {
+		var sReference = mPropertyBag.reference ? mPropertyBag.reference : ManifestUtils.getFlexReferenceForControl(mPropertyBag.control);
+		return !!_mInstances[sReference];
 	};
 
 	/**

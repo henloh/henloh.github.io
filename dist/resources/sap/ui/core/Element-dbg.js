@@ -17,7 +17,8 @@ sap.ui.define([
 	"sap/base/assert",
 	"sap/ui/thirdparty/jquery",
 	"sap/ui/events/F6Navigation",
-	"./RenderManager"
+	"./RenderManager",
+	"sap/ui/core/Configuration"
 ],
 	function(
 		DataType,
@@ -31,7 +32,8 @@ sap.ui.define([
 		assert,
 		jQuery,
 		F6Navigation,
-		RenderManager
+		RenderManager,
+		Configuration
 	) {
 	"use strict";
 
@@ -126,10 +128,9 @@ sap.ui.define([
 	 *
 	 * @extends sap.ui.base.ManagedObject
 	 * @author SAP SE
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @public
 	 * @alias sap.ui.core.Element
-	 * @ui5-metamodel This control/element also will be described in the UI5 (legacy) designtime metamodel
 	 */
 	var Element = ManagedObject.extend("sap.ui.core.Element", {
 
@@ -213,7 +214,7 @@ sap.ui.define([
 			} else {
 				var sMsg = "adding element with duplicate id '" + sId + "'";
 				// duplicate ID detected => fail or at least log a warning
-				if (sap.ui.getCore().getConfiguration().getNoDuplicateIds()) {
+				if (Configuration.getNoDuplicateIds()) {
 					Log.error(sMsg);
 					throw new Error("Error: " + sMsg);
 				} else {
@@ -1020,7 +1021,6 @@ sap.ui.define([
 	 * Contains a single key/value pair of custom data attached to an <code>Element</code>.
 	 * @public
 	 * @alias sap.ui.core.CustomData
-	 * @ui5-metamodel This control/element also will be described in the UI5 (legacy) designtime metamodel
 	 * @synthetic
 	 */
 	var CustomData = Element.extend("sap.ui.core.CustomData", /** @lends sap.ui.core.CustomData.prototype */ { metadata : {

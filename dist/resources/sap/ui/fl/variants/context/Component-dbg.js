@@ -34,6 +34,11 @@ sap.ui.define([
 		metadata: {
 			manifest: "json"
 		},
+		onInit: function() {
+			var oSelectedContextsModel = this.getModel("selectedContexts");
+			oSelectedContextsModel.setProperty("/selected", []);
+			oSelectedContextsModel.setProperty("/showMessageStrip", true);
+		},
 
 		/**
 		 * Returns flexObject of selected contexts from a given context sharing component.
@@ -48,6 +53,11 @@ sap.ui.define([
 			return { role: aSelectedRoleIds };
 		},
 
+		/**
+		 * Returns context sharing data binding model
+		 *
+		 * @returns {sap.ui.model.Model} Model containing selected contexts
+		 */
 		getSelectedContextsModel: function() {
 			return this.getModel("selectedContexts");
 		},
@@ -64,6 +74,11 @@ sap.ui.define([
 			oSelectedContextsModel.setProperty("/selected", aSelectedRoles);
 			oSelectedContextsModel.refresh(true);
 		},
+		resetSelectedContexts: function() {
+			var oSelectedContextsModel = this.getModel("selectedContexts");
+			oSelectedContextsModel.setProperty("/selected", []);
+			oSelectedContextsModel.refresh(true);
+		},
 
 		/**
 		 * Checks whether the given context sharing component is ready to be saved.
@@ -74,6 +89,16 @@ sap.ui.define([
 		 */
 		hasErrorsAndShowErrorMessage: function() {
 			return false;
+		},
+
+		/**
+		 * Sets if message strip is shown
+		 * @param {boolean} bShowMessageStrip - Visibility of the message strip
+		 */
+		showMessageStrip: function(bShowMessageStrip) {
+			var oRoleSelectionModel = this.getModel("selectedContexts");
+			oRoleSelectionModel.setProperty("/showMessageStrip", bShowMessageStrip);
+			oRoleSelectionModel.refresh(true);
 		}
 	});
 });

@@ -261,7 +261,7 @@ sap.ui.define([
 	 *
 	 * @namespace sap.ui.fl.write._internal.flexState.compVariants.CompVariantState
 	 * @since 1.83
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @private
 	 * @ui5-restricted sap.ui.fl
 	 */
@@ -439,7 +439,8 @@ sap.ui.define([
 					previousFavorite: oVariant.getFavorite(),
 					previousExecuteOnSelection: oVariant.getExecuteOnSelection(),
 					previousContexts: oVariant.getContexts(),
-					previousName: oVariant.getName()
+					previousName: oVariant.getName(),
+					previousAction: mPropertyBag.action
 				}
 			};
 			oVariant.addRevertData(new CompVariantRevertData(oRevertData));
@@ -468,7 +469,7 @@ sap.ui.define([
 
 		function updateChange(mPropertyBag, oVariant, oChange) {
 			var aRevertData = oChange.getRevertData() || [];
-			var oChangeContent = oChange.getContent();
+			var oChangeContent = Object.assign({}, oChange.getContent());
 			var oRevertData = {
 				previousContent: Object.assign({}, oChangeContent),
 				previousState: oChange.getState(),
@@ -558,6 +559,54 @@ sap.ui.define([
 			}
 		}
 		return oVariant;
+	};
+
+	/**
+	 * Discards the variant content to the original or last saved content;
+	 *
+	 * @param {object} mPropertyBag - Object with parameters as properties
+	 * @param {string} mPropertyBag.reference - Flex reference of the application
+	 * @param {sap.ui.comp.smartvariants.SmartVariantManagement|
+	 * 			sap.ui.comp.smartfilterbar.SmartFilterBar|
+	 * 			sap.ui.comp.smarttable.SmartTable|
+	 * 			sap.ui.comp.smartchart.SmartChart} mPropertyBag.control - Variant management control for which the variant should be updated
+	 * @param {string} mPropertyBag.id - ID of the variant
+	 * @param {sap.ui.fl.Layer} [mPropertyBag.layer] - Layer in which the save of variant content takes place
+	 * @returns {sap.ui.fl.apply._internal.flexObjects.CompVariant} The discarded variant
+	 */
+	CompVariantState.discardVariantContent = function(mPropertyBag) {
+		var oVariant = getVariantById(mPropertyBag);
+		var aVariantRevertData = oVariant.getRevertData();
+		if (aVariantRevertData.length !== 0) {
+			//Look at revert data backward, to find the content of last save action
+			var bIsVariantSaved = aVariantRevertData.slice().reverse().some(function (oRevertData) {
+				if (oRevertData.getContent().previousAction === CompVariantState.updateActionType.SAVE) {
+					mPropertyBag.content = oRevertData.getContent().previousContent;
+					mPropertyBag.action = CompVariantState.updateActionType.DISCARD;
+					return true;
+				}
+			});
+
+			if (!bIsVariantSaved) {
+				mPropertyBag.content = aVariantRevertData[0].getContent().previousContent;
+				mPropertyBag.action = CompVariantState.updateActionType.DISCARD;
+			}
+			//Update variant content to the last saved or original content
+			CompVariantState.updateVariant(mPropertyBag);
+		}
+		return oVariant;
+	};
+
+	/**
+	 * Defines the different types of actions lead to a variant got update.
+	 *
+	 * @enum {string}
+	 */
+	CompVariantState.updateActionType = {
+		UPDATE: "update",
+		SAVE: "save",
+		DISCARD: "discard",
+		UPDATE_METADATA: "update_metadata"
 	};
 
 	/**
@@ -823,6 +872,26 @@ sap.ui.define([
 			});
 		});
 		return Promise.all(aPromises);
+	};
+
+	/**
+	 * Checks if dirty changes on SmartVariantManagement exist for a flex persistence associated by a reference;
+	 *
+	 * @param {string} sReference - Flex reference of the app
+	 * @returns {boolean} <code>true</code> if dirty changes exist
+	 */
+	CompVariantState.hasDirtyChanges = function (sReference) {
+		var mCompEntities = FlexState.getCompVariantsMap(sReference);
+		var aEntities = [];
+		for (var sPersistencyKey in mCompEntities) {
+			var mCompVariantsOfPersistencyKey = mCompEntities[sPersistencyKey];
+			for (var sId in mCompVariantsOfPersistencyKey.byId) {
+				aEntities.push(mCompVariantsOfPersistencyKey.byId[sId]);
+			}
+		}
+		return aEntities.some(function(oFlexObject) {
+			return oFlexObject.getState() !== States.PERSISTED && !(oFlexObject.getVariantId && oFlexObject.getVariantId() === "*standard*");
+		});
 	};
 
 	return CompVariantState;

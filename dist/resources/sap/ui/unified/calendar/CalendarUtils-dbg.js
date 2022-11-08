@@ -19,9 +19,10 @@ sap.ui.define([
 	'./CalendarDate',
 	'sap/ui/core/Locale',
 	'sap/ui/core/LocaleData',
-	'sap/ui/core/format/TimezoneUtil'
+	'sap/ui/core/format/TimezoneUtil',
+	"sap/ui/core/Configuration"
 ],
-	function(UniversalDate, CalendarDate, Locale, LocaleData, TimezoneUtil) {
+	function(UniversalDate, CalendarDate, Locale, LocaleData, TimezoneUtil, Configuration) {
 		"use strict";
 
 		// Static class
@@ -238,8 +239,8 @@ sap.ui.define([
 			var oUniversalDate = new UniversalDate(oDate.getTime()),
 				oFirstDateOfWeek,
 				oFirstUniversalDateOfWeek,
-				oLocaleData = LocaleData.getInstance(sap.ui.getCore().getConfiguration().getFormatSettings().getFormatLocale()),
-				oLocale = sap.ui.getCore().getConfiguration().getLocale(),
+				oLocaleData = LocaleData.getInstance(Configuration.getFormatSettings().getFormatLocale()),
+				oLocale = Configuration.getLocale(),
 				iCLDRFirstWeekDay = oLocaleData.getFirstDayOfWeek(),
 				oWeek;
 
@@ -290,7 +291,7 @@ sap.ui.define([
 		 * @private
 		 */
 		CalendarUtils._getNumberOfWeeksForYear = function (iYear) {
-			var sLocale = sap.ui.getCore().getConfiguration().getFormatLocale(),
+			var sLocale = Configuration.getFormatLocale(),
 				oLocaleData = LocaleData.getInstance(new Locale(sLocale)),
 				o1stJan = new Date(Date.UTC(iYear, 0, 1)),
 				i1stDay = o1stJan.getUTCDay(),
@@ -551,7 +552,7 @@ sap.ui.define([
 		 * @private
 		 */
 		CalendarUtils._getFirstDateOfWeek = function (oCalendarDate, oWeekConfig) {
-			var oLocaleData = LocaleData.getInstance(sap.ui.getCore().getConfiguration().getFormatSettings().getFormatLocale());
+			var oLocaleData = LocaleData.getInstance(Configuration.getFormatSettings().getFormatLocale());
 			this._checkCalendarDate(oCalendarDate);
 
 			if (!oWeekConfig || (oWeekConfig.firstDayOfWeek === -1 || oWeekConfig.firstDayOfWeek === undefined)) {
@@ -582,10 +583,11 @@ sap.ui.define([
 		CalendarUtils._getFirstDateOfMonth = function(oCalendarDate) {
 			this._checkCalendarDate(oCalendarDate);
 
-			var oJSDate = CalendarUtils.getFirstDateOfMonth(oCalendarDate.toUTCJSDate()).getJSDate();
-			oJSDate.setFullYear(oJSDate.getUTCFullYear(), oJSDate.getUTCMonth(), oJSDate.getUTCDate());
+			var oCalendarDateFirstDay = new CalendarDate(oCalendarDate, oCalendarDate.getCalendarType());
 
-			return CalendarDate.fromLocalJSDate(oJSDate, oCalendarDate.getCalendarType());
+			oCalendarDateFirstDay.setDate(1);
+
+			return oCalendarDateFirstDay;
 		};
 
 		/**

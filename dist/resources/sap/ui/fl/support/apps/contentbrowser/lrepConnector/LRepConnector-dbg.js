@@ -13,7 +13,7 @@ sap.ui.define(["sap/ui/fl/Utils", "sap/ui/thirdparty/jquery"], function(Utils, j
 	 * @constructor
 	 * @alias sap.ui.fl.support.apps.contentbrowser.lrepConnector.LRepConnector
 	 * @author SAP SE
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @experimental Since 1.45
 	 */
 	var LrepConnector = {};

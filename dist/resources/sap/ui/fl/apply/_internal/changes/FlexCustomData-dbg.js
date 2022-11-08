@@ -30,7 +30,7 @@ sap.ui.define([
 	 * @alias sap.ui.fl.FlexCustomData
 	 * @experimental Since 1.61.0
 	 * @author SAP SE
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 */
 	var FlexCustomData = {};
 	FlexCustomData.sync = {};

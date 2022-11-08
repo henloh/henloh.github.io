@@ -3,11 +3,11 @@
     "application": "prodts",
     "namespace": "de.henloh",
     "framework": "OpenUI5",
-    "frameworkVersion": "1.106.0",
+    "frameworkVersion": "1.108.0",
     "author": "Henloh",
     "initrepo": false,
     "tstypes": "@openui5/ts-types-esm",
-    "tstypesVersion": "1.106.0",
+    "tstypesVersion": "1.108.0",
     "appId": "de.henloh.prodts",
     "appURI": "de/henloh/prodts"
   }

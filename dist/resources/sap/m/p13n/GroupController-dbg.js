@@ -13,16 +13,15 @@ sap.ui.define([
 	 *
 	 * @param {string} [sId] ID for the new control, generated automatically if no ID is given
 	 * @param {object} [mSettings] Initial settings for the new control
-     * @param {sap.ui.core.Control} mSettings.control The control instance to be personalized by this controller
+     * @param {sap.ui.core.Control} mSettings.control The control instance that is personalized by this controller
 	 *
 	 * @class
-	 * The <code>GroupController</code> serves as base class to create sort specific personalization implementations.
+	 * The <code>GroupController</code> entity serves as a base class to create group-specific personalization implementations.
 	 *
 	 * @extends sap.ui.base.Object
 	 *
 	 * @author SAP SE
-	 * @version 1.106.0
-	 *
+	 * @version 1.108.0
 	 * @public
 	 * @experimental
 	 * @since 1.104

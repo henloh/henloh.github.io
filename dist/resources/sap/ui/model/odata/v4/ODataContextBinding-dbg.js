@@ -74,7 +74,7 @@ sap.ui.define([
 		 * @mixes sap.ui.model.odata.v4.ODataParentBinding
 		 * @public
 		 * @since 1.37.0
-		 * @version 1.106.0
+		 * @version 1.108.0
 		 *
 		 * @borrows sap.ui.model.odata.v4.ODataBinding#getGroupId as #getGroupId
 		 * @borrows sap.ui.model.odata.v4.ODataBinding#getRootBinding as #getRootBinding
@@ -207,7 +207,7 @@ sap.ui.define([
 	 *   A lock for the group ID to be used for the DELETE request; w/o a lock, no DELETE is sent.
 	 *   For a transient entity, the lock is ignored (use NULL)!
 	 * @param {string} sEditUrl
-	 *   The entity's edit URL to be used for the DELETE request;  w/o a lock, this is mostly
+	 *   The entity's edit URL to be used for the DELETE request; w/o a lock, this is mostly
 	 *   ignored.
 	 * @param {sap.ui.model.odata.v4.Context} _oContext - ignored
 	 * @param {object} [_oETagEntity] - ignored
@@ -269,7 +269,7 @@ sap.ui.define([
 				if (oReturnValueContext) {
 					oEmptyPathParentBinding.oReturnValueContext = oReturnValueContext;
 				}
-				that._fireChange({reason : ChangeReason.Insert});
+				that._fireChange({reason : ChangeReason.Add});
 			}
 			throw oError;
 		});
@@ -930,7 +930,7 @@ sap.ui.define([
 	 *   control's property bindings use the return value context as binding context.
 	 * @throws {Error} If
 	 *   <ul>
-	 *     <li>the binding's root binding is suspended,
+	 *     <li> the binding's root binding is suspended,
 	 *     <li> the given group ID is invalid,
 	 *     <li> the binding is not a deferred operation binding (see
 	 *       {@link sap.ui.model.odata.v4.ODataContextBinding}),
@@ -954,7 +954,7 @@ sap.ui.define([
 		var sResolvedPath = this.getResolvedPath();
 
 		this.checkSuspended();
-		this.oModel.checkGroupId(sGroupId);
+		_Helper.checkGroupId(sGroupId);
 		if (!this.oOperation) {
 			throw new Error("The binding must be deferred: " + this.sPath);
 		}
@@ -1101,7 +1101,7 @@ sap.ui.define([
 			oEntity = oContext.getValue();
 
 			// avoid problems in fetchCanonicalPath (leading to an ODM#reportError)
-			if (oEntity && _Helper.getPrivateAnnotation(oEntity, "predicate")) {
+			if (oEntity && _Helper.hasPrivateAnnotation(oEntity, "predicate")) {
 				oPromise = oContext.fetchCanonicalPath();
 				oPromise.caught();
 				if (oPromise.getResult() === sCanonicalPath) {
@@ -1182,7 +1182,7 @@ sap.ui.define([
 	 * @returns {string}
 	 *   The resolved path with replaced transient predicates
 	 * @throws {Error}
-	 *   If an entity related to a segment with a transient predicate does not have key predicates
+	 *   If an entity related to a segment with a transient predicate does not have a key predicate
 	 *
 	 * @private
 	 */
@@ -1482,7 +1482,7 @@ sap.ui.define([
 		 * cancellations.
 		 *
 		 * @param {Promise} oPromise - A promise
-		 * @return {Promise} A promise including an error handler
+		 * @returns {Promise} A promise including an error handler
 		 */
 		function reportError(oPromise) {
 			return oPromise.catch(function (oError) {

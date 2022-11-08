@@ -16,7 +16,8 @@ sap.ui.define([
 	'sap/ui/core/LocaleData',
 	'sap/ui/Device',
 	'sap/ui/core/Locale',
-	"sap/ui/thirdparty/jquery"
+	"sap/ui/thirdparty/jquery",
+	"sap/ui/core/Configuration"
 ],
 	function(
 		coreLibrary,
@@ -30,7 +31,8 @@ sap.ui.define([
 		LocaleData,
 		Device,
 		Locale,
-		jQuery
+		jQuery,
+		Configuration
 	) {
 		"use strict";
 
@@ -48,7 +50,7 @@ sap.ui.define([
 		 * @extends sap.ui.core.Control
 		 *
 		 * @author SAP SE
-		 * @version 1.106.0
+		 * @version 1.108.0
 		 *
 		 * @constructor
 		 * @public
@@ -147,7 +149,9 @@ sap.ui.define([
 						}
 					}
 				}
-			}
+			},
+
+			renderer: TimePickerSlidersRenderer
 		});
 
 		/**
@@ -156,7 +160,7 @@ sap.ui.define([
 		 * @private
 		 */
 		TimePickerSliders.prototype.init = function () {
-			var oLocale = sap.ui.getCore().getConfiguration().getFormatSettings().getFormatLocale(),
+			var oLocale = Configuration.getFormatSettings().getFormatLocale(),
 				oLocaleData = LocaleData.getInstance(oLocale),
 				aPeriods = oLocaleData.getDayPeriods("abbreviated"),
 				sDefaultDisplayFormat = oLocaleData.getTimePattern("medium");
@@ -683,7 +687,7 @@ sap.ui.define([
 		 */
 		TimePickerSliders.prototype._getLocaleBasedPattern = function (sPlaceholder) {
 			return LocaleData.getInstance(
-				sap.ui.getCore().getConfiguration().getFormatSettings().getFormatLocale()
+				Configuration.getFormatSettings().getFormatLocale()
 			).getTimePattern(sPlaceholder);
 		};
 
@@ -907,7 +911,7 @@ sap.ui.define([
 			}
 
 			if (!sCalendarType) {
-				sCalendarType = sap.ui.getCore().getConfiguration().getCalendarType();
+				sCalendarType = Configuration.getCalendarType();
 			}
 
 			return this._getFormatterInstance(sPattern, bRelative, sCalendarType);

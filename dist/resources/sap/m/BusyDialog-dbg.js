@@ -62,12 +62,11 @@ sap.ui.define(['./library',
 		 * @extends sap.ui.core.Control
 		 *
 		 * @author SAP SE
-		 * @version 1.106.0
+		 * @version 1.108.0
 		 *
 		 * @public
 		 * @alias sap.m.BusyDialog
 		 * @see {@link fiori:https://experience.sap.com/fiori-design-web/busydialog Busy Dialog}
-		 * @ui5-metamodel This control/element also will be described in the UI5 (legacy) designtime metamodel
 		 */
 		var BusyDialog = Control.extend("sap.m.BusyDialog", /** @lends sap.m.BusyDialog.prototype */ {
 

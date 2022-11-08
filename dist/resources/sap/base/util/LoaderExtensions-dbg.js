@@ -251,10 +251,6 @@ sap.ui.define([
 			fnDone = function() {},
 			iSyncCallBehavior;
 
-		if (LoaderExtensions.notifyResourceLoading) {
-			fnDone = LoaderExtensions.notifyResourceLoading();
-		}
-
 		if (typeof sResourceName === "string") {
 			mOptions = mOptions || {};
 		} else {
@@ -272,14 +268,14 @@ sap.ui.define([
 		assert(/^(xml|html|json|text)$/.test(sType), "type must be one of xml, html, json or text");
 
 		function convertData(d) {
-		    switch (sType) {
+			switch (sType) {
 				case "json":
 					return JSON.parse(d);
 				case "xml":
 					return XMLHelper.parse(d);
 				default:
 					return d;
-		    }
+			}
 		}
 
 		oData = sap.ui.loader._.getModuleContent(sResourceName, mOptions.url);
@@ -310,6 +306,10 @@ sap.ui.define([
 			}
 
 			sUrl = mOptions.url || sap.ui.loader._.getResourcePath(sResourceName);
+
+			if (LoaderExtensions.notifyResourceLoading) {
+				fnDone = LoaderExtensions.notifyResourceLoading();
+			}
 
 			var pResponse = mixedFetch(sUrl, {
 				headers: Object.assign(oHeaders, mOptions.headers)

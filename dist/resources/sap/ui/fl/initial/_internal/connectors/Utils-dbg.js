@@ -5,9 +5,11 @@
  */
 
 sap.ui.define([
-	"sap/base/security/encodeURLParameters"
+	"sap/base/security/encodeURLParameters",
+	"sap/ui/core/Configuration"
 ], function (
-	encodeURLParameters
+	encodeURLParameters,
+	Configuration
 ) {
 	"use strict";
 
@@ -16,7 +18,7 @@ sap.ui.define([
 	 *
 	 * @namespace sap.ui.fl.initial._internal.connectors.Utils
 	 * @since 1.70
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @private
 	 * @ui5-restricted sap.ui.fl.initial._internal.connectors, sap.ui.fl.write._internal.connectors, sap.ui.fl.write._internal.transport
 	 */
@@ -58,7 +60,7 @@ sap.ui.define([
 			if (!mParameters) {
 				mParameters = {};
 			}
-			mParameters["sap-language"] = sap.ui.getCore().getConfiguration().getLanguage();
+			mParameters["sap-language"] = Configuration.getLanguage();
 		},
 
 		/**
@@ -71,7 +73,7 @@ sap.ui.define([
 			if (!mParameters) {
 				mParameters = {};
 			}
-			mParameters["sap-language"] = sap.ui.getCore().getConfiguration().getSAPLogonLanguage();
+			mParameters["sap-language"] = Configuration.getSAPLogonLanguage();
 		},
 
 		/**
@@ -127,7 +129,7 @@ sap.ui.define([
 		 * @param {string} sUrl Url of the sent request
 		 * @param {string} [sMethod="GET"] Desired action to be performed for a given resource
 		 * @param {object} [mPropertyBag] Object with parameters as properties
-		 * @param {string} [mPropertyBag.xsrfToken] Existing X-CSRF token of the connector which triggers the request
+		 * @param {object} [mPropertyBag.initialConnector] Corresponding initial connector which has an existing X-CSRF token or stores a new X-CSRF token
 		 * @param {string} [mPropertyBag.payload] Payload of the request
 		 * @param {string} [mPropertyBag.contentType] Content type of the request
 		 * @param {string} [mPropertyBag.dataType] Expected data type of the response
@@ -143,11 +145,11 @@ sap.ui.define([
 				var xhr = new XMLHttpRequest();
 				xhr.open(sMethod, sUrl);
 				xhr.timeout = TIMEOUT;
-				if ((sMethod === "GET" || sMethod === "HEAD") && (!mPropertyBag || !mPropertyBag.xsrfToken)) {
+				if ((sMethod === "GET" || sMethod === "HEAD") && (!mPropertyBag || !mPropertyBag.initialConnector || !mPropertyBag.initialConnector.xsrfToken)) {
 					xhr.setRequestHeader("X-CSRF-Token", "fetch");
 				}
-				if ((sMethod === "POST" || sMethod === "PUT" || sMethod === "DELETE") && mPropertyBag && mPropertyBag.xsrfToken) {
-					xhr.setRequestHeader("X-CSRF-Token", mPropertyBag.xsrfToken);
+				if ((sMethod === "POST" || sMethod === "PUT" || sMethod === "DELETE") && mPropertyBag && mPropertyBag.initialConnector && mPropertyBag.initialConnector.xsrfToken) {
+					xhr.setRequestHeader("X-CSRF-Token", mPropertyBag.initialConnector.xsrfToken);
 				}
 				if (mPropertyBag && mPropertyBag.contentType) {
 					xhr.setRequestHeader("Content-Type", mPropertyBag.contentType);
@@ -185,7 +187,13 @@ sap.ui.define([
 							}
 							oResult.status = xhr.status;
 							if (xhr.getResponseHeader("X-CSRF-Token")) {
-								oResult.xsrfToken = xhr.getResponseHeader("X-CSRF-Token");
+								//Only obtain token from non-cacheable request
+								if (!sUrl.match(/\/~.*~/g)) {
+									oResult.xsrfToken = xhr.getResponseHeader("X-CSRF-Token");
+									if (mPropertyBag && mPropertyBag.initialConnector) {
+										mPropertyBag.initialConnector.xsrfToken = oResult.xsrfToken;
+									}
+								}
 							}
 							if (xhr.getResponseHeader("Etag")) {
 								oResult.etag = xhr.getResponseHeader("Etag");

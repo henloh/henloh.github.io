@@ -22,7 +22,7 @@ sap.ui.define([
 	 * @extends sap.ui.core.Control
 	 *
 	 * @author SAP SE
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 *
 	 * @public
 	 * @abstract
@@ -420,6 +420,10 @@ sap.ui.define([
 
 	BasePanel.prototype._setTemplate = function(oTemplate) {
 		oTemplate.setType("Active");
+		var oCurrentTemplate = this.getAggregation("_template");
+		if (oCurrentTemplate) {
+			oCurrentTemplate.destroy();
+		}
 		this.setAggregation("_template", oTemplate);
 		if (oTemplate) {
 			if (this.getEnableReorder()){

@@ -27,7 +27,7 @@ sap.ui.define([
 	 * Entity that handles ABAP transport related information.
 	 * @alias sap.ui.fl.write._internal.transport.Transports
 	 * @author SAP SE
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @since 1.74.0
 	 * @private
 	 * @ui5-restricted sap.ui.fl.write._internal.transport

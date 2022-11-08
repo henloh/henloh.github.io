@@ -24,7 +24,7 @@ sap.ui.define([
 	 * @namespace
 	 * @alias sap.ui.testrecorder
 	 * @author SAP SE
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @since 1.74
 	 * @public
 	 */
@@ -38,7 +38,7 @@ sap.ui.define([
 		controls: [],
 		elements: [],
 		noLibraryCSS: true,
-		version: "1.106.0",
+		version: "1.108.0",
 		extensions: {
 			//Configuration used for rule loading of Support Assistant
 			"sap.ui.support": {

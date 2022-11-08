@@ -5,9 +5,11 @@
  */
 
 sap.ui.define([
-	"sap/base/util/extend"
+	"sap/base/util/extend",
+	"sap/ui/fl/changeHandler/condenser/Classification"
 ], function(
-	extend
+	extend,
+	Classification
 ) {
 	"use strict";
 
@@ -16,7 +18,7 @@ sap.ui.define([
 	 *
 	 * @alias sap.ui.fl.changeHandler.UpdateIFrame
 	 * @author SAP SE
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @since 1.72
 	 * @private
 	 */
@@ -141,6 +143,15 @@ sap.ui.define([
 			throw new Error("oSpecificChangeInfo attribute required");
 		}
 		oChange.setContent(oSpecificChangeInfo.content);
+	};
+
+	UpdateIFrame.getCondenserInfo = function(oChange) {
+		return {
+			classification: Classification.Update,
+			affectedControl: oChange.getSelector(),
+			uniqueKey: "iFrame",
+			updateContent: oChange.getContent()
+		};
 	};
 
 	return UpdateIFrame;

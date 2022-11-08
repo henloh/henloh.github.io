@@ -17,7 +17,10 @@ sap.ui.define([
 ) {
 	"use strict";
 
-	function retrieveUserId() {
+	function retrieveUserId(oSettings) {
+		if (oSettings && oSettings.logonUser) {
+			return Promise.resolve(oSettings.logonUser);
+		}
 		var oUShellContainer = Utils.getUshellContainer();
 		if (oUShellContainer) {
 			return Utils.getUShellService("UserInfo")
@@ -94,7 +97,7 @@ sap.ui.define([
 		var oLoadingPromise = Storage.loadFeatures()
 			.then(function(oLoadedSettings) {
 				oSettings = oLoadedSettings;
-				return retrieveUserId();
+				return retrieveUserId(oSettings);
 			})
 			.then(function (sUserId) {
 				if (!oSettings) {
@@ -108,10 +111,13 @@ sap.ui.define([
 						isAtoAvailable: false,
 						isAtoEnabled: false,
 						isAppVariantSaveAsEnabled: false,
+						isContextSharingEnabled: true,
+						isContextSharingEnabledForComp: true,
 						isContextBasedAdaptationEnabled: false,
 						isCondensingEnabled: false,
 						isProductiveSystem: true,
 						isPublicLayerAvailable: false,
+						isLocalResetEnabled: false,
 						isVariantAdaptationEnabled: false,
 						versioning: {},
 						_bFlexChangeMode: false,
@@ -308,6 +314,26 @@ sap.ui.define([
 		return this._getBooleanProperty("isPublicFlVariantEnabled");
 	};
 
+
+	/**
+	 * Checks whether sharing of <code>sap.ui.fl</code> variants can be based on contexts.
+	 *
+	 * @returns {boolean} <code>true</code> if context based sharing of <code>sap.ui.fl</code> variants is enabled
+	 */
+	Settings.prototype.isContextSharingEnabled = function() {
+		return this._getBooleanProperty("isContextSharingEnabled");
+	};
+
+
+	/**
+	 * Checks whether sharing of <code>sap.ui.comp</code> variants can be based on contexts.
+	 *
+	 * @returns {boolean} <code>true</code> if context based sharing of <code>sap.ui.comp</code> variants is enabled
+	 */
+	Settings.prototype.isContextSharingEnabledForComp = function() {
+		return this._getBooleanProperty("isContextSharingEnabledForComp");
+	};
+
 	/**
 	 * Checks whether personalization of variants is enabled or not.
 	 *
@@ -343,6 +369,15 @@ sap.ui.define([
 	 */
 	Settings.prototype.isProductiveSystemWithTransports = function() {
 		return this.isProductiveSystem() && this.isSystemWithTransports();
+	};
+
+	/**
+	 * Returns the information if a back end supports local reset.
+	 *
+	 * @returns {boolean} <code>true</code> if the local reset is supported
+	 */
+	 Settings.prototype.isLocalResetEnabled = function() {
+		return this._getBooleanProperty("isLocalResetEnabled");
 	};
 
 	/**
@@ -397,9 +432,9 @@ sap.ui.define([
 
 	/**
 	 * Getter for the id of the current user.
-	 * This is taken from the <code>userId</code> property of the flex settings. Only filled when UShell is available.
+	 * This is taken from the <code>userId</code> property of the flex settings.
 	 *
-	 * @returns {string} User ID of the current user. Undefined if UShell is not available.
+	 * @returns {string} User ID of the current user.
 	 */
 	 Settings.prototype.getUserId = function() {
 		return this._oSettings.userId;

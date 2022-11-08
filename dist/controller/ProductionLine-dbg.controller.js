@@ -293,7 +293,6 @@ sap.ui.define(["./BaseController", "../model/formatter", "sap/ui/model/json/JSON
       var item = event.getParameters().selectedItem;
       var viewModel = this.getModel("View"); //console.log(((event.getSource() as Select).getParent() as Panel).getContent());
 
-      console.log();
       var path = select.getBindingPath("items");
       var factoryOptions = viewModel.getProperty(path);
 
@@ -407,27 +406,14 @@ sap.ui.define(["./BaseController", "../model/formatter", "sap/ui/model/json/JSON
 
     onDropHave(event) {
       var oDragged = event.getParameter("draggedControl"),
-          oDropped = event.getParameter("droppedControl"),
-          sInsertPosition = event.getParameter("dropPosition"),
           List = oDragged.getParent(),
-          iDragPosition = List.indexOfItem(oDragged),
-          iDropPosition = List.indexOfItem(oDropped);
+          iDragPosition = List.indexOfItem(oDragged);
       var viewModel = this.getModel("View");
       var aItems = viewModel.getProperty("/requiredFactories");
       var resultItems = viewModel.getProperty("/ownedFactories"); // remove the item
 
       var oItem = aItems[iDragPosition];
       aItems.splice(iDragPosition, 1);
-      /*if (iDragPosition < iDropPosition) {
-      	iDropPosition--;
-      }
-      // insert the control in target aggregation
-      if (sInsertPosition === "Before") {
-      	aItems.splice(iDropPosition, 0, oItem);
-      } else {
-      	aItems.splice(iDropPosition + 1, 0, oItem);
-      }*/
-
       resultItems.push(oItem);
       viewModel.setProperty("/ownedFactories", resultItems);
       viewModel.setProperty("/requiredFactories", aItems);

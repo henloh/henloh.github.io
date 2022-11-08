@@ -93,14 +93,13 @@ sap.ui.define([
 		 *
 		 * @extends sap.ui.core.Control
 		 * @author SAP SE
-		 * @version 1.106.0
+		 * @version 1.108.0
 		 *
 		 * @constructor
 		 * @public
 		 * @since 1.30
 		 * @alias sap.m.Wizard
 		 * @see {@link fiori:https://experience.sap.com/fiori-design-web/wizard/ Wizard}
-		 * @ui5-metamodel This control/element also will be described in the UI5 (legacy) designtime metamodel
 		 */
 		var Wizard = Control.extend("sap.m.Wizard", /** @lends sap.m.Wizard.prototype */ {
 			metadata: {
@@ -216,7 +215,9 @@ sap.ui.define([
 					}
 				},
 				dnd: { draggable: false, droppable: true }
-			}
+			},
+
+			renderer: WizardRenderer
 		});
 
 		Wizard.CONSTANTS = {

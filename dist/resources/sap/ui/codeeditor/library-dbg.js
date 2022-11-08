@@ -19,7 +19,7 @@ sap.ui.define([
 	 * @namespace
 	 * @alias sap.ui.codeeditor
 	 * @author SAP SE
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @since 1.48
 	 * @public
 	 */
@@ -33,7 +33,7 @@ sap.ui.define([
 		],
 		elements: [],
 		noLibraryCSS: false,
-		version: "1.106.0"
+		version: "1.108.0"
 	});
 
 	return thisLib;

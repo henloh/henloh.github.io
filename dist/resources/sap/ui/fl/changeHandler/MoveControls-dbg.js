@@ -21,7 +21,7 @@ function(
 	 *
 	 * @alias sap.ui.fl.changeHandler.MoveControls
 	 * @author SAP SE
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @experimental Since 1.46
 	 */
 	var MoveControls = { };
@@ -428,9 +428,9 @@ function(
 		return {
 			affectedControls: [oChangeContent.movedElements[0].selector],
 			dependentControls: [oChangeContent.source.selector],
-			payload: {
-				sourceParentContainer: oRevertData.sourceParent,
-				targetParentContainer: oChangeContent.target.selector
+			descriptionPayload: {
+				sourceContainer: oRevertData.sourceParent,
+				targetContainer: oChangeContent.target.selector
 			}
 		};
 	};

@@ -36,13 +36,12 @@ sap.ui.define([
 	 * @extends sap.m.QuickViewBase
 	 *
 	 * @author SAP SE
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 *
 	 * @constructor
 	 * @public
 	 * @since 1.28.11
 	 * @alias sap.m.QuickViewCard
-	 * @ui5-metamodel This control/element also will be described in the UI5 (legacy) designtime metamodel
 	 */
 	var QuickViewCard = QuickViewBase.extend("sap.m.QuickViewCard", /** @lends sap.m.QuickViewCard.prototype */ {
 		metadata: {
@@ -54,7 +53,9 @@ sap.ui.define([
 				showVerticalScrollBar : { type : "boolean", group : "Behavior", defaultValue : true }
 			},
 			designtime: "sap/m/designtime/QuickViewCard.designtime"
-		}
+		},
+
+		renderer: QuickViewCardRenderer
 	});
 
 	/**

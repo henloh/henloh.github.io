@@ -25,7 +25,7 @@ sap.ui.define([
 	 *
 	 * @namespace sap.ui.fl.support._internal.getChangeDependencies
 	 * @since 1.98
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @private
 	 * @ui5-restricted sap.ui.fl.support.api.SupportAPI
 	 */

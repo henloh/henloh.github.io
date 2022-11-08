@@ -328,7 +328,7 @@ sap.ui.define([
 
 				if (sPredicate) {
 					that.aElements.$byPredicate[sPredicate] = oElement;
-					if (_Helper.getPrivateAnnotation(oElement, "expanding")) {
+					if (_Helper.hasPrivateAnnotation(oElement, "expanding")) {
 						_Helper.deletePrivateAnnotation(oElement, "expanding");
 						iCount += that.expand(_GroupLock.$cached, oElement).getResult();
 					}
@@ -476,7 +476,7 @@ sap.ui.define([
 		}
 
 		aAllElements = this.aElements.map(function (oElement) {
-			return _Helper.getPrivateAnnotation(oElement, "parent") ? undefined : oElement;
+			return _Helper.hasPrivateAnnotation(oElement, "parent") ? undefined : oElement;
 		});
 		aAllElements.$count = this.aElements.$count;
 
@@ -686,7 +686,7 @@ sap.ui.define([
 			for (i = iIndex, n = Math.min(iIndex + iLength, this.aElements.length); i < n; i += 1) {
 				oCurrentParent = _Helper.getPrivateAnnotation(this.aElements[i], "parent");
 				if (oCurrentParent !== oGapParent) {
-					if (iGapStart) { // end of gap
+					if (iGapStart !== undefined) { // end of gap
 						readGap(iGapStart, i);
 						oGapParent = iGapStart = undefined;
 					}
@@ -696,7 +696,7 @@ sap.ui.define([
 					}
 				}
 			}
-			if (iGapStart) { // gap at end
+			if (iGapStart !== undefined) { // gap at end
 				readGap(iGapStart, i);
 			}
 			oGroupLock.unlock();
@@ -885,59 +885,78 @@ sap.ui.define([
 	 *   If this parameter is set, multiple requests for a cache using the same resource path will
 	 *   always return the same, shared cache. This cache is read-only, modifying calls lead to an
 	 *   error.
+	 * @param {boolean} [bIsGrouped]
+	 *   Whether the list binding is grouped via its first sorter
 	 * @returns {sap.ui.model.odata.v4.lib._Cache}
 	 *   The cache
 	 * @throws {Error}
 	 *   If the system query option "$filter" is combined with group levels or with grand totals
-	 *   (unless "grandTotal like 1.84"), or if grand totals or group levels are combined with
-	 *   min/max, or if the system query options "$expand" or "$select" are combined with pure data
-	 *   aggregation (no recursive hierarchy), or if the system query option "$search" is combined
-	 *   with grand totals or group levels or a recursive hierarchy
+	 *   (unless "grandTotal like 1.84"), or if grand totals or group levels or recursive hierarchy
+	 *   are combined with min/max or with grouping via sorter, or if the system query options
+	 *   "$expand" or "$select" are combined with pure data aggregation (no recursive hierarchy), or
+	 *   if the system query option "$search" is combined with grand totals or group levels or a
+	 *   recursive hierarchy, or if shared requests are combined with min/max or with grand totals
+	 *   or group levels or recursive hierarchy
 	 *
 	 * @public
 	 */
 	_AggregationCache.create = function (oRequestor, sResourcePath, sDeepResourcePath, oAggregation,
-			mQueryOptions, bSortExpandSelect, bSharedRequest) {
-		var bHasGrandTotal, bHasGroupLevels, bHasMinOrMax;
+			mQueryOptions, bSortExpandSelect, bSharedRequest, bIsGrouped) {
+		var bHasGrandTotal, bHasGroupLevels;
+
+		function checkExpandSelect() {
+			if ("$expand" in mQueryOptions) {
+				throw new Error("Unsupported system query option: $expand");
+			}
+			if ("$select" in mQueryOptions) {
+				throw new Error("Unsupported system query option: $select");
+			}
+		}
 
 		if (oAggregation) {
 			bHasGrandTotal = _AggregationHelper.hasGrandTotal(oAggregation.aggregate);
 			bHasGroupLevels = oAggregation.groupLevels && !!oAggregation.groupLevels.length;
-			bHasMinOrMax = _AggregationHelper.hasMinOrMax(oAggregation.aggregate);
 
-			if (mQueryOptions.$filter
-				&& (bHasGrandTotal && !oAggregation["grandTotal like 1.84"]
-					|| bHasGroupLevels)) {
-				throw new Error("Unsupported system query option: $filter");
-			}
-			if (mQueryOptions.$search
-					&& (bHasGrandTotal || bHasGroupLevels || oAggregation.hierarchyQualifier)) {
-				throw new Error("Unsupported system query option: $search");
-			}
-			if (bHasMinOrMax) {
+			if (_AggregationHelper.hasMinOrMax(oAggregation.aggregate)) {
 				if (bHasGrandTotal) {
 					throw new Error("Unsupported grand totals together with min/max");
 				}
 				if (bHasGroupLevels) {
 					throw new Error("Unsupported group levels together with min/max");
 				}
+				if (oAggregation.hierarchyQualifier) {
+					throw new Error("Unsupported recursive hierarchy together with min/max");
+				}
+				if (bSharedRequest) {
+					throw new Error("Unsupported $$sharedRequest together with min/max");
+				}
+				checkExpandSelect();
+
+				return _MinMaxHelper.createCache(oRequestor, sResourcePath, oAggregation,
+					mQueryOptions);
 			}
 
-			if (bHasGrandTotal || bHasGroupLevels || bHasMinOrMax
-					|| oAggregation.hierarchyQualifier) {
+			if (mQueryOptions.$filter
+				&& (bHasGrandTotal && !oAggregation["grandTotal like 1.84"]
+					|| bHasGroupLevels)) {
+				throw new Error("Unsupported system query option: $filter");
+			}
+
+			if (bHasGrandTotal || bHasGroupLevels || oAggregation.hierarchyQualifier) {
+				if (mQueryOptions.$search) {
+					throw new Error("Unsupported system query option: $search");
+				}
 				if (!oAggregation.hierarchyQualifier) {
-					if ("$expand" in mQueryOptions) {
-						throw new Error("Unsupported system query option: $expand");
-					}
-					if ("$select" in mQueryOptions) {
-						throw new Error("Unsupported system query option: $select");
-					}
+					checkExpandSelect();
+				}
+				if (bIsGrouped) {
+					throw new Error("Unsupported grouping via sorter");
+				}
+				if (bSharedRequest) {
+					throw new Error("Unsupported $$sharedRequest");
 				}
 
-				return bHasMinOrMax
-					? _MinMaxHelper.createCache(oRequestor, sResourcePath, oAggregation,
-						mQueryOptions)
-					: new _AggregationCache(oRequestor, sResourcePath, oAggregation, mQueryOptions,
+				return new _AggregationCache(oRequestor, sResourcePath, oAggregation, mQueryOptions,
 						bHasGrandTotal);
 			}
 		}

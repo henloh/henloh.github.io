@@ -26,7 +26,8 @@ sap.ui.define([
 	'sap/ui/model/Filter',
 	'sap/ui/model/FilterOperator',
 	'sap/ui/model/json/JSONModel',
-	'sap/m/SearchField'
+	'sap/m/SearchField',
+	'sap/ui/core/Configuration'
 ],
 	function(
 		Text,
@@ -49,7 +50,8 @@ sap.ui.define([
 		Filter,
 		FilterOperator,
 		JSONModel,
-		SearchField
+		SearchField,
+		Configuration
 	) {
 	"use strict";
 
@@ -83,7 +85,7 @@ sap.ui.define([
 	 * @class Table Personalization Dialog
 	 * @extends sap.ui.base.ManagedObject
 	 * @author SAP
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @alias sap.m.TablePersoDialog
 	 */
 	var TablePersoDialog = ManagedObject.extend("sap.m.TablePersoDialog", /** @lends sap.m.TablePersoDialog.prototype */
@@ -144,7 +146,7 @@ sap.ui.define([
 			} else {
 				var sMsg = "adding TablePersoDialog with duplicate id '" + sId + "'";
 				// duplicate ID detected => fail or at least log a warning
-				if (sap.ui.getCore().getConfiguration().getNoDuplicateIds()) {
+				if (Configuration.getNoDuplicateIds()) {
 					Log.error(sMsg);
 					throw new Error("Error: " + sMsg);
 				} else {

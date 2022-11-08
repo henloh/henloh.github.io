@@ -20,7 +20,7 @@ function(
 	 * @namespace
 	 *
 	 * @author SAP SE
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 *
 	 * @private
 	 * @since 1.58

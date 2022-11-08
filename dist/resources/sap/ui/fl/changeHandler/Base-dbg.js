@@ -14,19 +14,20 @@ sap.ui.define([
 	/**
 	 * Base functionality for all change handlers, which provides some reuse methods
 	 * @namespace sap.ui.fl.changeHandler.Base
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @private
 	 * @ui5-restricted change handlers
 	 */
 	var Base = /** @lends sap.ui.fl.changeHandler.Base */{
 		/**
-		 * Sets a text in a change.
+		 * Deprecated. Use setText on the flex object instance instead
 		 *
 		 * @param {object} oChange - Change object
 		 * @param {string} sKey - Text key
 		 * @param {string} sText - Text value
 		 * @param {string} sType - Translation text type, e.g. XBUT, XTIT, XTOL, XFLD
 		 *
+		 * @deprecated
 		 * @private
 		 * @ui5-restricted
 		 */

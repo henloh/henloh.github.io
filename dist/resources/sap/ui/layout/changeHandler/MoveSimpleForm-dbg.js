@@ -20,7 +20,7 @@ sap.ui.define([
 	 *
 	 * @alias sap.ui.layout.changeHandler.MoveSimpleForm
 	 * @author SAP SE
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @experimental Since 1.34.0
 	 */
 	var MoveSimpleForm = {};
@@ -418,7 +418,11 @@ sap.ui.define([
 			oChange.addDependentControl(mStableChangeInfo.source, "sourceParent", mPropertyBag);
 			oChange.addDependentControl(mStableChangeInfo.target, "targetParent", mPropertyBag);
 		}
-		oChange.addDependentControl([mStableChangeInfo.movedControl], "movedElements", mPropertyBag);
+
+		// Headerless groups will get a Title during apply
+		if (mStableChangeInfo.movedControl) {
+			oChange.addDependentControl([mStableChangeInfo.movedControl], "movedElements", mPropertyBag);
+		}
 	};
 
 	/**
@@ -461,18 +465,18 @@ sap.ui.define([
 	};
 
 	MoveSimpleForm.getChangeVisualizationInfo = function(oChange, oAppComponent) {
-		var oSourceParentContainer;
-		var oTargetParentContainer;
+		var oSourceContainer;
+		var oTargetContainer;
 		var oMovedElement = oChange.getContent().movedElements[0];
 		var oGroupSelector = oMovedElement.source.groupSelector;
-		var oAffectedControlSelector = JsControlTreeModifier.bySelector(oMovedElement.elementSelector, oAppComponent).getId();
+		var oAffectedControlSelector = JsControlTreeModifier.bySelector(oMovedElement.elementSelector, oAppComponent).getParent().getId();
 		if (oChange.getChangeType() === MoveSimpleForm.CHANGE_TYPE_MOVE_FIELD) {
-			var oSourceParentTitleElement = JsControlTreeModifier.bySelector(oMovedElement.source.groupSelector, oAppComponent);
-			var oTargetParentTitleElement = JsControlTreeModifier.bySelector(oMovedElement.target.groupSelector, oAppComponent);
-			oSourceParentContainer = oSourceParentTitleElement ? oSourceParentTitleElement.getParent().getId() : null;
-			oTargetParentContainer = oTargetParentTitleElement ? oTargetParentTitleElement.getParent().getId() : null;
+			var oSourceTitleElement = JsControlTreeModifier.bySelector(oMovedElement.source.groupSelector, oAppComponent);
+			var oTargetTitleElement = JsControlTreeModifier.bySelector(oMovedElement.target.groupSelector, oAppComponent);
+			oSourceContainer = oSourceTitleElement ? oSourceTitleElement.getParent().getId() : null;
+			oTargetContainer = oTargetTitleElement ? oTargetTitleElement.getParent().getId() : null;
 			oGroupSelector = {
-				id: oSourceParentContainer
+				id: oSourceContainer
 			};
 		}
 		return {
@@ -482,10 +486,10 @@ sap.ui.define([
 					? oGroupSelector
 					: oChange.getContent().targetSelector
 			],
-			hasParentWithUnstableId: true,
-			payload: {
-				sourceParentContainer: oSourceParentContainer,
-				targetParentContainer: oTargetParentContainer
+			updateRequired: true,
+			descriptionPayload: {
+				sourceContainer: oSourceContainer,
+				targetContainer: oTargetContainer
 			}
 		};
 	};

@@ -16,11 +16,13 @@ sap.ui.define([
 	"use strict";
 
 	var rAmpersand = /&/g,
+		rApplicationGroupID = /^\w+$/,
 		sClassName = "sap.ui.model.odata.v4.lib._Helper",
 		rEquals = /\=/g,
 		rEscapedCloseBracket = /%29/g,
 		rEscapedOpenBracket = /%28/g,
 		rEscapedTick = /%27/g,
+		rGroupID = /^(\$auto(\.\w+)?|\$direct|\w+)$/,
 		rHash = /#/g,
 		// matches the rest of a segment after '(' and any segment that consists only of a number
 		rNotMetaContext = /\([^/]*|\/-?\d+/g,
@@ -310,6 +312,31 @@ sap.ui.define([
 			});
 
 			return oSelect;
+		},
+
+		/**
+		 * Checks whether the given group ID is valid, which means it is either undefined, '$auto',
+		 * '$auto.*', '$direct' or an application group ID as specified in
+		 * {@link sap.ui.model.odata.v4.ODataModel}.
+		 *
+		 * @param {string} sGroupId
+		 *   The group ID
+		 * @param {boolean} [bApplicationGroup]
+		 *   Whether only an application group ID is considered valid
+		 * @param {string} [sErrorMessage]
+		 *   The error message to be used if group ID is not valid; the group ID will be appended
+		 * @throws {Error}
+		 *   For invalid group IDs
+		 *
+		 * @private
+		 */
+		checkGroupId : function (sGroupId, bApplicationGroup, sErrorMessage) {
+			if (!bApplicationGroup && sGroupId === undefined
+					|| typeof sGroupId === "string"
+						&& (bApplicationGroup ? rApplicationGroupID : rGroupID).test(sGroupId)) {
+				return;
+			}
+			throw new Error((sErrorMessage || "Invalid group ID: ") + sGroupId);
 		},
 
 		/**
@@ -603,6 +630,8 @@ sap.ui.define([
 
 				if (!isRelevant(oClone.error, sTopLevelContentID)) {
 					oClone.error.$ignoreTopLevel = true;
+				} else {
+					oClone.strictHandlingFailed = oError.strictHandlingFailed;
 				}
 				if (oClone.error.details) {
 					oClone.error.details = oClone.error.details.filter(function (oDetail, i) {
@@ -634,6 +663,33 @@ sap.ui.define([
 			if (oPrivateNamespace) {
 				delete oPrivateNamespace[sAnnotation];
 			}
+		},
+
+		/**
+		 * Deletes within the given entity and property path the property annotation
+		 * "@$ui5.updating".
+		 *
+		 * @param {string} sPropertyPath
+		 *   The path of the property in the entity which might be annotated with "@$ui5.updating"
+		 * @param {object} oEntity
+		 *   The entity
+		 *
+		 */
+		deleteUpdating : function (sPropertyPath, oEntity) {
+			var oData = oEntity;
+
+			sPropertyPath.split("/").some(function (sSegment) {
+				var vValue = oData[sSegment];
+
+				if (vValue === null || Array.isArray(vValue)) {
+					return true;
+				}
+				if (typeof vValue === "object") {
+					oData = vValue;
+					return false;
+				}
+				delete oData[sSegment + "@$ui5.updating"];
+			});
 		},
 
 		/**
@@ -1249,6 +1305,27 @@ sap.ui.define([
 		},
 
 		/**
+		 * Returns the index of the key predicate in the last segment of the given path.
+		 *
+		 * @param {string} sPath - The path
+		 * @returns {number} The index of the key predicate
+		 * @throws {Error} If no path is given or the last segment contains no key predicate
+		 *
+		 * @private
+		 */
+		getPredicateIndex : function (sPath) {
+			var iPredicateIndex = sPath
+				? sPath.indexOf("(", sPath.lastIndexOf("/"))
+				: -1;
+
+			if (iPredicateIndex < 0 || !sPath.endsWith(")")) {
+				throw new Error("Not a list context path to an entity: " + sPath);
+			}
+
+			return iPredicateIndex;
+		},
+
+		/**
 		 * Returns the value of the private client-side instance annotation with the given
 		 * unqualified name at the given object.
 		 *
@@ -1434,7 +1511,7 @@ sap.ui.define([
 		 *
 		 * Note: In case the meta path <code>sRootMetaPath</code> points to a single-valued
 		 * navigation property, for example "/SalesOrderList/SO_2_BP", this methods adds the key
-		 * properties of the related entity type to the "$select" query options. Although this
+		 * properties of the related entity type to the "$select" query options. Although this is
 		 * not needed in order to obtain the correct nested entity it enables
 		 * {@link sap.ui.model.odata.v4.Context#requestSideEffects}) to check the consistency of the
 		 * key predicates.
@@ -1861,6 +1938,41 @@ sap.ui.define([
 		},
 
 		/**
+		 * Searches all properties in oOld annotated with "@$ui5.updating" and restores the property
+		 * value in oNew.
+		 *
+		 * @param {object} oOld
+		 *   The old element
+		 * @param {object} oNew
+		 *   The new element
+		 * @returns {object}
+		 *   The new element with the restored properties
+		 *
+		 */
+		restoreUpdatingProperties : function (oOld, oNew) {
+			var oTempNew = oNew || {};
+
+			Object.keys(oOld || {}).forEach(function (sProperty) {
+				if (sProperty.startsWith("@")) {
+					return; // skip annotations
+				}
+				if (Array.isArray(oOld[sProperty])) {
+					return; // skip arrays
+				}
+				if (typeof oOld[sProperty] === "object") {
+					oTempNew[sProperty]
+						= _Helper.restoreUpdatingProperties(oOld[sProperty], oTempNew[sProperty]);
+				}
+				if (oOld[sProperty + "@$ui5.updating"]) {
+					oTempNew[sProperty] = oOld[sProperty];
+					oTempNew[sProperty + "@$ui5.updating"] = oOld[sProperty + "@$ui5.updating"];
+					oNew = oTempNew;
+				}
+			});
+			return oNew;
+		},
+
+		/**
 		 * Adds the key properties of the given entity type to $select of the given query options.
 		 *
 		 * @param {object} mQueryOptions
@@ -1893,6 +2005,23 @@ sap.ui.define([
 			} else {
 				delete oObject[sAnnotation];
 			}
+		},
+
+		/**
+		 * Adds the given language as "sap-language" URL parameter to the given URL, unless such a
+		 * parameter is already present, and returns the resulting (or unchanged) URL.
+		 *
+		 * @param {string} sUrl - A URL w/o a fragment part
+		 * @param {string} [sLanguage] - An optional value for "sap-language"
+		 * @returns {string} The resulting (or unchanged) URL as described above
+		 */
+		setLanguage : function (sUrl, sLanguage) {
+			if (sLanguage && !sUrl.includes("?sap-language=") && !sUrl.includes("&sap-language=")) {
+				sUrl += (sUrl.includes("?") ? "&" : "?") + "sap-language="
+					+ _Helper.encode(sLanguage);
+			}
+
+			return sUrl;
 		},
 
 		/**
@@ -2152,7 +2281,7 @@ sap.ui.define([
 		 * @param {function} [fnCheckKeyPredicate]
 		 *   Callback function which tells whether the key predicate for the given path is checked
 		 *   for equality instead of just being copied from source to target
-		 *  @param {boolean} [bOkIfMissing]
+		 * @param {boolean} [bOkIfMissing]
 		 *   Whether this should not check for selected properties missing in the response
 		 */
 		updateSelected : function (mChangeListeners, sBasePath, oOldValue, oNewValue, aSelect,
@@ -2196,8 +2325,9 @@ sap.ui.define([
 				// annotations
 				Object.keys(oTarget).forEach(function (sProperty) {
 					if (!(sProperty in oSource) && sProperty.includes("@")
-							&& !sProperty.startsWith("@$ui5.")
-							&& getSelect(vSelect, sProperty)) {
+							&& !sProperty.startsWith("@$ui5.") && getSelect(vSelect, sProperty)
+							&& !sProperty.endsWith("@$ui5.updating")
+						) {
 						delete oTarget[sProperty];
 						_Helper.fireChange(mChangeListeners, _Helper.buildPath(sPath, sProperty),
 							undefined);
@@ -2235,7 +2365,8 @@ sap.ui.define([
 							&& !sProperty.includes("@")) {
 						oTarget[sProperty] = update(sPropertyPath, vSelected, vTargetProperty || {},
 							vSourceProperty);
-					} else if (vTargetProperty !== vSourceProperty) {
+					} else if (vTargetProperty !== vSourceProperty
+							&& !oTarget[sProperty + "@$ui5.updating"]) {
 						oTarget[sProperty] = vSourceProperty;
 						if (vTargetProperty && typeof vTargetProperty === "object") {
 							// a complex property is replaced by null

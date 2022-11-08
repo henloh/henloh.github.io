@@ -22,13 +22,12 @@ sap.ui.define([
 	* @extends sap.ui.core.Element
 	*
 	* @author SAP SE
-	* @version 1.106.0
+	* @version 1.108.0
 	*
 	* @constructor
 	* @public
 	* @since 1.28.11
 	* @alias sap.m.QuickViewGroup
-	* @ui5-metamodel This control/element also will be described in the UI5 (legacy) designtime metamodel
 	*/
 	var Group = Element.extend("sap.m.QuickViewGroup", /** @lends sap.m.QuickViewGroup.prototype */ {
 		metadata: {

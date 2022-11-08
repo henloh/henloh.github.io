@@ -129,13 +129,12 @@ sap.ui.define([
 	 * @implements sap.ui.core.Toolbar,sap.m.IBar
 	 *
 	 * @author SAP SE
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 *
 	 * @constructor
 	 * @public
 	 * @since 1.28
 	 * @alias sap.m.OverflowToolbar
-	 * @ui5-metamodel This control/element also will be described in the UI5 (legacy) designtime metamodel
 	 *
 	 */
 	var OverflowToolbar = Toolbar.extend("sap.m.OverflowToolbar", {
@@ -159,7 +158,9 @@ sap.ui.define([
 				_popover: {type: "sap.m.Popover", multiple: false, visibility: "hidden"}
 			},
 			designtime: "sap/m/designtime/OverflowToolbar.designtime"
-		}
+		},
+
+		renderer: OverflowToolbarRenderer
 	});
 
 	/**

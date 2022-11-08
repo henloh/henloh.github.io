@@ -105,9 +105,13 @@ tr.sapMListTblHeaderNone > .sapMTableTH {
 }
 
 .sapMListTblSubCntSpr,
-.sapMListTblSubCntHdr,
 .sapMListTblSubCntVal {
-	display: inline-flex;
+    display: inline;
+}
+
+// the header could have a FlexBox control which will occupy 100% width, thus corrupting the popin layout
+.sapMListTblSubCntHdr {
+    display: inline-flex;
 }
 
 .sapMListTblSubCntValBlock {
@@ -466,7 +470,7 @@ html[data-sap-ui-browser^='ff'] .sapMTableRowCustomFocus:focus > :not(.sapMListT
 		vertical-align: middle;
 		line-height: 1.4;
 
-		.sapMObjStatusText {
+		.sapMObjStatusText .sapMObjStatusTitle {
 			line-height: inherit;
 		}
 	}

@@ -9,6 +9,7 @@ sap.ui.define([
 	"sap/base/Log",
 	"sap/base/util/extend",
 	"sap/base/util/isEmptyObject",
+	"sap/base/util/UriParameters",
 	"sap/ui/base/BindingParser",
 	"sap/ui/base/ManagedObject",
 	"sap/ui/base/SyncPromise",
@@ -22,9 +23,9 @@ sap.ui.define([
 	"sap/ui/model/json/JSONPropertyBinding",
 	"sap/ui/model/json/JSONTreeBinding",
 	"sap/ui/performance/Measurement"
-], function (Utils, Log, extend, isEmptyObject, BindingParser, ManagedObject, SyncPromise,
-		BindingMode, ClientContextBinding, Context, FilterProcessor, MetaModel, JSONListBinding,
-		JSONModel, JSONPropertyBinding, JSONTreeBinding, Measurement) {
+], function (Utils, Log, extend, isEmptyObject, UriParameters, BindingParser, ManagedObject,
+		SyncPromise, BindingMode, ClientContextBinding, Context, FilterProcessor, MetaModel,
+		JSONListBinding, JSONModel, JSONPropertyBinding, JSONTreeBinding, Measurement) {
 	"use strict";
 
 	var // maps the metadata URL with query parameters concatenated with the code list collection
@@ -207,7 +208,7 @@ sap.ui.define([
 	 * {@link #loaded loaded} has been resolved!
 	 *
 	 * @author SAP SE
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @alias sap.ui.model.odata.ODataMetaModel
 	 * @extends sap.ui.model.MetaModel
 	 * @public
@@ -556,8 +557,8 @@ sap.ui.define([
 		var that = this;
 
 		return this.oLoadedPromiseSync.then(function () {
-			var sCacheKey, oCodeListModel, oCodeListModelCache, sCollectionPath, oMappingPromise,
-				sMetaDataUrl, oPromise, oReadPromise,
+			var sCacheKey, sCacheKeyWithModel, oCodeListModel, oCodeListModelCache, sCollectionPath,
+				oMappingPromise, sMetaDataUrl, oPromise, oReadPromise,
 				sCodeListAnnotation = "com.sap.vocabularies.CodeList.v1." + sTerm,
 				oCodeListAnnotation = that.getODataEntityContainer()[sCodeListAnnotation];
 
@@ -578,7 +579,14 @@ sap.ui.define([
 			sCollectionPath = oCodeListAnnotation.CollectionPath.String;
 			sMetaDataUrl = that.oDataModel.getMetadataUrl();
 			sCacheKey = sMetaDataUrl + "#" + sCollectionPath;
+			// check for global cache entry
 			oPromise = mCodeListUrl2Promise.get(sCacheKey);
+			if (oPromise) {
+				return oPromise;
+			}
+			// check for an ODataModel related cache entry
+			sCacheKeyWithModel = sCacheKey + "#" + that.getId();
+			oPromise = mCodeListUrl2Promise.get(sCacheKeyWithModel);
 			if (oPromise) {
 				return oPromise;
 			}
@@ -587,10 +595,21 @@ sap.ui.define([
 			oCodeListModel = oCodeListModelCache.oModel;
 
 			oReadPromise = new SyncPromise(function (fnResolve, fnReject) {
+				var oUriParams = UriParameters.fromURL(sMetaDataUrl),
+					sClient = oUriParams.get("sap-client"),
+					sLanguage = oUriParams.get("sap-language"),
+					mUrlParameters = {$skip : 0, $top : 5000}; // avoid server-driven paging
+
+				if (sClient) {
+					mUrlParameters["sap-client"] = sClient;
+				}
+				if (sLanguage) {
+					mUrlParameters["sap-language"] = sLanguage;
+				}
 				oCodeListModel.read("/" + sCollectionPath, {
 					error : fnReject,
 					success : fnResolve,
-					urlParameters : {$skip : 0, $top : 5000} // avoid server-driven paging
+					urlParameters : mUrlParameters
 				});
 			});
 			oMappingPromise = new SyncPromise(function (fnResolve, fnReject) {
@@ -606,6 +625,9 @@ sap.ui.define([
 			oPromise = SyncPromise.all([oReadPromise, oMappingPromise]).then(function (aResults) {
 				var aData = aResults[0].results,
 					mMapping = aResults[1];
+
+				mCodeListUrl2Promise.set(sCacheKey, oPromise);
+				mCodeListUrl2Promise.delete(sCacheKeyWithModel); // not needed any more
 
 				return aData.reduce(function (mCode2Customizing, oEntity) {
 					var sCode = oEntity[mMapping.code],
@@ -633,6 +655,7 @@ sap.ui.define([
 				if (oCodeListModel.bDestroyed) {
 					// do not cache rejected Promise caused by a destroyed code list model
 					mCodeListUrl2Promise.delete(sCacheKey);
+					mCodeListUrl2Promise.delete(sCacheKeyWithModel);
 				} else {
 					Log.error("Couldn't load code list: " + sCollectionPath + " for "
 							+ that.oDataModel.getCodeListModelParameters().serviceUrl,
@@ -649,7 +672,7 @@ sap.ui.define([
 					oCodeListModelCache.bFirstCodeListRequested = true;
 				}
 			});
-			mCodeListUrl2Promise.set(sCacheKey, oPromise);
+			mCodeListUrl2Promise.set(sCacheKeyWithModel, oPromise);
 
 			return oPromise;
 		});

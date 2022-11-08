@@ -178,13 +178,12 @@ function(
 		*
 		* @implements sap.ui.core.PopupInterface
 		* @author SAP SE
-		* @version 1.106.0
+		* @version 1.108.0
 		*
 		* @constructor
 		* @public
 		* @alias sap.m.Dialog
 		* @see {@link fiori:https://experience.sap.com/fiori-design-web/dialog/ Dialog}
-		* @ui5-metamodel This control/element also will be described in the UI5 (legacy) designtime metamodel
 		*/
 		var Dialog = Control.extend("sap.m.Dialog", /** @lends sap.m.Dialog.prototype */ {
 			metadata: {
@@ -450,7 +449,9 @@ function(
 					}
 				},
 				designtime: "sap/m/designtime/Dialog.designtime"
-			}
+			},
+
+			renderer: DialogRenderer
 		});
 
 		ResponsivePaddingsEnablement.call(Dialog.prototype, {
@@ -532,6 +533,8 @@ function(
 			this._initTitlePropagationSupport();
 
 			this._initResponsivePaddingsEnablement();
+
+			this._oAriaDescribedbyText = new InvisibleText({id: this.getId() + "-ariaDescribedbyText"});
 		};
 
 		Dialog.prototype.onBeforeRendering = function () {
@@ -581,6 +584,8 @@ function(
 				oHeader._setRootAccessibilityRole("heading");
 				oHeader._setRootAriaLevel("2");
 			}
+
+			this._oAriaDescribedbyText.setText(this._getAriaDescribedByText());
 		};
 
 		Dialog.prototype.onAfterRendering = function () {
@@ -630,6 +635,11 @@ function(
 				this._toolbarSpacer.destroy();
 				this._toolbarSpacer = null;
 			}
+
+			if (this._oAriaDescribedbyText) {
+				this._oAriaDescribedbyText.destroy();
+				this._oAriaDescribedbyText = null;
+			}
 		};
 		/* =========================================================== */
 		/*                   end: Lifecycle functions                  */
@@ -643,7 +653,6 @@ function(
 		 *
 		 * @return {this} <code>this</code> to allow method chaining
 		 * @public
-		 * @ui5-metamodel This method also will be described in the UI5 (legacy) designtime metamodel
 		 */
 		Dialog.prototype.open = function () {
 
@@ -693,7 +702,6 @@ function(
 		 *
 		 * @return {this} <code>this</code> to allow method chaining
 		 * @public
-		 * @ui5-metamodel This method also will be described in the UI5 (legacy) designtime metamodel
 		 */
 		Dialog.prototype.close = function () {
 			this._bOpenAfterClose = false;
@@ -728,7 +736,6 @@ function(
 		 * @returns {boolean} Whether the dialog is open.
 		 * @public
 		 * @since 1.9.1
-		 * @ui5-metamodel This method also will be described in the UI5 (legacy) designtime metamodel
 		 */
 		Dialog.prototype.isOpen = function () {
 			return !!this.oPopup && this.oPopup.isOpen();
@@ -1454,7 +1461,7 @@ function(
 				return null;
 			}
 
-			return this.$().find('header.sapMDialogTitle')[0];
+			return this.$().find('header.sapMDialogTitle .sapMDialogTitleGroup')[0];
 		};
 
 		/**
@@ -1749,6 +1756,24 @@ function(
 		 */
 		Dialog.prototype._isDraggableOrResizable = function () {
 			return !this.getStretch() && (this.getDraggable() || this.getResizable());
+		};
+
+		/**
+		 * Returns the correct message to be read by the aria-describedby attribute
+		 * @private
+		 */
+		Dialog.prototype._getAriaDescribedByText = function () {
+			var oRb = Core.getLibraryResourceBundle("sap.m");
+			if (this.getResizable() && this.getDraggable()) {
+				return oRb.getText("DIALOG_HEADER_ARIA_DESCRIBEDBY_DRAGGABLE_RESIZABLE");
+			}
+			if (this.getDraggable()) {
+				return oRb.getText("DIALOG_HEADER_ARIA_DESCRIBEDBY_DRAGGABLE");
+			}
+			if (this.getResizable()) {
+				return oRb.getText("DIALOG_HEADER_ARIA_DESCRIBEDBY_RESIZABLE");
+			}
+			return "";
 		};
 
 		/* =========================================================== */

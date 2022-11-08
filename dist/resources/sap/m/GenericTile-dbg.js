@@ -22,7 +22,9 @@ sap.ui.define([
 	"sap/ui/events/PseudoEvents",
 	"sap/ui/core/theming/Parameters",
 	"sap/ui/thirdparty/jquery",
-	"sap/ui/core/library"
+	"sap/ui/core/library",
+	"sap/ui/core/Configuration",
+	"sap/ui/core/InvisibleText"
 ], function (
 	library,
 	Control,
@@ -41,7 +43,9 @@ sap.ui.define([
 	PseudoEvents,
 	Parameters,
 	jQuery,
-	coreLibrary
+	coreLibrary,
+	Configuration,
+	InvisibleText
 ) {
 	"use strict";
 
@@ -77,12 +81,11 @@ sap.ui.define([
 	 * @extends sap.ui.core.Control
 	 *
 	 * @author SAP SE
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @since 1.34.0
 	 *
 	 * @public
 	 * @alias sap.m.GenericTile
-	 * @ui5-metamodel This control/element also will be described in the UI5 (legacy) designtime metamodel
 	 */
 	var GenericTile = Control.extend("sap.m.GenericTile", /** @lends sap.m.GenericTile.prototype */ {
 		metadata: {
@@ -264,6 +267,10 @@ sap.ui.define([
 				 */
 				_failedMessageText: {type: "sap.m.Text", multiple: false, visibility: "hidden"},
 				/**
+				 * The hidden aggregation that uses this id in aria-describedby attribute.
+				 */
+				_invisibleText: {type:"sap.ui.core.InvisibleText",multiple: false, visibility: "hidden"},
+				/**
 				 * The hidden aggregation for the Tile Icon Works only in IconMode.
 				 * @experimental since 1.96
 				 * @private
@@ -362,6 +369,9 @@ sap.ui.define([
 		this._oFailedText.cacheLineHeight = false;
 		this._oFailedText.addStyleClass("sapMGTFailed");
 		this.setAggregation("_failedMessageText", this._oFailedText, true);
+
+		this._oInvisibleText = new InvisibleText(this.getId() + "-ariaText");
+		this.setAggregation("_invisibleText", this._oInvisibleText, true);
 
 		this._oWarningIcon = new Icon(this.getId() + "-warn-icon", {
 			src: "sap-icon://notification",
@@ -678,8 +688,13 @@ sap.ui.define([
 		}
 
 		//Adds Extra height to the TileContent when GenericTile is in ActionMode
-		if (this.getFrameType()  === FrameType.TwoByOne && this.getMode() === GenericTileMode.ActionMode && this.getState() === LoadState.Loaded) {
+		if (this.getFrameType()  === FrameType.TwoByOne && this.getMode() === GenericTileMode.ActionMode && this.getState() === LoadState.Loaded && !this.isA("sap.m.ActionTile")) {
 			this._applyExtraHeight();
+		}
+
+		//Sets the aria-describedby attribute and uses the _invisibleText id in it
+		if (this.getTooltip() && this.getDomRef()) {
+			this.getDomRef().setAttribute("aria-describedby",this.getAggregation("_invisibleText").getId());
 		}
 
 		this.onDragComplete();
@@ -844,7 +859,7 @@ sap.ui.define([
 			bLineBreak = this.$().is(":not(:first-child)") && iLines > 1,
 			$LineBreak = jQuery("<span><br></span>"),
 			i = 0,
-			bRTL = sap.ui.getCore().getConfiguration().getRTL(),
+			bRTL = Configuration.getRTL(),
 			oEndMarkerPosition = $End.position();
 
 		if (bLineBreak) { //tile does not fit in line without breaking --> add line-break before tile
@@ -1268,12 +1283,16 @@ sap.ui.define([
 
 		var frameType = this.getFrameType();
 		if (this._isIconMode()) {
-			if (bSubheader) {
-				this._oTitle.setProperty("maxLines", 1, true);
-			} else {
-				this._oTitle.setProperty("maxLines", 2, true);
+			var iHeaderLines,iSubHeaderLines;
+			iSubHeaderLines = (frameType === FrameType.TwoByHalf) ? 1 : 2;
+			if (frameType === FrameType.OneByOne) {
+				iHeaderLines = (bSubheader) ? 2 : 4;
+			} else if (frameType === FrameType.TwoByHalf) {
+				iHeaderLines = (bSubheader) ? 1 : 2;
 			}
-        } else if (frameType === FrameType.TwoByOne && this.getMode() === GenericTileMode.ActionMode) {
+			this._oTitle.setProperty("maxLines", iHeaderLines, true);
+			this._oSubTitle.setProperty("maxLines", iSubHeaderLines, true);
+		} else if (frameType === FrameType.TwoByOne && this.getMode() === GenericTileMode.ActionMode) {
 			this._oTitle.setProperty("maxLines", 2, true);
 		} else if (frameType === FrameType.OneByHalf || frameType === FrameType.TwoByHalf) {
 			this._oTitle.setProperty("maxLines", 2, true);
@@ -1415,14 +1434,11 @@ sap.ui.define([
 
 	/**
 	 * Returns a text for the ARIA label as combination of header and content texts
-	 * when the tooltip is empty
 	 * @private
 	 * @returns {string} The ARIA label text
 	 */
 	GenericTile.prototype._getAriaAndTooltipText = function () {
-		var sAriaText = (this.getTooltip_AsString() && !this._isTooltipSuppressed())
-			? this.getTooltip_AsString()
-			: (this._getHeaderAriaAndTooltipText() + "\n" + this._getContentAriaAndTooltipText());
+		var sAriaText = this._getHeaderAriaAndTooltipText() + "\n" + this._getContentAriaAndTooltipText();
 		switch (this.getState()) {
 			case LoadState.Disabled:
 				return "";
@@ -1441,15 +1457,13 @@ sap.ui.define([
 
 	/**
 	 * Returns text for ARIA label.
-	 * If the application provides a specific tooltip, the ARIA label is equal to the tooltip text.
-	 * If the application doesn't provide a tooltip or the provided tooltip contains only white spaces,
-	 * calls _getAriaAndTooltipText to get text.
 	 *
 	 * @private
+	 * @param {boolean} bHideSizeAnnouncement if set to true it hides the size announcement of the tile while read by a screen reader
 	 * @returns {string} Text for ARIA label.
 	 */
-	GenericTile.prototype._getAriaText = function () {
-		var sAriaText = this.getTooltip_Text();
+	GenericTile.prototype._getAriaText = function (bHideSizeAnnouncement) {
+		var sAriaText = this._getAriaAndTooltipText();
 		var sAriaLabel = this.getAriaLabel();
 		if (!sAriaText || this._isTooltipSuppressed()) {
 			sAriaText = this._getAriaAndTooltipText(); // ARIA label set by the control
@@ -1460,7 +1474,40 @@ sap.ui.define([
 		if (sAriaLabel) {
 			sAriaText = sAriaLabel + " " + sAriaText;
 		}
-		return sAriaText; // ARIA label set by the app, equal to tooltip
+		if (!bHideSizeAnnouncement) {
+			sAriaText = sAriaText.trim();
+			sAriaText += ("\n" + this._getSizeDescription());
+		}
+		return sAriaText.trim();  // ARIA label set by the app, equal to tooltip
+	};
+
+	/**
+	 * Returns the size description of a tile according to its frame type, that is announced by the screen reader
+	 *
+	 * @returns {string} Text for the size description
+	 * @private
+	 */
+	 GenericTile.prototype._getSizeDescription = function () {
+		var sText = "",
+			frameType = this.getFrameType();
+		if (this.getMode() === GenericTileMode.LineMode) {
+			var bIsLink = this.getUrl() && !this._isInActionScope() && this.getState() !== LoadState.Disabled;
+			var bHasPress = this.hasListeners("press");
+			if (bIsLink || bHasPress) {
+				sText = "GENERIC_TILE_LINK";
+			} else {
+				sText = "GENERIC_TILE_LINE_SIZE";
+			}
+		} else if (frameType === FrameType.OneByHalf) {
+			sText = "GENERIC_TILE_FLAT_SIZE";
+		} else if (frameType === FrameType.TwoByHalf) {
+			sText = "GENERIC_TILE_FLAT_WIDE_SIZE";
+		} else if (frameType === FrameType.TwoByOne) {
+			sText = "GENERIC_TILE_WIDE_SIZE";
+		} else if (frameType === FrameType.OneByOne) {
+			sText = "GENERIC_TILE_ROLE_DESCRIPTION";
+		}
+		return this._oRb.getText(sText);
 	};
 
 	/**

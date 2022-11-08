@@ -18,7 +18,7 @@ sap.ui.define([
 	 *
 	 * @alias sap.ui.layout.changeHandler.RenameForm
 	 * @author SAP SE
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @since 1.40
 	 * @private
 	 * @experimental Since 1.40. This class is experimental and provides only limited functionality. Also the API might be changed in future.
@@ -135,10 +135,12 @@ sap.ui.define([
 
 	RenameForm.getChangeVisualizationInfo = function(oChange, oAppComponent) {
 		var oElementSelector = oChange.getContent().elementSelector;
-		var oAffectedControlSelector = JsControlTreeModifier.bySelector(oElementSelector, oAppComponent).getParent().getId();
+		var sAffectedControlId = JsControlTreeModifier.bySelector(oElementSelector, oAppComponent).getParent().getId();
+
 		return {
-			affectedControls: [oAffectedControlSelector],
-			payload: {
+			affectedControls: [sAffectedControlId],
+			updateRequired: true,
+			descriptionPayload: {
 				originalLabel: oChange.getRevertData(),
 				newLabel:  oChange.getTexts().formText.value
 			}

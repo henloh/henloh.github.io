@@ -8,7 +8,7 @@
       "variants/context"
     ],
     "applicationVersion": {
-      "version": "1.106.0"
+      "version": "1.108.0"
     },
     "title": "SAPUI5 library with sap.ui.fl controls.",
     "description": "SAPUI5 library with sap.ui.fl controls.",
@@ -25,13 +25,13 @@
   },
   "sap.ui5": {
     "dependencies": {
-      "minUI5Version": "1.106",
+      "minUI5Version": "1.108",
       "libs": {
         "sap.ui.core": {
-          "minVersion": "1.106.0"
+          "minVersion": "1.108.0"
         },
         "sap.m": {
-          "minVersion": "1.106.0"
+          "minVersion": "1.108.0"
         }
       }
     },

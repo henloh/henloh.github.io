@@ -25,18 +25,21 @@ sap.ui.define(['./FlexBox', './library', './HBoxRenderer'],
 	 * @extends sap.m.FlexBox
 	 *
 	 * @author SAP SE
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 *
 	 * @constructor
 	 * @public
 	 * @alias sap.m.HBox
-	 * @ui5-metamodel This control/element also will be described in the UI5 (legacy) designtime metamodel
 	 */
-	var HBox = FlexBox.extend("sap.m.HBox", /** @lends sap.m.HBox.prototype */ { metadata : {
+	var HBox = FlexBox.extend("sap.m.HBox", /** @lends sap.m.HBox.prototype */ {
+		metadata : {
 
-		library : "sap.m",
-		designtime: "sap/m/designtime/HBox.designtime"
-	}});
+			library : "sap.m",
+			designtime: "sap/m/designtime/HBox.designtime"
+		},
+
+		renderer: HBoxRenderer
+	});
 
 
 

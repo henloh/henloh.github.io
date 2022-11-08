@@ -32,7 +32,7 @@ sap.ui.define([
 	 * @extends sap.ui.fl.apply._internal.flexObjects.Variant
 	 * @alias sap.ui.fl.apply._internal.flexObjects.CompVariant
 	 * @since 1.103
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @private
 	 * @ui5-restricted sap.ui.fl sap.ui.comp
 	 */
@@ -111,10 +111,10 @@ sap.ui.define([
 		return CompVariant.getMappingInfo();
 	};
 
-	function isUserAuthor(oAuthor) {
+	function isUserAuthor(sAuthor) {
 		var oSettings = Settings.getInstanceOrUndef();
 		var vUserId = oSettings && oSettings.getUserId();
-		return !vUserId || vUserId.toUpperCase() === oAuthor.toUpperCase();
+		return !vUserId || !sAuthor || vUserId.toUpperCase() === sAuthor.toUpperCase();
 	}
 
 	/**

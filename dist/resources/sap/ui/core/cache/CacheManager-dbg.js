@@ -10,9 +10,10 @@ sap.ui.define([
 	'sap/ui/Device',
 	"sap/base/Log",
 	"sap/ui/performance/Measurement",
-	'sap/ui/performance/trace/Interaction'
+	'sap/ui/performance/trace/Interaction',
+	"sap/ui/core/Configuration"
 ],
-	function(LRUPersistentCache, CacheManagerNOP, Device, Log, Measurement, Interaction) {
+	function(LRUPersistentCache, CacheManagerNOP, Device, Log, Measurement, Interaction, Configuration) {
 		"use strict";
 
 		/**
@@ -277,7 +278,7 @@ sap.ui.define([
 				var that = this;
 				return Promise.resolve().then(function () {
 					safeClearInstance(that);
-					sap.ui.getCore().getConfiguration().setUI5CacheOn(false);
+					Configuration.setUI5CacheOn(false);
 				});
 			},
 
@@ -290,10 +291,10 @@ sap.ui.define([
 			_switchOn: function () {
 				var that = this;
 				return Promise.resolve().then(function () {
-					var oCfg = sap.ui.getCore().getConfiguration();
+					var oCfg = Configuration;
 					if (!oCfg.isUI5CacheOn()) {
 						safeClearInstance(that);
-						sap.ui.getCore().getConfiguration().setUI5CacheOn(true);
+						Configuration.setUI5CacheOn(true);
 					}
 					return Promise.resolve();
 				});
@@ -391,7 +392,7 @@ sap.ui.define([
 			iMsrCounter = 0;
 
 		function isSwitchedOn() {
-			return sap.ui.getCore().getConfiguration().isUI5CacheOn();
+			return Configuration.isUI5CacheOn();
 		}
 
 		function safeClearInstance(cm) {

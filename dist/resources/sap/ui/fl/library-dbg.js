@@ -10,14 +10,18 @@ sap.ui.define([
 	"sap/ui/fl/Layer",
 	"sap/ui/fl/Scenario",
 	"sap/ui/fl/changeHandler/condenser/Classification",
-	"sap/ui/core/library", // library dependency
-	"sap/m/library" // library dependency
+	"sap/ui/core/Configuration",
+	// library dependency
+	"sap/ui/core/library",
+	// library dependency
+	"sap/m/library"
 ], function(
 	RegistrationDelegator,
 	Utils,
 	Layer,
 	Scenario,
-	CondenserClassification
+	CondenserClassification,
+	Configuration
 ) {
 	"use strict";
 
@@ -28,7 +32,7 @@ sap.ui.define([
 	 * changes or other flex objects that need processing. If there is nothing to
 	 * process, any further flex processing is stopped to avoid runtime impact for end users.
 	 *
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @since 1.44
 	 * @namespace
 	 * @name sap.ui.fl.initial
@@ -40,7 +44,7 @@ sap.ui.define([
 	 * The <code>sap.ui.fl.initial._internal</code> namespace contains internals that are used
 	 * during app startup, e.g. to load the flex data and resolve or bootstrap the <code>sap.ui.fl.apply</code> for applying changes.
 	 *
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @namespace
 	 * @name sap.ui.fl.initial._internal
 	 * @private
@@ -53,7 +57,7 @@ sap.ui.define([
 	 * The <code>Configuration</code> is not limited to these connectors and can include every connector extending <code>sap.ui.fl.interfaces.BaseLoadConnector</code>
 	 * and <code>sap.ui.fl.write.connectors.BaseConnector</code>.
 	 *
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @namespace
 	 * @name sap.ui.fl.initial._internal.connectors
 	 * @private
@@ -63,7 +67,7 @@ sap.ui.define([
 	/**
 	 * The <code>sap.ui.fl.apply</code> namespace contains all code to apply flexibility changes on application startup.
 	 *
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @namespace
 	 * @name sap.ui.fl.apply
 	 * @private
@@ -74,7 +78,7 @@ sap.ui.define([
 	 * The <code>sap.ui.fl.apply.api</code> namespace contains public APIs that can be used
 	 * during app startup, e.g. to wait for changes to be applied or to access the current variant and switch variants.
 	 *
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @namespace
 	 * @name sap.ui.fl.apply.api
 	 * @private
@@ -83,7 +87,7 @@ sap.ui.define([
 
 	/**
 	 *
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @namespace
 	 * @name sap.ui.fl.apply._internal
 	 * @private
@@ -92,7 +96,7 @@ sap.ui.define([
 
 	/**
 	 *
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @namespace
 	 * @name sap.ui.fl.apply._internal.changes
 	 * @private
@@ -101,7 +105,7 @@ sap.ui.define([
 
 	/**
 	 *
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @namespace
 	 * @name sap.ui.fl.apply._internal.changes.descriptor
 	 * @private
@@ -110,7 +114,7 @@ sap.ui.define([
 
 	/**
 	 *
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @namespace
 	 * @name sap.ui.fl.apply._internal.changes.descriptor.app
 	 * @private
@@ -119,7 +123,7 @@ sap.ui.define([
 
 	/**
 	 *
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @namespace
 	 * @name sap.ui.fl.apply._internal.changes.descriptor.fiori
 	 * @private
@@ -128,7 +132,7 @@ sap.ui.define([
 
 	/**
 	 *
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @namespace
 	 * @name sap.ui.fl.apply._internal.changes.descriptor.ovp
 	 * @private
@@ -137,7 +141,7 @@ sap.ui.define([
 
 	/**
 	 *
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @namespace
 	 * @name sap.ui.fl.apply._internal.changes.descriptor.ui5
 	 * @private
@@ -146,7 +150,7 @@ sap.ui.define([
 
 	/**
 	 *
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @namespace
 	 * @name sap.ui.fl.apply._internal.flexObjects
 	 * @private
@@ -155,7 +159,7 @@ sap.ui.define([
 
 	/**
 	 *
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @namespace
 	 * @name sap.ui.fl.apply._internal.flexState
 	 * @private
@@ -164,7 +168,7 @@ sap.ui.define([
 
 	/**
 	 *
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @namespace
 	 * @name sap.ui.fl.apply._internal.flexState.changes
 	 * @private
@@ -173,7 +177,7 @@ sap.ui.define([
 
 	/**
 	 *
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @namespace
 	 * @name sap.ui.fl.apply._internal.flexState.compVariants
 	 * @private
@@ -182,7 +186,7 @@ sap.ui.define([
 
 	/**
 	 *
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @namespace
 	 * @name sap.ui.fl.apply._internal.flexState.controlVariants
 	 * @private
@@ -191,7 +195,7 @@ sap.ui.define([
 
 	/**
 	 *
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @namespace
 	 * @name sap.ui.fl.apply._internal.flexState.UI2Personalization
 	 * @private
@@ -200,7 +204,7 @@ sap.ui.define([
 
 	/**
 	 *
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @namespace
 	 * @name sap.ui.fl.apply._internal.preprocessors
 	 * @private
@@ -209,7 +213,7 @@ sap.ui.define([
 
 	/**
 	 *
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @namespace
 	 * @name sap.ui.fl.apply._internal.variants
 	 * @private
@@ -218,7 +222,7 @@ sap.ui.define([
 
 	/**
 	 *
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @namespace
 	 * @name sap.ui.fl.support
 	 * @private
@@ -227,7 +231,7 @@ sap.ui.define([
 
 	/**
 	 *
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @namespace
 	 * @name sap.ui.fl.support.api
 	 * @private
@@ -236,7 +240,7 @@ sap.ui.define([
 
 	/**
 	 *
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @namespace
 	 * @name sap.ui.fl.support._internal
 	 * @private
@@ -245,7 +249,7 @@ sap.ui.define([
 
 	/**
 	 *
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @namespace
 	 * @name sap.ui.fl.variants.context
 	 * @private
@@ -256,7 +260,7 @@ sap.ui.define([
 	 * Namespace containing interfaces and base classes of connectors to implement a connection to a specific end point
 	 * capable of storing flexibility entities as well as providing information about its capabilities.
 	 *
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @namespace
 	 * @name sap.ui.fl.connectors
 	 * @deprecated since 1.87. Use a implementing class in the {@link sap.ui.fl.write.api.connectors} namespace instead.
@@ -267,7 +271,7 @@ sap.ui.define([
 	/**
 	 * The <code>sap.ui.fl.variants</code> namespace contains the {@link sap.ui.fl.variants.VariantManagement} control and its internals.
 	 *
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @namespace
 	 * @public
 	 * @name sap.ui.fl.variants
@@ -278,7 +282,7 @@ sap.ui.define([
 	 * create, update, and reset flex objects. Additional common functionality needed
 	 * by personalization dialogs or tools like key user adaptation are part of the namespace.
 	 *
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @namespace
 	 * @name sap.ui.fl.write
 	 * @public
@@ -287,7 +291,7 @@ sap.ui.define([
 	/**
 	 * The <code>sap.ui.fl.write.api</code> namespace contains public APIs to work with flex objects.
 	 *
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @namespace
 	 * @name sap.ui.fl.write.api
 	 * @public
@@ -297,7 +301,7 @@ sap.ui.define([
 	 * Namespace containing interfaces and base classes of connectors to implement a connection to a specific end point
 	 * capable of storing flexibility entities as well as providing information about its capabilities.
 	 *
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @namespace
 	 * @name sap.ui.fl.write.api.connectors
 	 * @private
@@ -306,7 +310,7 @@ sap.ui.define([
 
 	/**
 	 *
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @namespace
 	 * @name sap.ui.fl.write._internal
 	 * @private
@@ -315,7 +319,7 @@ sap.ui.define([
 
 	/**
 	 *
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @namespace
 	 * @name sap.ui.fl.write._internal.appVariant
 	 * @private
@@ -326,7 +330,7 @@ sap.ui.define([
 	 * Namespace containing all types of connectors to write flex data. The usage of the connectors is restricted to the
 	 * <code>sap.ui.fl</code> library.
 	 *
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @namespace
 	 * @name sap.ui.fl.write._internal.connectors
 	 * @private
@@ -335,7 +339,7 @@ sap.ui.define([
 
 	/**
 	 *
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @namespace
 	 * @name sap.ui.fl.write._internal.extensionPoint
 	 * @private
@@ -344,7 +348,7 @@ sap.ui.define([
 
 	/**
 	 *
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @namespace
 	 * @name sap.ui.fl.write._internal.fieldExtensibility
 	 * @private
@@ -353,7 +357,7 @@ sap.ui.define([
 
 	/**
 	 *
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @namespace
 	 * @name sap.ui.fl.write._internal.flexState
 	 * @private
@@ -362,7 +366,7 @@ sap.ui.define([
 
 	/**
 	 *
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @namespace
 	 * @name sap.ui.fl.write._internal.flexState.compVariants
 	 * @private
@@ -371,7 +375,7 @@ sap.ui.define([
 
 	/**
 	 *
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @namespace
 	 * @name sap.ui.fl.write.connectors
 	 * @private
@@ -380,7 +384,7 @@ sap.ui.define([
 
 	/**
 	 *
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @namespace
 	 * @name sap.ui.fl.changeHandler
 	 * @private
@@ -391,7 +395,7 @@ sap.ui.define([
 	 * The <code>sap.ui.fl.interfaces</code> namespace contains only interface jsdoc descriptions.
 	 * It does not contain running code.
 	 *
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @namespace
 	 * @name sap.ui.fl.interfaces
 	 * @private
@@ -400,7 +404,7 @@ sap.ui.define([
 
 	/**
 	 *
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @namespace
 	 * @name sap.ui.fl.interfaces.delegate
 	 * @private
@@ -411,7 +415,7 @@ sap.ui.define([
 	 * The <code>sap.ui.fl.interfaces</code> namespace contains only interface jsdoc descriptions.
 	 * It does not contain running code.
 	 *
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @namespace
 	 * @name sap.ui.fl.registry
 	 * @private
@@ -470,11 +474,11 @@ sap.ui.define([
 	 * @alias sap.ui.fl
 	 * @author SAP SE
 	 * @public
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 */
 	var thisLib = sap.ui.getCore().initLibrary({
 		name: "sap.ui.fl",
-		version: "1.106.0",
+		version: "1.108.0",
 		controls: [
 			"sap.ui.fl.variants.VariantManagement",
 			"sap.ui.fl.util.IFrame"
@@ -517,7 +521,7 @@ sap.ui.define([
 	}
 
 	if (_isTrialSystem()) {
-		sap.ui.getCore().getConfiguration().setFlexibilityServices([{
+		Configuration.setFlexibilityServices([{
 			connector: "LrepConnector",
 			url: "/sap/bc/lrep",
 			layers: []

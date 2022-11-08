@@ -9,13 +9,15 @@ sap.ui.define([
 	"sap/base/Log",
 	"sap/ui/fl/Layer",
 	"sap/ui/fl/LayerUtils",
-	"sap/base/util/isEmptyObject"
+	"sap/base/util/isEmptyObject",
+	"sap/ui/core/Configuration"
 ], function (
 	encodeURLParameters,
 	Log,
 	Layer,
 	LayerUtils,
-	isEmptyObject
+	isEmptyObject,
+	Configuration
 ) {
 	"use strict";
 
@@ -25,7 +27,7 @@ sap.ui.define([
 	 *
 	 * @namespace sap.ui.fl.initial._internal.StorageUtils
 	 * @since 1.74
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @private
 	 * @ui5-restricted sap.ui.fl.initial._internal.Storage, sap.ui.fl.write._internal.Storage,
 	 * 	sap.ui.fl.initial._internal.connectors.ObjectStorageConnector, sap.ui.fl.initial._internal.connectors.ObjectPathConnector
@@ -66,10 +68,16 @@ sap.ui.define([
 		connector: "StaticFileConnector"
 	};
 
-	function _filterValidLayers(aLayers, aValidLayers) {
-		return aLayers.filter(function (sLayer) {
-			return aValidLayers.indexOf(sLayer) !== -1 || aValidLayers[0] === "ALL";
-		});
+	function _filterValidLayers(aLayers, aConnectorLayers) {
+		var aValidLayers = [];
+		if (!aLayers) {
+			aValidLayers = aConnectorLayers;
+		} else {
+			aValidLayers = aLayers.filter(function (sLayer) {
+				return aConnectorLayers.indexOf(sLayer) !== -1 || aConnectorLayers[0] === "ALL";
+			});
+		}
+		return aValidLayers;
 	}
 
 	function _getConnectorConfigurations(sNameSpace, bLoadConnectors, mConnectors) {
@@ -103,7 +111,6 @@ sap.ui.define([
 					} else {
 						mConnectors[iIndex].layers = _filterValidLayers(mConnectors[iIndex].layers, oConnector.layers);
 					}
-
 					if (bLoadConnectors) {
 						mConnectors[iIndex].loadConnectorModule = oConnector;
 					} else {
@@ -125,7 +132,7 @@ sap.ui.define([
 		 * @returns {Promise<map[]>} Resolving with a list of maps for all configured connectors and their requested modules
 		 */
 		getConnectors: function (sNameSpace, bLoadConnectors) {
-			var aConfiguredConnectors = sap.ui.getCore().getConfiguration().getFlexibilityServices();
+			var aConfiguredConnectors = Configuration.getFlexibilityServices();
 			var mConnectors = [];
 			if (bLoadConnectors) {
 				mConnectors = [STATIC_FILE_CONNECTOR_CONFIGURATION];
@@ -314,7 +321,7 @@ sap.ui.define([
 			if (!mParameters) {
 				mParameters = {};
 			}
-			mParameters["sap-language"] = sap.ui.getCore().getConfiguration().getLanguage();
+			mParameters["sap-language"] = Configuration.getLanguage();
 		}
 	};
 });

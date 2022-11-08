@@ -19,6 +19,7 @@ sap.ui.define([
 	"sap/base/util/deepEqual",
 	"sap/base/Log",
 	"sap/ui/thirdparty/jquery",
+	"sap/ui/core/Configuration",
 	// jQuery Plugin "cursorPos"
 	"sap/ui/dom/jquery/cursorPos"
 ], function(
@@ -34,7 +35,8 @@ sap.ui.define([
 	DateTimeFieldRenderer,
 	deepEqual,
 	Log,
-	jQuery
+	jQuery,
+	Configuration
 ) {
 	"use strict";
 
@@ -59,13 +61,12 @@ sap.ui.define([
 	 * @extends sap.m.InputBase
 	 *
 	 * @author SAP SE
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 *
 	 * @constructor
 	 * @public
 	 * @since 1.50.0
 	 * @alias sap.m.DateTimeField
-	 * @ui5-metamodel This control/element also will be described in the UI5 (legacy) designtime metamodel
 	 */
 	var DateTimeField = InputBase.extend("sap.m.DateTimeField", /** @lends sap.m.DateTimeField.prototype */ {
 		metadata: {
@@ -131,7 +132,9 @@ sap.ui.define([
 					}
 				}
 			}
-		}
+		},
+
+		renderer: DateTimeFieldRenderer
 	});
 
 	DateTimeField.prototype.setValue = function (sValue) {
@@ -364,7 +367,7 @@ sap.ui.define([
 
 	DateTimeField.prototype._getLocaleBasedPattern = function (sPlaceholder) {
 		return LocaleData.getInstance(
-			sap.ui.getCore().getConfiguration().getFormatSettings().getFormatLocale()
+			Configuration.getFormatSettings().getFormatLocale()
 		).getDatePattern(sPlaceholder);
 	};
 
@@ -410,7 +413,7 @@ sap.ui.define([
 				// convert to local date because it was parsed as UTC date
 				sFormatted = this._getTimezoneFormatter().format(oDate, "UTC");
 				oDateLocal = this._getTimezoneFormatter().parse(sFormatted,
-					sap.ui.getCore().getConfiguration().getTimezone())[0];
+					Configuration.getTimezone())[0];
 
 				oDate = oDateLocal;
 			}
@@ -435,7 +438,7 @@ sap.ui.define([
 		if (this._isSupportedBindingType(oBindingType)) {
 			if ((oBindingType.oFormatOptions && oBindingType.oFormatOptions.UTC) || (oBindingType.oConstraints && oBindingType.oConstraints.isDateOnly)) {
 				// convert to UTC date because it will be formatted as UTC date
-				sFormatted = this._getTimezoneFormatter().format(oDate, sap.ui.getCore().getConfiguration().getTimezone());
+				sFormatted = this._getTimezoneFormatter().format(oDate, Configuration.getTimezone());
 				oDateUTC = this._getTimezoneFormatter().parse(sFormatted, "UTC")[ 0 ];
 
 				oDate = oDateUTC;
@@ -503,7 +506,7 @@ sap.ui.define([
 		}
 
 		if (!sCalendarType) {
-			sCalendarType = sap.ui.getCore().getConfiguration().getCalendarType();
+			sCalendarType = Configuration.getCalendarType();
 		}
 
 		if (bDisplayFormat) {

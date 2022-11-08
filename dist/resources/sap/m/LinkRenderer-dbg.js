@@ -81,7 +81,7 @@
 
 		switch (sAccessibleRole) {
 			case LinkAccessibleRole.Button:
-				oAccAttributes.role = LinkAccessibleRole.Button;
+				oAccAttributes.role = LinkAccessibleRole.Button.toLowerCase();
 				break;
 			default:
 				// Set a valid non empty value for the href attribute representing that there is no navigation,
@@ -102,6 +102,10 @@
 
 		if (oControl.getWrapping()) {
 			oRm.class("sapMLnkWrapping");
+		}
+
+		if (oControl.getEmptyIndicatorMode() !== EmptyIndicatorMode.Off && !oControl.getText()) {
+			oRm.class("sapMLinkContainsEmptyIdicator");
 		}
 
 		if (oControl.getTooltip_AsString()) {

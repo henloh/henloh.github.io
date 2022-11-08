@@ -22,7 +22,7 @@ sap.ui.define([
 	 * Tells whether the first given change reason has precedence over the second one.
 	 *
 	 * @param {string} sChangeReason0 - A change reason
-	 * @param {string} sChangeReason1  - A change reason
+	 * @param {string} sChangeReason1 - A change reason
 	 * @returns {boolean} Whether the first given change reason has precedence over the second one
 	 */
 	function hasPrecedenceOver(sChangeReason0, sChangeReason1) {
@@ -136,7 +136,7 @@ sap.ui.define([
 					break;
 				case "$$groupId":
 				case "$$updateGroupId":
-					that.oModel.checkGroupId(vValue, false,
+					_Helper.checkGroupId(vValue, false,
 						"Unsupported value for binding parameter '" + sKey + "': ");
 					break;
 				case "$$ignoreMessages":
@@ -281,10 +281,10 @@ sap.ui.define([
 
 		this.mCacheQueryOptions = Object.assign({}, this.oModel.mUriParameters, mQueryOptions);
 		if (this.bRelative) { // quasi-absolute or relative binding
-			// The parent has to be persisted in order to know the key predicates when creating the
+			// The parent has to be persisted in order to know its key predicate when creating the
 			// child's own cache. Context#isTransient cannot be used exclusively here because it
 			// returns true for ODLB#create w/o bSkipRefresh, unless the refresh for the created
-			// entity is resolved too - but the entity's key predicates are already available.
+			// entity is resolved too - but the entity's key predicate is already available.
 			if (oContext.isTransient && oContext.isTransient()
 				&& oContext.getProperty("@$ui5.context.isTransient")) {
 				// Note: sResourcePath is kind of preliminary here, no use to remember it!
@@ -313,6 +313,7 @@ sap.ui.define([
 				undefined, sGroupId, oOldCache);
 		}
 		if (oOldCache && oOldCache !== oCache) {
+			oOldCache.deregisterChangeListener("", this);
 			oOldCache.setActive(false);
 		}
 		if (this.mLateQueryOptions) {
@@ -330,9 +331,12 @@ sap.ui.define([
 	 * @since 1.66
 	 */
 	ODataBinding.prototype.destroy = function () {
+		var that = this;
+
 		this.mCacheByResourcePath = undefined;
 		this.oCachePromise.then(function (oOldCache) {
 			if (oOldCache) {
+				oOldCache.deregisterChangeListener("", that);
 				oOldCache.setActive(false);
 			}
 		}, function () {});
@@ -645,7 +649,7 @@ sap.ui.define([
 	};
 
 	/**
-	 * Fires the 'dataReceived' event. It may be bubbled up to the model.
+	 * Fires the 'dataReceived' event. The event is bubbled up to the model, unless it is prevented.
 	 *
 	 * @param {object} oParameters
 	 *   The event parameters
@@ -654,7 +658,7 @@ sap.ui.define([
 	 * @param {Error} [oParameters.error]
 	 *   The error object if a back-end request failed.
 	 * @param {boolean} [bPreventBubbling]
-	 *   Whether the dataRequested and dataReceived events must not be bubbled up to the model
+	 *   Whether to prevent bubbling this event to the model
 	 *
 	 * @private
 	 */
@@ -665,10 +669,11 @@ sap.ui.define([
 	};
 
 	/**
-	 * Fires the 'dataRequested' event. It may be bubbled up to the model.
+	 * Fires the 'dataRequested' event. The event is bubbled up to the model, unless it is
+	 * prevented.
 	 *
 	 * @param {boolean} [bPreventBubbling]
-	 *   Whether the dataRequested and dataReceived events must not be bubbled up to the model
+	 *   Whether to prevent bubbling this event to the model
 	 *
 	 * @private
 	 */
@@ -861,11 +866,10 @@ sap.ui.define([
 	};
 
 	/**
-	 * Returns <code>true</code> if this binding or its dependent bindings have pending property
-	 * changes or created entities which have not been sent successfully to the server. This
-	 * function does not take into account the deletion of entities (see
-	 * {@link sap.ui.model.odata.v4.Context#delete}) and the execution of OData operations
-	 * (see {@link sap.ui.model.odata.v4.ODataContextBinding#execute}). Since 1.98.0,
+	 * Returns <code>true</code> if this binding or its dependent bindings have property changes,
+	 * created entities, or entity deletions which have not been sent successfully to the server.
+	 * This function does not take the execution of OData operations
+	 * (see {@link sap.ui.model.odata.v4.ODataContextBinding#execute}) into account. Since 1.98.0,
 	 * {@link sap.ui.model.odata.v4.Context#isInactive inactive} contexts are ignored.
 	 *
 	 * Note: If this binding is relative, its data is cached separately for each parent context
@@ -880,8 +884,9 @@ sap.ui.define([
 	 *   {@link sap.ui.model.odata.v4.ODataListBinding#refresh refresh} (since 1.100.0),
 	 *   {@link sap.ui.model.odata.v4.ODataListBinding#sort sort}, or
 	 *   {@link sap.ui.model.odata.v4.ODataListBinding#suspend suspend} because they relate to a
-	 *   {@link sap.ui.model.odata.v4.Context#isKeepAlive kept-alive} context of this binding
-	 *   (since 1.97.0). Since 1.98.0, {@link sap.ui.model.odata.v4.Context#isTransient transient}
+	 *   {@link sap.ui.model.odata.v4.Context#isKeepAlive kept-alive} (since 1.97.0) or
+	 *   {@link sap.ui.model.odata.v4.Context#delete deleted} (since 1.108.0) context of this
+	 *   binding. Since 1.98.0, {@link sap.ui.model.odata.v4.Context#isTransient transient}
 	 *   contexts of a {@link #getRootBinding root binding} are treated as kept-alive by this flag.
 	 *   Since 1.99.0, the same happens for bindings using the <code>$$ownRequest</code> parameter
 	 *   (see {@link sap.ui.model.odata.v4.ODataModel#bindList}).
@@ -905,7 +910,7 @@ sap.ui.define([
 	 *   The path (absolute or relative to this binding)
 	 * @param {boolean} [bIgnoreKeptAlive]
 	 *   Whether to ignore changes which will not be lost by APIs like sort or filter because they
-	 *   relate to a context which is kept alive.
+	 *   relate to a deleted context or a context which is kept alive
 	 * @returns {boolean}
 	 *   <code>true</code> if there are pending changes for the path
 	 *
@@ -948,7 +953,7 @@ sap.ui.define([
 	 *
 	 * @param {boolean} [bIgnoreKeptAlive]
 	 *   Whether to ignore changes which will not be lost by APIs like sort or filter because they
-	 *   relate to a context which is kept alive.
+	 *   relate to a deleted context or a context which is kept alive
 	 * @returns {boolean}
 	 *   <code>true</code> if this binding has pending changes
 	 *
@@ -1022,7 +1027,7 @@ sap.ui.define([
 	 *   The group lock
 	 *
 	 * @private
-	 * @see {sap.ui.model.odata.v4.ODataModel#lockGroup}
+	 * @see sap.ui.model.odata.v4.ODataModel#lockGroup
 	 */
 	ODataBinding.prototype.lockGroup = function (sGroupId, bLocked, bModifying, fnCancel) {
 		sGroupId = sGroupId || (bModifying ? this.getUpdateGroupId() : this.getGroupId());
@@ -1070,15 +1075,20 @@ sap.ui.define([
 	 * @throws {Error} If
 	 *   <ul>
 	 *     <li> the given group ID is invalid,
-	 *     <li> there are pending changes that cannot be ignored,
 	 *     <li> refresh on this binding is not supported,
 	 *     <li> a group ID different from the binding's group ID is specified for a suspended
 	 *       binding,
-	 *     <li> or a value of type boolean is given.
-	 *   </ul> Since 1.100.0, pending changes are ignored if they relate to a
-	 *   {@link sap.ui.model.odata.v4.Context#isKeepAlive kept-alive} context of this binding, and
-	 *   {@link sap.ui.model.odata.v4.Context#isTransient transient} contexts of a
-	 *   {@link #getRootBinding root binding} do not count as pending changes.
+	 *     <li> a value of type <code>boolean</code> is given,
+	 *     <li> or there are pending changes that cannot be ignored.
+	 *   </ul>
+	 *   The following pending changes are ignored:
+	 *   <ul>
+	 *     <li> changes relating to a {@link sap.ui.model.odata.v4.Context#isKeepAlive kept-alive}
+	 *       context of this binding (since 1.97.0),
+	 *     <li> {@link sap.ui.model.odata.v4.Context#isTransient transient} contexts of a
+	 *       {@link #getRootBinding root binding} (since 1.98.0),
+	 *     <li> {@link sap.ui.model.odata.v4.Context#delete deleted} contexts (since 1.108.0).
+	 *   </ul>
 	 *
 	 * @public
 	 * @see sap.ui.model.Binding#refresh
@@ -1231,7 +1241,7 @@ sap.ui.define([
 		if (this.hasPendingChanges(true)) {
 			throw new Error("Cannot refresh due to pending changes");
 		}
-		this.oModel.checkGroupId(sGroupId);
+		_Helper.checkGroupId(sGroupId);
 
 		// The actual refresh is specific to the binding and is implemented in each binding class.
 		return Promise.resolve(this.refreshInternal("", sGroupId, true)).then(function () {

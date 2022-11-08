@@ -6,7 +6,7 @@
 	<copyright>OpenUI5
  * (c) Copyright 2009-2022 SAP SE or an SAP affiliate company.
  * Licensed under the Apache License, Version 2.0 - see LICENSE.txt.</copyright>
-	<version>1.106.0</version>
+	<version>1.108.0</version>
 
 	<documentation>UI5 library: sap.ui.codeeditor</documentation>
 
@@ -28,17 +28,12 @@
 		<!-- excludes for the default preload files -->
 		<packaging xmlns="http://www.sap.com/ui5/buildext/packaging" version="2.0" >
 			<all-in-one>
-				<!-- ===========================================================================
-				     !! ATTENTION !!
-				     The following excludes must be kept in sync with those configured for the
-				     'preload-and-merge' plugin execution in the pom.xml of the wrapper library.
-				     =========================================================================== -->
 				<exclude name="sap/ui/codeeditor/js/" />
 			</all-in-one>
 		</packaging>
 		<!-- Thirdparty references -->
 		<thirdparty xmlns="http://www.sap.com/ui5/buildext/thirdparty" >
-			<lib name="ace" displayName="Ace (Ajax.org Cloud9 Editor)" version="1.4.13" homepage="https://ace.c9.io/" id="73554900106100084506">
+			<lib name="ace" displayName="Ace (Ajax.org Cloud9 Editor)" npmName="ace-builds" version="1.4.13" hash="fc9418ac89865b77c3ad27c15ba23e00" homepage="https://ace.c9.io/" id="73554900106100084506">
 				<license url="https://github.com/ajaxorg/ace/blob/master/LICENSE" type="BSD-3-Clause" />
 				<copyright>2010, Ajax.org B.V.</copyright>
 				<pattern>sap/ui/codeeditor/js/ace/*</pattern>

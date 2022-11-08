@@ -14,13 +14,14 @@
 
 // Provides the resource bundle based model implementation
 sap.ui.define([
+	'sap/base/Log',
+	'sap/base/i18n/ResourceBundle',
+	'sap/ui/core/Configuration',
 	'sap/ui/model/BindingMode',
 	'sap/ui/model/Model',
-	'./ResourcePropertyBinding',
-	"sap/base/i18n/ResourceBundle",
-	"sap/base/Log"
+	'./ResourcePropertyBinding'
 ],
-	function (BindingMode, Model, ResourcePropertyBinding, ResourceBundle, Log) {
+	function (Log, ResourceBundle, Configuration, BindingMode, Model, ResourcePropertyBinding) {
 	"use strict";
 
 	/**
@@ -228,7 +229,7 @@ sap.ui.define([
 	 *
 	 * @extends sap.ui.model.Model
 	 * @public
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 */
 	var ResourceModel = Model.extend("sap.ui.model.resource.ResourceModel", /** @lends sap.ui.model.resource.ResourceModel.prototype */ {
 
@@ -377,7 +378,7 @@ sap.ui.define([
 	 * @ui5-restricted sap.ui.core.Component
 	 */
 	ResourceModel.loadResourceBundle = function (oData, bAsync) {
-		var oConfiguration = sap.ui.getCore().getConfiguration(),
+		var oConfiguration = Configuration,
 			sLocale = oData.bundleLocale,
 			mParams;
 

@@ -7,8 +7,11 @@
 /*!
  * An interface to the core to be used by rules
  */
-sap.ui.define(['sap/ui/core/Component'],
-	function (Component) {
+sap.ui.define([
+	'sap/ui/core/Component',
+	'sap/ui/core/UIArea'
+],
+	function (Component, UIArea) {
 		"use strict";
 
 		var coreInstance = null;
@@ -42,7 +45,7 @@ sap.ui.define(['sap/ui/core/Component'],
 				 * @name sap.ui.support.CoreFacade.getUIAreas
 				 */
 				getUIAreas: function () {
-					return coreInstance.mUIAreas;
+					return UIArea.registry.all();
 				},
 				/**
 				 * Gets the Components from the Core object.

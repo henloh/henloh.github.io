@@ -17,7 +17,8 @@ sap.ui.define([
 	"sap/ui/events/KeyCodes",
 	"sap/ui/unified/DateRange",
 	'sap/ui/unified/calendar/CalendarUtils',
-	'sap/ui/unified/calendar/CalendarDate'
+	'sap/ui/unified/calendar/CalendarDate',
+	"sap/ui/core/Configuration"
 ], function(
 	Control,
 	Device,
@@ -30,7 +31,8 @@ sap.ui.define([
 	KeyCodes,
 	DateRange,
 	CalendarUtils,
-	CalendarDate
+	CalendarDate,
+	Configuration
 ) {
 	"use strict";
 
@@ -51,13 +53,12 @@ sap.ui.define([
 	 * renders a MonthPicker with ItemNavigation
 	 * This is used inside the calendar. Not for stand alone usage
 	 * @extends sap.ui.core.Control
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 *
 	 * @constructor
 	 * @public
 	 * @since 1.28.0
 	 * @alias sap.ui.unified.calendar.MonthPicker
-	 * @ui5-metamodel This control/element also will be described in the UI5 (legacy) designtime metamodel
 	 */
 	var MonthPicker = Control.extend("sap.ui.unified.calendar.MonthPicker", /** @lends sap.ui.unified.calendar.MonthPicker.prototype */ { metadata : {
 
@@ -150,7 +151,7 @@ sap.ui.define([
 	MonthPicker.prototype.init = function(){
 
 		// set default calendar type from configuration
-		var sCalendarType = sap.ui.getCore().getConfiguration().getCalendarType();
+		var sCalendarType = Configuration.getCalendarType();
 		this.setProperty("primaryCalendarType", sCalendarType);
 
 		this._iMinMonth = 0;
@@ -323,7 +324,7 @@ sap.ui.define([
 		if (oParent && oParent._getLocale) {
 			return oParent._getLocale();
 		} else if (!this._sLocale) {
-			this._sLocale = sap.ui.getCore().getConfiguration().getFormatSettings().getFormatLocale().toString();
+			this._sLocale = Configuration.getFormatSettings().getFormatLocale().toString();
 		}
 
 		return this._sLocale;
@@ -467,7 +468,6 @@ sap.ui.define([
 	 *
 	 * @returns {this} <code>this</code> to allow method chaining
 	 * @public
-	 * @ui5-metamodel This method also will be described in the UI5 (legacy) designtime metamodel
 	 */
 	MonthPicker.prototype.nextPage = function(){
 
@@ -499,7 +499,6 @@ sap.ui.define([
 	 *
 	 * @returns {this} <code>this</code> to allow method chaining
 	 * @public
-	 * @ui5-metamodel This method also will be described in the UI5 (legacy) designtime metamodel
 	 */
 	MonthPicker.prototype.previousPage = function(){
 
@@ -533,7 +532,6 @@ sap.ui.define([
 	 * @param {int} [iMax] maximum month as integer (starting with 0)
 	 * @returns {this} <code>this</code> to allow method chaining
 	 * @public
-	 * @ui5-metamodel This method also will be described in the UI5 (legacy) designtime metamodel
 	 */
 	MonthPicker.prototype.setMinMax = function(iMin, iMax){
 		var aMonths, $DomRef, iMonth, i;

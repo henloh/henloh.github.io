@@ -25,7 +25,7 @@ sap.ui.define([
 		 * @extends sap.ui.core.Control
 		 *
 		 * @author SAP SE
-		 * @version 1.106.0
+		 * @version 1.108.0
 		 *
 		 * @constructor
 		 * @private
@@ -535,7 +535,7 @@ sap.ui.define([
 		 * @private
 		 */
 		TimePickerClock.prototype._onTouchEnd = function(oEvent) {
-			var oAnimationMode = sap.ui.getCore().getConfiguration().getAnimationMode(),
+			var oAnimationMode = Configuration.getAnimationMode(),
 				bSkipAnimation = oAnimationMode === Configuration.AnimationMode.none || oAnimationMode === Configuration.AnimationMode.minimal;
 
 			if (!this._mouseOrTouchDown) {

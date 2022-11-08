@@ -74,7 +74,7 @@ sap.ui.define([
 	 *
 	 * @namespace sap.ui.fl.write._internal.connectors.BackendConnector
 	 * @since 1.72
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @private
 	 * @ui5-restricted sap.ui.fl.write._internal.connectors
 	 */
@@ -156,12 +156,16 @@ sap.ui.define([
 		 * @param {object} mPropertyBag - Property bag
 		 * @param {object} mPropertyBag.flexObject - Flex Object to be deleted
 		 * @param {string} mPropertyBag.url - Configured url for the connector
+		 * @param {string} [mPropertyBag.parentVersion] - Indicates if changes should be written as a draft and on which version the changes should be based on
 		 * @returns {Promise} Resolves as soon as the deletion is completed without data
 		 */
 		remove: function (mPropertyBag) {
 			var mParameters = {
 				namespace: mPropertyBag.flexObject.namespace
 			};
+			if (mPropertyBag.parentVersion !== undefined) {
+				mParameters.parentVersion = mPropertyBag.parentVersion;
+			}
 			mPropertyBag.fileName = mPropertyBag.flexObject.fileName;
 			var sDeleteUrl = InitialUtils.getUrl(this.ROUTES.CHANGES, mPropertyBag, mParameters);
 			delete mPropertyBag.fileName;
@@ -187,7 +191,7 @@ sap.ui.define([
 				return Promise.resolve({response: this.initialConnector.settings});
 			}
 			var sFeaturesUrl = InitialUtils.getUrl(this.ROUTES.SETTINGS, mPropertyBag);
-			return InitialUtils.sendRequest(sFeaturesUrl).then(function (oResult) {
+			return InitialUtils.sendRequest(sFeaturesUrl, "GET", {initialConnector: InitialConnector}).then(function (oResult) {
 				return oResult.response;
 			});
 		}

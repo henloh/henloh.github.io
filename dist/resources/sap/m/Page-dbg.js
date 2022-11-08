@@ -18,7 +18,8 @@ sap.ui.define([
 	"sap/ui/core/Element",
 	"./TitlePropagationSupport",
 	"./PageRenderer",
-	"sap/ui/thirdparty/jquery"
+	"sap/ui/thirdparty/jquery",
+	"sap/ui/core/Configuration"
 ],
 function(
 	library,
@@ -33,7 +34,8 @@ function(
 	Element,
 	TitlePropagationSupport,
 	PageRenderer,
-	jQuery
+	jQuery,
+	Configuration
 ) {
 		"use strict";
 
@@ -89,11 +91,10 @@ function(
 		 * @extends sap.ui.core.Control
 		 * @mixes sap.ui.core.ContextMenuSupport
 		 * @author SAP SE
-		 * @version 1.106.0
+		 * @version 1.108.0
 		 *
 		 * @public
 		 * @alias sap.m.Page
-		 * @ui5-metamodel This control/element also will be described in the UI5 (legacy) designtime metamodel
 		 */
 		var Page = Control.extend("sap.m.Page", /** @lends sap.m.Page.prototype */ {
 			metadata: {
@@ -270,7 +271,9 @@ function(
 				},
 				dnd: { draggable: false, droppable: true },
 				designtime: "sap/m/designtime/Page.designtime"
-			}
+			},
+
+			renderer: PageRenderer
 		});
 
 		ContextMenuSupport.apply(Page.prototype);
@@ -432,7 +435,7 @@ function(
 			}
 
 			var $footer = jQuery(this.getDomRef()).find(".sapMPageFooter").last(),
-				useAnimation = sap.ui.getCore().getConfiguration().getAnimation();
+				useAnimation = Configuration.getAnimation();
 
 			if (!this.getFloatingFooter()) {
 				this.setProperty("showFooter", bShowFooter);
@@ -644,7 +647,6 @@ function(
 		 * @param {int} [time=0] The duration of animated scrolling in milliseconds. The value <code>0</code> results in immediate scrolling without animation.
 		 * @returns {this} <code>this</code> to facilitate method chaining.
 		 * @public
-		 * @ui5-metamodel This method also will be described in the UI5 (legacy) designtime metamodel
 		 */
 		Page.prototype.scrollTo = function (y, time) {
 			if (this._oScroller) {

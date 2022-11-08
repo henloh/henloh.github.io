@@ -91,7 +91,7 @@ sap.ui.define([
 	 *
 	 * @author SAP SE
 	 *
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 *
 	 * @experimental Since 1.49.0 This class is experimental and provides only limited functionality. Also the API might be
 	 *               changed in future.
@@ -174,15 +174,20 @@ sap.ui.define([
 
 	AddSimpleFormField.getChangeVisualizationInfo = function(oChange, oAppComponent) {
 		var oRevertData = oChange.getRevertData();
+
 		if (oRevertData && oRevertData.labelSelector) {
 			return {
-				affectedControls: [JsControlTreeModifier.bySelector(oRevertData.labelSelector, oAppComponent).getId()],
-				hasParentWithUnstableId: true
+				affectedControls: [JsControlTreeModifier.bySelector(oRevertData.labelSelector, oAppComponent).getParent().getId()],
+				updateRequired: true
 			};
 		}
 		return {
 			affectedControls: [oChange.getContent().newFieldSelector]
 		};
+	};
+
+	AddSimpleFormField.getCondenserInfo = function() {
+		return undefined;
 	};
 
 	return AddSimpleFormField;

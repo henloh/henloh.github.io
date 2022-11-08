@@ -28,7 +28,7 @@ sap.ui.define([
 	 * @namespace sap.ui.fl.apply._internal.flexState.changes.ExtensionPointState
 	 * @experimental Since 1.79
 	 * @since 1.79
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @private
 	 * @ui5-restricted
 	 */

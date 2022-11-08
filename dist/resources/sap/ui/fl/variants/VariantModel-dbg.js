@@ -264,7 +264,7 @@ sap.ui.define([
 	 * @class Variant model implementation for JSON format.
 	 * @extends sap.ui.model.json.JSONModel
 	 * @author SAP SE
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @param {object} oData - Either the URL where to load the JSON from or a JS object
 	 * @param {object} mPropertyBag - Map of properties required for the constructor
 	 * @param {sap.ui.fl.FlexController} mPropertyBag.flexController - <code>FlexController</code> instance for the component which uses the variant model
@@ -1420,6 +1420,17 @@ sap.ui.define([
 		}
 
 		this.oData[sVariantManagementReference].init = true;
+
+		// the initial changes are not applied via a variant switch
+		// to enable early variant switches to work properly they need to wait for the initial changes
+		// so the initial changes are set as a variant switch
+		var mParameters = {
+			appComponent: this.oAppComponent,
+			reference: this.sFlexReference,
+			vmReference: sVariantManagementReference,
+			flexController: this.oFlexController
+		};
+		this._oVariantSwitchPromise = this._oVariantSwitchPromise.then(VariantManagementState.waitForInitialVariantChanges.bind(undefined, mParameters));
 	};
 
 	VariantModel.prototype.waitForVMControlInit = function(sVMReference) {

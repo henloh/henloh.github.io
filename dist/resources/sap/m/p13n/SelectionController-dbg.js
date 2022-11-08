@@ -10,8 +10,9 @@ sap.ui.define([
     'sap/base/util/merge',
     'sap/base/util/deepEqual',
     'sap/m/p13n/SelectionPanel',
-    'sap/m/p13n/modules/xConfigAPI'
-], function (diff, BaseObject, merge, deepEqual, SelectionPanel, xConfigAPI) {
+    'sap/m/p13n/modules/xConfigAPI',
+    'sap/ui/core/Configuration'
+], function (diff, BaseObject, merge, deepEqual, SelectionPanel, xConfigAPI, Configuration) {
 	"use strict";
 
     /**
@@ -19,16 +20,16 @@ sap.ui.define([
 	 *
 	 * @param {string} [sId] ID for the new control, generated automatically if no ID is given
 	 * @param {object} [mSettings] Initial settings for the new control
-     * @param {sap.ui.core.Control} mSettings.control The control instance to be personalized by this controller
-     * @param {string} mSettings.targetAggregation The name of the personalized aggregation
+     * @param {sap.ui.core.Control} mSettings.control The control instance that is personalized by this controller
+     * @param {string} mSettings.targetAggregation The name of the aggregation that is now managed by this controller
 	 *
 	 * @class
-	 * The <code>SelectionController</code> serves as base class to create control specific personalization implementations.
+	 * The <code>SelectionController</code> entity serves as a base class to create control-specific personalization implementations.
 	 *
 	 * @extends sap.ui.base.Object
 	 *
 	 * @author SAP SE
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 *
 	 * @public
 	 * @experimental Since 1.104. Please note that the API of this control is not yet finalized!
@@ -508,7 +509,7 @@ sap.ui.define([
         var sPositionAttribute = mP13nTypeSorting.position;
         var sSelectedAttribute = mP13nTypeSorting.visible;
 
-        var sLocale = sap.ui.getCore().getConfiguration().getLocale().toString();
+        var sLocale = Configuration.getLocale().toString();
 
         var oCollator = window.Intl.Collator(sLocale, {});
 

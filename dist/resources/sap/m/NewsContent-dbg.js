@@ -25,12 +25,11 @@ sap.ui.define([
 	 * @extends sap.ui.core.Control
 	 *
 	 * @author SAP SE
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @since 1.34
 	 *
 	 * @public
 	 * @alias sap.m.NewsContent
-	 * @ui5-metamodel This control will also be described in the UI5 (legacy) designtime metamodel
 	 */
 	var NewsContent = Control.extend("sap.m.NewsContent", /** @lends sap.m.NewsContent.prototype */ {
 		metadata : {
@@ -68,7 +67,9 @@ sap.ui.define([
 				 */
 				"press" : {}
 			}
-		}
+		},
+
+		renderer: NewsContentRenderer
 	});
 
 	/* --- Lifecycle methods --- */

@@ -17,7 +17,7 @@ sap.ui.define([
 		* Change handler for adding a form group.
 		* @alias sap.ui.layout.changeHandler.AddFormContainer
 		* @author SAP SE
-		* @version 1.106.0
+		* @version 1.108.0
 		* @experimental Since 1.48.0
 		*/
 	var AddGroup = { };
@@ -149,6 +149,20 @@ sap.ui.define([
 				oModifier.destroy(oGroup);
 				oChange.resetRevertData();
 			});
+	};
+
+	/**
+	 * Retrieves the information required for the change visualization.
+	 *
+	 * @param {sap.ui.fl.Change} oChange - Object with change data
+	 * @returns {object} Object with a description payload containing the information required for the change visualization
+	 * @public
+	 */
+	AddGroup.getChangeVisualizationInfo = function(oChange) {
+		var sGroupLabel = oChange.getText("groupLabel");
+		return sGroupLabel ? {
+			descriptionPayload: { originalLabel: sGroupLabel }
+		} : {};
 	};
 
 	return AddGroup;

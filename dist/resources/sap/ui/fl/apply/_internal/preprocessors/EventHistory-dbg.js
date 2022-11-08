@@ -14,7 +14,7 @@ sap.ui.define(["sap/ui/core/Core"], function(oCore) {
 	 * @alias sap.ui.fl.apply._internal.preprocessors.EventHistory
 	 * @experimental Since 1.47.0
 	 * @author SAP SE
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 *
 	 * @private
 	 * @ui5-restricted sap.ui.fl.apply._internal.preprocessors.RegistrationDelegator

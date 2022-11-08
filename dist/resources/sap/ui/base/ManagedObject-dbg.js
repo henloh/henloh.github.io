@@ -248,7 +248,7 @@ sap.ui.define([
 	 *
 	 * @extends sap.ui.base.EventProvider
 	 * @author SAP SE
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @public
 	 * @alias sap.ui.base.ManagedObject
 	 */
@@ -4198,7 +4198,7 @@ sap.ui.define([
 	 * refers to the default model.
 	 *
 	 * @param {string} [sModelName] name of the model to be retrieved
-	 * @return {sap.ui.model.Model} oModel
+	 * @return {sap.ui.model.Model | undefined} oModel or undefined when there is no such model
 	 * @public
 	 */
 	ManagedObject.prototype.getModel = function(sModelName) {

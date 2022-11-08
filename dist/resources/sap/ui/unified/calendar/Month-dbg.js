@@ -22,7 +22,11 @@ sap.ui.define([
 	"sap/ui/dom/containsOrEquals",
 	"sap/ui/events/KeyCodes",
 	"sap/ui/thirdparty/jquery",
-	'sap/ui/core/InvisibleMessage'
+	'sap/ui/core/InvisibleMessage',
+	"sap/ui/core/Configuration",
+	"sap/ui/core/date/CalendarWeekNumbering",
+	"sap/ui/core/date/CalendarUtils",
+	"sap/base/Log"
 ], function(
 	Control,
 	Device,
@@ -40,7 +44,11 @@ sap.ui.define([
 	containsOrEquals,
 	KeyCodes,
 	jQuery,
-	InvisibleMessage
+	InvisibleMessage,
+	Configuration,
+	CalendarWeekNumbering,
+	CalendarDateUtils,
+	Log
 ) {
 	"use strict";
 
@@ -69,13 +77,12 @@ sap.ui.define([
 	 * If used inside the calendar the properties and aggregation are directly taken from the parent
 	 * (To not duplicate and sync DateRanges and so on...)
 	 * @extends sap.ui.core.Control
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 *
 	 * @constructor
 	 * @public
 	 * @since 1.28.0
 	 * @alias sap.ui.unified.calendar.Month
-	 * @ui5-metamodel This control/element also will be described in the UI5 (legacy) designtime metamodel
 	 */
 	var Month = Control.extend("sap.ui.unified.calendar.Month", /** @lends sap.ui.unified.calendar.Month.prototype */ { metadata : {
 
@@ -103,8 +110,9 @@ sap.ui.define([
 			showHeader : {type : "boolean", group : "Appearance", defaultValue : false},
 
 			/**
-			 * If set, the first day of the displayed week is this day. Valid values are 0 to 6.
-			 * If not a valid value is set, the default of the used locale is used.
+			 * If the property is set, this day marks the start of the displayed week. Valid values are 0 to 6.
+			 * If no valid property is set, the current locale's default is applied.
+			 * Note: This property should not be used with the calendarWeekNumbering property.
 			 * @since 1.28.9
 			 */
 			firstDayOfWeek : {type : "int", group : "Appearance", defaultValue : -1},
@@ -153,7 +161,15 @@ sap.ui.define([
 			 *
 			 * @since 1.90
 			 */
-			_focusedDate : {type : "object", group : "Data", visibility: "hidden", defaultValue: null}
+			_focusedDate : {type : "object", group : "Data", visibility: "hidden", defaultValue: null},
+
+			/**
+			 * If set, the calendar week numbering is used for display.
+			 * If not set, the calendar week numbering of the global configuration is used.
+			 * Note: This property should not be used with firstDayOfWeek property.
+			 * @since 1.108.0
+			 */
+			 calendarWeekNumbering : { type : "sap.ui.core.date.CalendarWeekNumbering", group : "Appearance", defaultValue: null}
 
 		},
 		aggregations : {
@@ -255,7 +271,7 @@ sap.ui.define([
 	Month.prototype.init = function(){
 
 		// set default calendar type from configuration
-		var sCalendarType = sap.ui.getCore().getConfiguration().getCalendarType();
+		var sCalendarType = Configuration.getCalendarType();
 		this.setProperty("primaryCalendarType", sCalendarType);
 		this.setProperty("secondaryCalendarType", sCalendarType);
 
@@ -301,6 +317,12 @@ sap.ui.define([
 
 	Month.prototype.getFocusDomRef = function(){
 		return this.getDomRef() && this._oItemNavigation.getItemDomRefs()[this._oItemNavigation.getFocusedIndex()];
+	};
+
+	Month.prototype.onBeforeRendering = function() {
+		if (this.getFirstDayOfWeek() !== -1 && this.getCalendarWeekNumbering() !== "Default") {
+			Log.warning("Both properties firstDayOfWeek and calendarWeekNumbering should not be used at the same time!");
+		}
 	};
 
 	Month.prototype.onAfterRendering = function(){
@@ -486,7 +508,6 @@ sap.ui.define([
 	 * @param {object} oDate JavaScript date object for focused date.
 	 * @returns {this} <code>this</code> to allow method chaining
 	 * @public
-	 * @ui5-metamodel This method also will be described in the UI5 (legacy) designtime metamodel
 	 */
 	Month.prototype.displayDate = function(oDate){
 		var oCalDate = CalendarDate.fromLocalJSDate(oDate, this.getPrimaryCalendarType());
@@ -548,7 +569,7 @@ sap.ui.define([
 		if (oParent && oParent.getLocale) {
 			return oParent.getLocale();
 		} else if (!this._sLocale) {
-			this._sLocale = sap.ui.getCore().getConfiguration().getFormatSettings().getFormatLocale().toString();
+			this._sLocale = Configuration.getFormatSettings().getFormatLocale().toString();
 		}
 
 		return this._sLocale;
@@ -754,8 +775,14 @@ sap.ui.define([
 		}
 
 		if (iFirstDayOfWeek < 0 || iFirstDayOfWeek > 6) {
-			var oLocaleData = this._getLocaleData();
-			iFirstDayOfWeek = oLocaleData.getFirstDayOfWeek();
+			var oWeekConfigurationValues = CalendarDateUtils.getWeekConfigurationValues(this.getCalendarWeekNumbering(), new Locale(this._getLocale()));
+
+			if (oWeekConfigurationValues) {
+				iFirstDayOfWeek = oWeekConfigurationValues.firstDayOfWeek;
+			} else {
+				var oLocaleData = this._getLocaleData();
+				iFirstDayOfWeek = oLocaleData.getFirstDayOfWeek();
+			}
 		}
 
 		return iFirstDayOfWeek;
@@ -1339,7 +1366,6 @@ sap.ui.define([
 	 * @param {object} oDate JavaScript date object for focused date.
 	 * @returns {boolean} flag if focusable
 	 * @public
-	 * @ui5-metamodel This method also will be described in the UI5 (legacy) designtime metamodel
 	 */
 	Month.prototype.checkDateFocusable = function(oDate){
 
@@ -1530,19 +1556,21 @@ sap.ui.define([
 		var iSelectedWeekNumber = this._calculateWeekNumber(oStartDate),
 			oEndDate = this._getLastWeekDate(oStartDate),
 			bSingleSelection = this.getSingleSelection(),
-			bIntervalSelection = this.getIntervalSelection();
+			bIntervalSelection = this.getIntervalSelection(),
+			oFirstEnabledDateOfWeek = this._checkDateEnabled(oStartDate) ? oStartDate : new CalendarDate(this._oMinDate),
+			oLastEnabledDateOfweek = this._checkDateEnabled(oEndDate) ? oEndDate : new CalendarDate(this._oMaxDate);
 
 		if (!bSingleSelection && !bIntervalSelection) {
 			// Selecting each day separately
-			this._handleWeekSelectionByMultipleDays(iSelectedWeekNumber, oStartDate, oEndDate);
+			this._handleWeekSelectionByMultipleDays(iSelectedWeekNumber, oFirstEnabledDateOfWeek, oLastEnabledDateOfweek);
 		} else if (bSingleSelection && bIntervalSelection) {
 			// Selecting the week as a whole interval
-			this._handleWeekSelectionBySingleInterval(iSelectedWeekNumber, oStartDate, oEndDate);
+			this._handleWeekSelectionBySingleInterval(iSelectedWeekNumber, oFirstEnabledDateOfWeek, oLastEnabledDateOfweek);
 		}
 
 		// When this method is called due to a week number's press, then focus
 		// should be moved to the first date, since the week number itself isn't focusable
-		bFocusStartDate && this._focusDate(oStartDate);
+		bFocusStartDate && this._focusDate(oFirstEnabledDateOfWeek);
 
 		return this;
 	};
@@ -1576,17 +1604,19 @@ sap.ui.define([
 	 * @private
 	 */
 	Month.prototype._calculateWeekNumber = function (oDate) {
-		var oEndDate = this._getLastWeekDate(oDate);
 		var oLocale = new Locale(this._getLocale());
+		var oEndDate = this._getLastWeekDate(oDate);
 		var oLocaleData = this._getLocaleData();
-		var oDateFormat = DateFormat.getInstance({pattern: "w", calendarType: this.getPrimaryCalendarType()}, oLocale);
+		var oDateFormat;
 		var iWeekNumber;
+
+		oDateFormat = DateFormat.getInstance({pattern: "w", calendarType: this.getPrimaryCalendarType(), calendarWeekNumbering: this.getCalendarWeekNumbering()}, oLocale);
+
+		var bIsRegionUS = oLocaleData.firstDayStartsFirstWeek();
 
 		// Because the date we use to calculate the week number may be in one year and in the same time
 		// includes days in a new month into a new year, we explicitly changed the week number
-		// US calendar weeks overlap Jan 1st is always week 1 while Dec 31st is always last week number
-		var bIsRegionUS = oLocaleData.firstDayStartsFirstWeek();
-
+		// US calendar weeks overlap, Jan 1st is always week 1, while Dec 31st is always last week.
 		if (oEndDate.getMonth() === 0 && this._oDate.getMonth() === 0  && bIsRegionUS) {
 			iWeekNumber = oDateFormat.format(oEndDate.toUTCJSDate(), true);
 		} else {

@@ -36,6 +36,7 @@ sap.ui.define([
 	"sap/base/Log",
 	"sap/ui/base/SyncPromise",
 	"sap/ui/core/cache/CacheManager",
+	"sap/ui/core/Configuration",
 	"sap/ui/core/library",
 	"sap/ui/core/message/Message",
 	"sap/ui/model/BindingMode",
@@ -45,18 +46,16 @@ sap.ui.define([
 	"sap/ui/thirdparty/URI"
 ], function (ODataContextBinding, ODataListBinding, ODataMetaModel, ODataPropertyBinding,
 		SubmitMode, _GroupLock, _Helper, _MetadataRequestor, _Parser, _Requestor, assert, Log,
-		SyncPromise, CacheManager, coreLibrary, Message, BindingMode, BaseContext, Model,
-		OperationMode, URI) {
+		SyncPromise, CacheManager, Configuration, coreLibrary, Message, BindingMode, BaseContext,
+		Model, OperationMode, URI) {
 	"use strict";
 
-	var rApplicationGroupID = /^\w+$/,
-		sClassName = "sap.ui.model.odata.v4.ODataModel",
+	var sClassName = "sap.ui.model.odata.v4.ODataModel",
 		// system query options allowed within a $expand query option
 		aExpandQueryOptions = ["$count", "$expand", "$filter", "$levels", "$orderby", "$search",
 			"$select"],
 		// binding-specific parameters allowed in getKeepAliveContext
 		aGetKeepAliveParameters = ["$$groupId", "$$patchWithoutSideEffects", "$$updateGroupId"],
-		rGroupID = /^(\$auto(\.\w+)?|\$direct|\w+)$/,
 		MessageType = coreLibrary.MessageType,
 		aMessageTypes = [
 			undefined,
@@ -219,7 +218,7 @@ sap.ui.define([
 		 * @extends sap.ui.model.Model
 		 * @public
 		 * @since 1.37.0
-		 * @version 1.106.0
+		 * @version 1.108.0
 		 */
 		ODataModel = Model.extend("sap.ui.model.odata.v4.ODataModel",
 			/** @lends sap.ui.model.odata.v4.ODataModel.prototype */{
@@ -245,9 +244,10 @@ sap.ui.define([
 	function constructor(mParameters) {
 		var sGroupId,
 			oGroupProperties,
-			sLanguageTag = sap.ui.getCore().getConfiguration().getLanguageTag(),
+			sLanguageTag = Configuration.getLanguageTag(),
 			sODataVersion,
 			sParameter,
+			mQueryParams,
 			sServiceUrl,
 			oUri,
 			mUriParameters,
@@ -286,7 +286,7 @@ sap.ui.define([
 		mUriParameters = this.buildQueryOptions(oUri.query(true), false, true);
 		// BEWARE: these are shared across all bindings!
 		this.mUriParameters = mUriParameters;
-		if (sap.ui.getCore().getConfiguration().getStatistics()) {
+		if (Configuration.getStatisticsEnabled()) {
 			// Note: this way, "sap-statistics" is not sent within $batch
 			mUriParameters = Object.assign({"sap-statistics" : true}, mUriParameters);
 		}
@@ -298,11 +298,11 @@ sap.ui.define([
 		if (this.sGroupId !== "$auto" && this.sGroupId !== "$direct") {
 			throw new Error("Group ID must be '$auto' or '$direct'");
 		}
-		this.checkGroupId(mParameters.updateGroupId, false, "Invalid update group ID: ");
+		_Helper.checkGroupId(mParameters.updateGroupId, false, "Invalid update group ID: ");
 		this.sUpdateGroupId = mParameters.updateGroupId || this.getGroupId();
 		this.mGroupProperties = {};
 		for (sGroupId in mParameters.groupProperties) {
-			that.checkGroupId(sGroupId, true);
+			_Helper.checkGroupId(sGroupId, true);
 			oGroupProperties = mParameters.groupProperties[sGroupId];
 			if (typeof oGroupProperties !== "object"
 					|| Object.keys(oGroupProperties).length !== 1
@@ -324,24 +324,26 @@ sap.ui.define([
 		}
 		this.bSharedRequests = mParameters.sharedRequests === true;
 
+		// BEWARE: do not share mHeaders between _MetadataRequestor and _Requestor!
 		this.mHeaders = {"Accept-Language" : sLanguageTag};
 		this.mMetadataHeaders = {"Accept-Language" : sLanguageTag};
 
-		// BEWARE: do not share mHeaders between _MetadataRequestor and _Requestor!
+		mQueryParams = Object.assign({}, mUriParameters, mParameters.metadataUrlParams);
 		this.oMetaModel = new ODataMetaModel(
-			_MetadataRequestor.create(this.mMetadataHeaders, sODataVersion,
-				Object.assign({}, mUriParameters, mParameters.metadataUrlParams)),
+			_MetadataRequestor.create(this.mMetadataHeaders, sODataVersion, mQueryParams),
 			this.sServiceUrl + "$metadata", mParameters.annotationURI, this,
-			mParameters.supportReferences);
+			mParameters.supportReferences, mQueryParams["sap-language"]);
 		this.oInterface = {
 			fetchEntityContainer : this.oMetaModel.fetchEntityContainer.bind(this.oMetaModel),
 			fetchMetadata : this.oMetaModel.fetchObject.bind(this.oMetaModel),
+			fireMessageChange : this.fireMessageChange.bind(this),
 			fireDataReceived : this.fireDataReceived.bind(this),
 			fireDataRequested : this.fireDataRequested.bind(this),
 			fireSessionTimeout : function () {
 				that.fireEvent("sessionTimeout");
 			},
 			getGroupProperty : this.getGroupProperty.bind(this),
+			getMessagesByPath : this.getMessagesByPath.bind(this),
 			getOptimisticBatchEnabler : this.getOptimisticBatchEnabler.bind(this),
 			getReporter : this.getReporter.bind(this),
 			onCreateGroup : function (sGroupId) {
@@ -377,9 +379,11 @@ sap.ui.define([
 		}
 		this.aPrerenderingTasks = null; // @see #addPrerenderingTask
 		this.fnOptimisticBatchEnabler = null;
-		this.oDataReceivedError = undefined; // the error for the next dataReceived event
-		// counts the fireDataRequested calls for which one event was fired
-		this.iDataRequestedCount = 0;
+		// maps the path to the error for the next dataReceived event
+		this.mPath2DataReceivedError = {};
+		// maps a path to the difference between fireDataRequested and fireDataReceived calls, to
+		// ensure the events are respectively fired once for a GET request
+		this.mPath2DataRequestedCount = {};
 	}
 
 	/**
@@ -409,23 +413,36 @@ sap.ui.define([
 
 	/**
 	 * The 'dataReceived' event is fired when the back-end data has been received on the client. It
-	 * is only fired for GET requests and is to be used by applications to process an error.
+	 * is only fired for GET requests and is to be used by applications to process an error. For
+	 * each 'dataRequested' event, a 'dataReceived' event is fired.
 	 *
-	 * If back-end requests are successful, the event has almost no parameters. For compatibility
+	 * If a back-end request is successful, the event has almost no parameters. For compatibility
 	 * with {@link sap.ui.model.Binding#event:dataReceived}, an event parameter
 	 * <code>data : {}</code> is provided: "In error cases it will be undefined", but otherwise it
-	 * is not.
+	 * is not. For additional property requests, the absolute path to the entity is also available.
+	 *
+	 * The 'dataReceived' event can be triggered by a binding or by additional property requests for
+	 * an entity that already has been requested. Events triggered by a binding may be bubbled up to
+	 * the model, while events triggered by additional property requests are fired directly by the
+	 * model.
 	 *
 	 * If a back-end request fails, the 'dataReceived' event provides an <code>Error</code> in the
-	 * 'error' event parameter.
+	 * 'error' event parameter. If multiple requests are processed within a single $batch
+	 * (or even a single change set), the order of 'dataReceived' events is not guaranteed. For
+	 * requests which are not processed because a previous request failed, <code>error.cause</code>
+	 * points to the root cause error - you should either ignore those events, or unwrap the error
+	 * to access the root cause immediately. For additional property requests, the absolute path to
+	 * the entity is also available.
 	 *
 	 * @param {sap.ui.base.Event} oEvent
 	 * @param {object} oEvent.getParameters()
 	 * @param {object} [oEvent.getParameters().data]
 	 *   An empty data object if a back-end request succeeds
 	 * @param {Error} [oEvent.getParameters().error]
-	 *   The error object if a back-end request failed. If there are multiple failed back-end
-	 *   requests, the error of the first one is provided.
+	 *   The error object if a back-end request failed.
+	 * @param {string} [oEvent.getParameters().path]
+	 *   The absolute path to the entity which caused the event. The path is only provided for
+	 *   additional property requests; for other requests it is <code>undefined</code>.
 	 *
 	 * @event sap.ui.model.odata.v4.ODataModel#dataReceived
 	 * @public
@@ -437,7 +454,17 @@ sap.ui.define([
 
 	/**
 	 * The 'dataRequested' event is fired directly after data has been requested from a back end.
-	 * It is only fired for GET requests. Registered event handlers are called without parameters.
+	 * It is only fired for GET requests. For each 'dataRequested' event, a 'dataReceived' event is
+	 * fired.
+	 *
+	 * For additional property requests, the absolute path to the entity is available as an event
+	 * parameter.
+	 *
+	 * The 'dataRequested' event can be triggered by a binding or by additional property requests
+	 * for an entity that already has been requested.
+	 * Events triggered by a binding may be bubbled up to the model, while events triggered by
+	 * additional property requests are fired directly by the model. Every GET request caused by
+	 * additional properties is causing one 'dataRequested' event.
 	 *
 	 * There are two kinds of requests leading to such an event:
 	 * <ul>
@@ -450,6 +477,10 @@ sap.ui.define([
 	 * </ul>
 	 *
 	 * @param {sap.ui.base.Event} oEvent
+	 * @param {object} oEvent.getParameters()
+	 * @param {string} [oEvent.getParameters().path]
+	 *   The absolute path to the entity which caused the event. The path is only provided for
+	 *   additional property requests; for other requests it is <code>undefined</code>.
 	 *
 	 * @event sap.ui.model.odata.v4.ODataModel#dataRequested
 	 * @public
@@ -560,7 +591,7 @@ sap.ui.define([
 	 * @returns {this} <code>this</code> to allow method chaining
 	 *
 	 * @public
-	 * @since 1.105.0
+	 * @since 1.106.0
 	 */
 	ODataModel.prototype.attachDataReceived = function (fnFunction, oListener) {
 		return this.attachEvent("dataReceived", fnFunction, oListener);
@@ -837,11 +868,14 @@ sap.ui.define([
 	 *   inherited from the model's parameter "sharedRequests", see
 	 *   {@link sap.ui.model.odata.v4.ODataModel#constructor}. Supported since 1.80.0
 	 *   <b>Note:</b> These bindings are read-only, so they may be especially useful for value
-	 *   lists; the following APIs are <b>not</b> allowed
+	 *   lists; state messages (since 1.108.0) and the following APIs are <b>not</b> allowed
 	 *   <ul>
 	 *     <li> for the list binding itself:
 	 *       <ul>
 	 *         <li> {@link sap.ui.model.odata.v4.ODataListBinding#create}
+	 *         <li> {@link sap.ui.model.odata.v4.ODataListBinding#getKeepAliveContext} or
+	 *           {@link #getKeepAliveContext} as far as it affects such a list binding
+	 *         <li> {@link sap.ui.model.odata.v4.ODataListBinding#resetChanges}
 	 *       </ul>
 	 *     <li> for the {@link sap.ui.model.odata.v4.ODataListBinding#getHeaderContext header
 	 *       context} of a list binding:
@@ -852,8 +886,12 @@ sap.ui.define([
 	 *       <ul>
 	 *         <li> {@link sap.ui.model.odata.v4.Context#delete}
 	 *         <li> {@link sap.ui.model.odata.v4.Context#refresh}
+	 *         <li> {@link sap.ui.model.odata.v4.Context#replaceWith}
 	 *         <li> {@link sap.ui.model.odata.v4.Context#requestSideEffects}
+	 *         <li> {@link sap.ui.model.odata.v4.Context#setKeepAlive}
 	 *         <li> {@link sap.ui.model.odata.v4.Context#setProperty}
+	 *         <li> executing a bound operation using <code>bReplaceWithRVC</code>, see
+	 *           {@link sap.ui.model.odata.v4.ODataContextBinding#execute}
 	 *       </ul>
 	 *     <li> for a dependent property binding of the list binding:
 	 *       <ul>
@@ -1192,35 +1230,10 @@ sap.ui.define([
 	 * @private
 	 */
 	ODataModel.prototype.checkBatchGroupId = function (sGroupId) {
-		this.checkGroupId(sGroupId);
+		_Helper.checkGroupId(sGroupId);
 		if (this.isDirectGroup(sGroupId)) {
 			throw new Error("Group ID does not use batch requests: " + sGroupId);
 		}
-	};
-
-	/**
-	 * Checks whether the given group ID is valid, which means it is either undefined, '$auto',
-	 * '$auto.*', '$direct' or an application group ID as specified in
-	 * {@link sap.ui.model.odata.v4.ODataModel}.
-	 *
-	 * @param {string} sGroupId
-	 *   The group ID
-	 * @param {boolean} [bApplicationGroup]
-	 *   Whether only an application group ID is considered valid
-	 * @param {string} [sErrorMessage]
-	 *   The error message to be used if group ID is not valid; the group ID will be appended
-	 * @throws {Error}
-	 *   For invalid group IDs
-	 *
-	 * @private
-	 */
-	ODataModel.prototype.checkGroupId = function (sGroupId, bApplicationGroup, sErrorMessage) {
-		if (!bApplicationGroup && sGroupId === undefined
-				|| typeof sGroupId === "string"
-					&& (bApplicationGroup ? rApplicationGroupID : rGroupID).test(sGroupId)) {
-			return;
-		}
-		throw new Error((sErrorMessage || "Invalid group ID: ") + sGroupId);
 	};
 
 	/**
@@ -1229,7 +1242,7 @@ sap.ui.define([
 	 * Note: The parameters <code>mParameters</code>, <code>fnCallBack</code>, and
 	 * <code>bReload</code> from {@link sap.ui.model.Model#createBindingContext} are not supported.
 	 *
-	 * It is possible to create binding contexts pointing to metadata.  A '##' is recognized
+	 * It is possible to create binding contexts pointing to metadata. A '##' is recognized
 	 * as separator in the resolved path and splits it into two parts; note that '#' may also be
 	 * used as separator but is deprecated since 1.51.
 	 * The part before the separator is transformed into a metadata context (see
@@ -1447,7 +1460,7 @@ sap.ui.define([
 		if (sCanonicalPath[0] !== "/") {
 			throw new Error("Invalid path: " + sCanonicalPath);
 		}
-		this.checkGroupId(sGroupId);
+		_Helper.checkGroupId(sGroupId);
 		sGroupId = sGroupId || this.getUpdateGroupId();
 		if (this.isApiGroup(sGroupId)) {
 			throw new Error("Illegal update group ID: " + sGroupId);
@@ -1504,7 +1517,7 @@ sap.ui.define([
 	 * @returns {this} <code>this</code> to allow method chaining
 	 *
 	 * @public
-	 * @since 1.105.0
+	 * @since 1.106.0
 	 */
 	ODataModel.prototype.detachDataReceived = function (fnFunction, oListener) {
 		return this.detachEvent("dataReceived", fnFunction, oListener);
@@ -1539,6 +1552,31 @@ sap.ui.define([
 	};
 
 	/**
+	 * Requests the metadata for the given meta path and calculates the key predicate by taking the
+	 * key properties from the given entity instance.
+	 *
+	 * @param {string} sMetaPath
+	 *   An absolute metadata path to the entity set
+	 * @param {object} oEntity
+	 *   The entity instance with the key property values
+	 * @returns {sap.ui.base.SyncPromise<string|undefined>}
+	 *   A promise that gets resolved with the proper URI encoded key predicate, for example
+	 *   "(Sector='A%2FB%26C',ID='42')" or "('42')", or <code>undefined</code>, if at least one key
+	 *   property is undefined. It gets rejected if the metadata cannot be fetched or in case the
+	 *   entity has no key properties according to metadata.
+	 *
+	 * @private
+	 * @see #requestKeyPredicate
+	 */
+	ODataModel.prototype.fetchKeyPredicate = function (sMetaPath, oEntity) {
+		var mTypeForMetaPath = {};
+
+		return this.oRequestor.fetchType(mTypeForMetaPath, sMetaPath).then(function () {
+			return _Helper.getKeyPredicate(oEntity, sMetaPath, mTypeForMetaPath);
+		});
+	};
+
+	/**
 	 * @override
 	 * @see sap.ui.model.Model#filterMatchingMessages
 	 */
@@ -1549,43 +1587,49 @@ sap.ui.define([
 	};
 
 	/**
-	 * Fires the 'dataReceived' event. This function is only called from the property bindings for
-	 * late property requests. Bubbling up from the binding goes directly to fireEvent.
-	 *
-	 * Fire only one event, even when many late properties are requested (and each request calls
-	 * this function). Use the first response error.
+	 * Fires a 'dataReceived' event. This function is only called for additional property requests
+	 * for an entity that already has been requested. Bubbling up from a binding goes directly to
+	 * fireEvent.
 	 *
 	 * @param {Error} [oError]
-	 *   The error if the request failed
+	 *   The error if an additional property request failed
+	 * @param {string} [sPath]
+	 *   The absolute path to the entity
 	 *
 	 * @private
 	 */
-	ODataModel.prototype.fireDataReceived = function (oError) {
-		if (this.iDataRequestedCount === 0) {
+	ODataModel.prototype.fireDataReceived = function (oError, sPath) {
+		if (!(sPath in this.mPath2DataRequestedCount)) {
 			throw new Error("Received more data than requested");
 		}
-		this.iDataRequestedCount -= 1;
-		this.oDataReceivedError = this.oDataReceivedError || oError; // first error wins
-		if (this.iDataRequestedCount === 0) {
-			this.fireEvent("dataReceived",
-				this.oDataReceivedError ? {error : this.oDataReceivedError} : {data : {}});
-			this.oDataReceivedError = undefined;
+		this.mPath2DataRequestedCount[sPath] -= 1;
+		// first error wins
+		this.mPath2DataReceivedError[sPath] = this.mPath2DataReceivedError[sPath] || oError;
+		if (this.mPath2DataRequestedCount[sPath] === 0) {
+			this.fireEvent("dataReceived", this.mPath2DataReceivedError[sPath]
+				? {error : this.mPath2DataReceivedError[sPath], path : sPath}
+				: {data : {}, path : sPath});
+			delete this.mPath2DataReceivedError[sPath];
+			delete this.mPath2DataRequestedCount[sPath];
 		}
 	};
 
 	/**
-	 * Fires the 'dataRequested' event. This function is only called from the property bindings for
-	 * late property requests. Bubbling up from the binding goes directly to fireEvent.
+	 * Fires a 'dataRequested' event. This function is only called for additional property requests
+	 * for an entity that already has been requested. Bubbling up from a binding goes directly to
+	 * fireEvent.
 	 *
-	 * Fire only one event, even when many late properties are requested (and each request calls
-	 * this function).
+	 *  @param {string} [sPath]
+	 *   The absolute path to the entity
 	 *
 	 * @private
 	 */
-	ODataModel.prototype.fireDataRequested = function () {
-		this.iDataRequestedCount += 1;
-		if (this.iDataRequestedCount === 1) {
-			this.fireEvent("dataRequested");
+	ODataModel.prototype.fireDataRequested = function (sPath) {
+		if (sPath in this.mPath2DataRequestedCount) {
+			this.mPath2DataRequestedCount[sPath] += 1;
+		} else {
+			this.mPath2DataRequestedCount[sPath] = 1;
+			this.fireEvent("dataRequested", {path : sPath});
 		}
 	};
 
@@ -1706,6 +1750,28 @@ sap.ui.define([
 	};
 
 	/**
+	 * Takes the metadata for the given meta path and calculates the key predicate by taking the key
+	 * properties from the given entity instance.
+	 *
+	 * @param {string} sMetaPath
+	 *   An absolute metadata path to an entity set
+	 * @param {object} oEntity
+	 *   The entity instance with the key property values
+	 * @returns {string|undefined}
+	 *   The proper URI-encoded key predicate, for example "(Sector='A%2FB%26C',ID='42')" or
+	 *   "('42')", or <code>undefined</code> if at least one key property is undefined.
+	 * @throws {Error}
+	 *   If the key predicate cannot be determined synchronously
+	 *   (due to a pending metadata request), or if the metadata could not be fetched.
+	 *
+	 * @function
+	 * @public
+	 * @see #requestKeyPredicate
+	 * @since 1.107.0
+	 */
+	ODataModel.prototype.getKeyPredicate = _Helper.createGetMethod("fetchKeyPredicate", true);
+
+	/**
 	 * Returns messages of this model associated with the given context, that is messages belonging
 	 * to the object referred to by this context or a child object of that object. The messages are
 	 * sorted by their {@link sap.ui.core.message.Message#getType type} according to the type's
@@ -1811,7 +1877,7 @@ sap.ui.define([
 	 * {@link sap.ui.model.odata.v4.Context#getBinding binding} during its lifetime.
 	 *
 	 * @param {string} sPath
-	 *   A list context path to an entity
+	 *   A list context path to an entity, see also {@link #requestKeyPredicate}
 	 * @param {boolean} [bRequestMessages]
 	 *   Whether to request messages for the context's entity
 	 * @param {object} [mParameters]
@@ -1859,7 +1925,7 @@ sap.ui.define([
 				throw new Error("Invalid parameter: " + sParameter);
 			}
 		});
-		sListPath = sPath.slice(0, this.getPredicateIndex(sPath));
+		sListPath = sPath.slice(0, _Helper.getPredicateIndex(sPath));
 		oListBinding = this.mKeepAliveBindingsByPath[sListPath];
 		if (!oListBinding) {
 			aListBindings = this.aAllBindings.filter(function (oBinding) {
@@ -1880,27 +1946,6 @@ sap.ui.define([
 		}
 
 		return oListBinding.getKeepAliveContext(sPath, bRequestMessages, mParameters.$$groupId);
-	};
-
-	/**
-	 * Returns the index of the key predicate in the last segment of the given path.
-	 *
-	 * @param {string} sPath - The path
-	 * @returns {number} The index of the key predicate
-	 * @throws {Error} If no path is given or the last segment contains no key predicate
-	 *
-	 * @private
-	 */
-	ODataModel.prototype.getPredicateIndex = function (sPath) {
-		var iPredicateIndex = sPath
-				? sPath.indexOf("(", sPath.lastIndexOf("/"))
-				: -1;
-
-		if (iPredicateIndex < 0 || !sPath.endsWith(")")) {
-			throw new Error("Not a list context path to an entity: " + sPath);
-		}
-
-		return iPredicateIndex;
 	};
 
 	/**
@@ -1938,10 +1983,25 @@ sap.ui.define([
 	};
 
 	/**
-	 * Returns <code>true</code> if there are pending changes, meaning updates or created entities
-	 * (see {@link sap.ui.model.odata.v4.ODataListBinding#create}) that have not yet been
-	 * successfully sent to the server. Since 1.98.0,
-	 * {@link sap.ui.model.odata.v4.Context#isInactive inactive} contexts are ignored.
+	 * Returns this model's root URL of the service to request data from (as defined by the
+	 * "serviceUrl" model parameter, see {@link sap.ui.model.odata.v4.ODataModel#constructor}),
+	 * without query options.
+	 *
+	 * @returns {string} The service URL
+	 *
+	 * @public
+	 * @since 1.107.0
+	 */
+	ODataModel.prototype.getServiceUrl = function () {
+		return this.sServiceUrl;
+	};
+
+	/**
+	 * Returns <code>true</code> if there are pending changes, which can be updates, created
+	 * entities (see {@link sap.ui.model.odata.v4.ODataListBinding#create}) or entity deletions
+	 * (see {@link sap.ui.model.odata.v4.Context#delete}) that have not yet been successfully sent
+	 * to the server. Since 1.98.0, {@link sap.ui.model.odata.v4.Context#isInactive inactive}
+	 * contexts are ignored.
 	 *
 	 * @param {string} [sGroupId]
 	 *   A group ID as specified in {@link sap.ui.model.odata.v4.ODataModel}, except group IDs
@@ -2098,7 +2158,7 @@ sap.ui.define([
 		if (typeof sGroupId === "boolean") {
 			throw new Error("Unsupported parameter bForceUpdate");
 		}
-		this.checkGroupId(sGroupId);
+		_Helper.checkGroupId(sGroupId);
 
 		// Note: getBindings() returns an array that contains all bindings with change listeners
 		// (owned by Model)
@@ -2364,6 +2424,27 @@ sap.ui.define([
 	};
 
 	/**
+	 * Requests the metadata for the given meta path and calculates the key predicate by taking the
+	 * key properties from the given entity instance.
+	 *
+	 * @param {string} sMetaPath
+	 *   An absolute metadata path to the entity set
+	 * @param {object} oEntity
+	 *   The entity instance with the key property values
+	 * @returns {Promise<string|undefined>}
+	 *   A promise that gets resolved with the proper URI-encoded key predicate, for example
+	 *   "(Sector='A%2FB%26C',ID='42')" or "('42')", or <code>undefined</code> if at least one key
+	 *   property is undefined. It gets rejected if the metadata cannot be fetched, or in case the
+	 *   entity has no key properties according to the metadata.
+	 *
+	 * @function
+	 * @public
+	 * @see #getKeyPredicate
+	 * @since 1.107.0
+	 */
+	ODataModel.prototype.requestKeyPredicate = _Helper.createRequestMethod("fetchKeyPredicate");
+
+	/**
 	 * Requests side effects for the given paths on all affected root bindings.
 	 *
 	 * @param {string} sGroupId
@@ -2392,11 +2473,10 @@ sap.ui.define([
 	};
 
 	/**
-	 * Resets all property changes and created entities associated with the given group ID which
-	 * have not been successfully submitted via {@link #submitBatch}. Resets also invalid user
-	 * input for the same group ID. This function does not reset the deletion of entities
-	 * (see {@link sap.ui.model.odata.v4.Context#delete}) and the execution of OData operations
-	 * (see {@link sap.ui.model.odata.v4.ODataContextBinding#execute}).
+	 * Resets all property changes, created entities, and entity deletions associated with the given
+	 * group ID which have not been successfully submitted via {@link #submitBatch}. Resets also
+	 * invalid user input for the same group ID. This function does not reset the execution of OData
+	 * operations (see {@link sap.ui.model.odata.v4.ODataContextBinding#execute}).
 	 *
 	 * @param {string} [sGroupId]
 	 *   A valid group ID as specified in {@link sap.ui.model.odata.v4.ODataModel}. If it is
@@ -2600,7 +2680,7 @@ sap.ui.define([
 	/**
 	 * Returns a string representation of this object including the service URL.
 	 *
-	 * @return {string} A string description of this model
+	 * @returns {string} A string description of this model
 	 * @public
 	 * @since 1.37.0
 	 */

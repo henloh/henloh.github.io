@@ -21,7 +21,8 @@ sap.ui.define([
 	"sap/ui/support/supportRules/Constants",
 	"sap/ui/support/supportRules/util/EvalUtils",
 	"sap/ui/support/supportRules/util/Utils",
-	"sap/ui/thirdparty/jquery"
+	"sap/ui/thirdparty/jquery",
+	"sap/ui/core/Configuration"
 ], function (
 	Log,
 	extend,
@@ -34,7 +35,8 @@ sap.ui.define([
 	constants,
 	EvalUtils,
 	Utils,
-	jQuery
+	jQuery,
+	Configuration
 	) {
 		"use strict";
 
@@ -228,7 +230,7 @@ sap.ui.define([
 				iProgress = 0,
 				iRulesNumber = aLibNames.publicRules.length;
 
-			var supportModeConfig = sap.ui.getCore().getConfiguration().getSupportMode();
+			var supportModeConfig = Configuration.getSupportMode();
 			var bSilentMode = supportModeConfig && supportModeConfig.indexOf("silent") > -1;
 
 			if (bHasInternalRules) {

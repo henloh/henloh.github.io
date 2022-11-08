@@ -19,7 +19,7 @@ sap.ui.define([
 	 * @constructor
 	 * @alias sap.ui.fl.changeHandler.BaseRename
 	 * @author SAP SE
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @experimental Since 1.46
 	 */
 	var BaseRename = {
@@ -136,7 +136,7 @@ sap.ui.define([
 				 * Retrieves the information required for the change visualization.
 				 *
 				 * @param {sap.ui.fl.Change} oChange - Object with change data
-				 * @returns {object} Object with a payload containing the information required for the change visualization
+				 * @returns {object} Object with a description payload containing the information required for the change visualization
 				 * @public
 				 */
 				getChangeVisualizationInfo: function(oChange) {
@@ -145,7 +145,7 @@ sap.ui.define([
 						&& oChange.getTexts()[mRenameSettings.changePropertyName]
 					);
 					return {
-						payload: {
+						descriptionPayload: {
 							originalLabel: oChange.getRevertData(),
 							newLabel: oNewLabel && oNewLabel.value
 						}

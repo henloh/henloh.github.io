@@ -36,7 +36,7 @@ sap.ui.define([
 	/**
 	 * @namespace sap.ui.fl.apply._internal.flexState.FlexObjectState
 	 * @since 1.83
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @private
 	 * @ui5-restricted sap.ui.fl
 	 */
@@ -146,7 +146,8 @@ sap.ui.define([
 			mPropertyBag.skipUpdateCache,
 			mPropertyBag.draft,
 			mPropertyBag.layer,
-			mPropertyBag.removeOtherLayerChanges
+			mPropertyBag.removeOtherLayerChanges,
+			mPropertyBag.condenseAnyLayer
 		)
 			.then(oDescriptorFlexController.saveAll.bind(
 				oDescriptorFlexController,
@@ -154,7 +155,8 @@ sap.ui.define([
 				mPropertyBag.skipUpdateCache,
 				mPropertyBag.draft,
 				mPropertyBag.layer,
-				mPropertyBag.removeOtherLayerChanges
+				mPropertyBag.removeOtherLayerChanges,
+				mPropertyBag.condenseAnyLayer
 			));
 	}
 
@@ -196,6 +198,26 @@ sap.ui.define([
 		return aChangePersistenceEntities.concat(aCompVariantEntities).filter(function(oFlexObject) {
 			return oFlexObject.getState() !== States.PERSISTED;
 		});
+	};
+
+	/**
+	 * Checks if dirty flex objects exist for the flex persistence associated with the selector control;
+	 * Includes dirty changes on the descriptor as well as dirty changes on SmartVariantManagement of the application.
+	 *
+	 * @param {object} mPropertyBag Object with parameters as properties
+	 * @param {sap.ui.fl.Selector} mPropertyBag.selector To retrieve the associated flex persistence
+	 * @returns {boolean} <code>true</code> if dirty flex objects exist
+	 */
+	FlexObjectState.hasDirtyFlexObjects = function (mPropertyBag) {
+		var oAppComponent = ChangesController.getAppComponentForSelector(mPropertyBag.selector);
+		var sReference = ManifestUtils.getFlexReferenceForControl(oAppComponent);
+		if (ChangePersistenceFactory.getChangePersistenceForComponent(sReference).getDirtyChanges().length > 0) {
+			return true;
+		}
+		if (ChangePersistenceFactory.getChangePersistenceForComponent(Utils.normalizeReference(sReference)).getDirtyChanges().length > 0) {
+			return true;
+		}
+		return CompVariantState.hasDirtyChanges(sReference);
 	};
 
 	/**

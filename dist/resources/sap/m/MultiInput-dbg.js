@@ -107,13 +107,12 @@ function(
 	* @implements sap.ui.core.ISemanticFormContent
 	*
 	* @author SAP SE
-	* @version 1.106.0
+	* @version 1.108.0
 	*
 	* @constructor
 	* @public
 	* @alias sap.m.MultiInput
 	* @see {@link fiori:https://experience.sap.com/fiori-design-web/multiinput/ Multi-Input Field}
-	* @ui5-metamodel This control/element also will be described in the UI5 (legacy) designtime metamodel
 	*/
 	var MultiInput = Input.extend("sap.m.MultiInput", /** @lends sap.m.MultiInput.prototype */ {
 		metadata: {
@@ -232,7 +231,9 @@ function(
 				}
 			},
 			dnd: { draggable: false, droppable: true }
-		}
+		},
+
+		renderer: MultiInputRenderer
 	});
 
 	EnabledPropagator.apply(MultiInput.prototype, [true]);

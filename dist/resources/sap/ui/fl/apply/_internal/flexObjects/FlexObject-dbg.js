@@ -69,7 +69,7 @@ sap.ui.define([
 	 * @extends sap.ui.base.ManagedObject
 	 * @alias sap.ui.fl.apply._internal.flexObjects.FlexObject
 	 * @since 1.100
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @private
 	 * @ui5-restricted sap.ui.fl
 	 */
@@ -385,6 +385,16 @@ sap.ui.define([
 	 */
 	FlexObject.prototype.getDefinition = function() {
 		return this.convertToFileContent();
+	};
+
+	FlexObject.prototype.getCreation = function() {
+		return this.getFlexObjectMetadata().creation;
+	};
+
+	FlexObject.prototype.setCreation = function(sNewCreation) {
+		var oFlexObjectMetadata = this.getFlexObjectMetadata();
+		oFlexObjectMetadata.creation = sNewCreation;
+		this.setFlexObjectMetadata(oFlexObjectMetadata);
 	};
 
 	// ----------------------------------------------------

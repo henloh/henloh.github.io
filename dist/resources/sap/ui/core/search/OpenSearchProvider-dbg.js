@@ -27,11 +27,10 @@ sap.ui.define([
 	 * @class
 	 * A SearchProvider which uses the OpenSearch protocol (either JSON or XML).
 	 * @extends sap.ui.core.search.SearchProvider
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 *
 	 * @public
 	 * @alias sap.ui.core.search.OpenSearchProvider
-	 * @ui5-metamodel This control/element also will be described in the UI5 (legacy) designtime metamodel
 	 */
 	var OpenSearchProvider = SearchProvider.extend("sap.ui.core.search.OpenSearchProvider", /** @lends sap.ui.core.search.OpenSearchProvider.prototype */ { metadata : {
 

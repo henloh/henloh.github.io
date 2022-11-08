@@ -728,9 +728,9 @@ sap.ui.define([
 			}
 			if (this.onExit) {
 				oView.attachBeforeExit(this.onExit, this);
-				if (oView.bControllerIsViewManaged) {
-					oView.attachBeforeExit(this.destroyFragments, this);
-				}
+			}
+			if (oView.bControllerIsViewManaged) {
+				oView.attachBeforeExit(this.destroyFragments, this);
 			}
 			if (this.onAfterRendering) {
 				oView.attachAfterRendering(this.onAfterRendering, this);

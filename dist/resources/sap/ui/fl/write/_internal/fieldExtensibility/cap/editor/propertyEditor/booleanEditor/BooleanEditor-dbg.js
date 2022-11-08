@@ -18,7 +18,7 @@ sap.ui.define([
 	 * @alias sap.ui.fl.write._internal.fieldExtensibility.cap.editor.propertyEditor.booleanEditor.BooleanEditor
 	 * @author SAP SE
 	 * @since 1.93
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 *
 	 * @private
 	 * @experimental 1.93

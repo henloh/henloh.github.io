@@ -30,7 +30,8 @@ sap.ui.define([
 	"sap/base/Log",
 	"sap/ui/core/InvisibleText",
 	'./Button',
-	"sap/ui/thirdparty/jquery"
+	"sap/ui/thirdparty/jquery",
+	"sap/ui/core/Configuration"
 ],
 function(
 	InputBase,
@@ -57,7 +58,8 @@ function(
 	Log,
 	InvisibleText,
 	Button,
-	jQuery
+	jQuery,
+	Configuration
 ) {
 		"use strict";
 
@@ -142,7 +144,7 @@ function(
 		 * @extends sap.m.DateTimeField
 		 *
 		 * @author SAP SE
-		 * @version 1.106.0
+		 * @version 1.108.0
 		 *
 		 * @constructor
 		 * @public
@@ -312,7 +314,10 @@ function(
 				},
 
 				dnd: { draggable: false, droppable: true }
-		}});
+		},
+
+			renderer: TimePickerRenderer
+		});
 
 		/**
 		 * Determines the format, displayed in the input field and the picker clocks/numeric inputs.
@@ -410,7 +415,8 @@ function(
 				src: this.getIconSrc(),
 				noTabStop: true,
 				title: "",
-				tooltip: this._oResourceBundle.getText("OPEN_PICKER_TEXT")
+				decorative: false,
+				useIconTooltip: false
 			});
 
 			// indicates whether the clock picker is still open
@@ -620,7 +626,7 @@ function(
 			oClocks.setValue(sDisplayFormattedValue);
 
 			sFormattedDate = this._getPickerParser().format(oDateValue || new Date(),
-				sap.ui.getCore().getConfiguration().getTimezone());
+				Configuration.getTimezone());
 			oDateValue = this._getPickerParser().parse(sFormattedDate, TimezoneUtil.getLocalTimezone())[ 0 ];
 			oDateValue.setMilliseconds(iDateValueMilliseconds);
 
@@ -1062,40 +1068,6 @@ function(
 		};
 
 		/**
-		 * Sets tooltip of the control.
-		 *
-		 * @public
-		 * @override
-		 * @param {string|sap.ui.core.TooltipBase} vTooltip
-		 * @returns {this} A reference to <code>this</code> instance to allow method chaining.
-		 */
-		TimePicker.prototype.setTooltip = function(vTooltip) {
-			/*
-			 * We need this override the default setter from <code>sap.m.Input</code> because the super class method
-			 * doesn't respect the custom role id of the TimePicker which we add in 'aria-describedby' internally.
-			 */
-			var oDomRef = this.getDomRef(),
-				sTooltip;
-
-			this._refreshTooltipBaseDelegate(vTooltip);
-			this.setAggregation("tooltip", vTooltip, true);
-
-			if (!oDomRef) {
-				return this;
-			}
-
-			sTooltip = this.getTooltip_AsString();
-
-			if (sTooltip) {
-				oDomRef.setAttribute("title", sTooltip);
-			} else {
-				oDomRef.removeAttribute("title");
-			}
-
-			return this;
-		};
-
-		/**
 		 * Sets the locale of the control.
 		 *
 		 * Used for parsing and formatting the time values in languages different than English.
@@ -1165,7 +1137,7 @@ function(
 		TimePicker.prototype._getLocale = function () {
 			var sLocaleId = this.getLocaleId();
 
-			return sLocaleId ? new Locale(sLocaleId) : sap.ui.getCore().getConfiguration().getFormatSettings().getFormatLocale();
+			return sLocaleId ? new Locale(sLocaleId) : Configuration.getFormatSettings().getFormatLocale();
 		};
 
 		/**
@@ -1541,7 +1513,7 @@ function(
 			if (Device.system.phone) {
 				sArialabelledby = this.$("inner").attr("aria-labelledby");
 				sLabelId = sArialabelledby && sArialabelledby.split(" ")[0];
-				sLabel = sLabelId ? document.getElementById(sLabelId).getAttribute("aria-label") : "";
+				sLabel = sLabelId ? document.getElementById(sLabelId).textContent : "";
 
 				if (sLabel) {
 					oPicker.setTitle(sLabel);
@@ -1691,7 +1663,7 @@ function(
 				sFormattedDate = this._getPickerParser().format(oDate, TimezoneUtil.getLocalTimezone());
 
 			oDate = this._getPickerParser()
-				.parse(sFormattedDate, sap.ui.getCore().getConfiguration().getTimezone())[0];
+				.parse(sFormattedDate, Configuration.getTimezone())[0];
 
 			this._isClockPicker = true;
 			this._isNumericPicker = false;
@@ -1725,7 +1697,7 @@ function(
 				sFormattedDate = this._getPickerParser().format(oDate, TimezoneUtil.getLocalTimezone());
 
 			oDate = this._getPickerParser()
-				.parse(sFormattedDate, sap.ui.getCore().getConfiguration().getTimezone())[0];
+				.parse(sFormattedDate, Configuration.getTimezone())[0];
 
 			this._isClockPicker = false;
 			this._isNumericPicker = true;
@@ -1753,7 +1725,7 @@ function(
 		 */
 		 TimePicker.prototype._getLocaleBasedPattern = function (sPlaceholder) {
 			return LocaleData.getInstance(
-				sap.ui.getCore().getConfiguration().getFormatSettings().getFormatLocale()
+				Configuration.getFormatSettings().getFormatLocale()
 			).getTimePattern(sPlaceholder);
 		};
 
@@ -1941,8 +1913,10 @@ function(
 			if (oTimePicker._checkStyle(sDisplayFormat)) {
 				sMask = LocaleData.getInstance(oLocale).getTimePattern(sDisplayFormat);
 			} else {
-				sDisplayFormat = sDisplayFormat.replace(/'/g, ""); // single quotes (like 'ч') are irrelevant for DateFormat, so they are for the mask
-				sMask = sDisplayFormat;
+				sMask = sDisplayFormat
+					.replace(/hh/ig, "h")
+					.replace(/h(?!')/ig, "h9")
+					.replace(/'h(?=')/ig, "'^h"); // add escape caret character for the mask before the hour character surrounded by single quotes
 			}
 
 			this._oTimePicker = oTimePicker;
@@ -1965,7 +1939,6 @@ function(
 			oTimePicker.setPlaceholderSymbol(PLACEHOLDER_SYMBOL);
 
 			//set hours allowed chars in the mask
-			sMask = sMask.replace(/hh/ig, "h").replace(/h/ig, "h9");
 			if (this.b24H) {
 				sAllowedHourChars = "[" + this.sLeadingRegexChar + "012]";
 			} else {
@@ -1982,9 +1955,14 @@ function(
 
 			//set minutes and seconds allowed chars in the mask
 			this.iMinuteNumber1Index = sMask.indexOf("mm");
-			sMask = sMask.replace(/mm/g, "59");
 			this.iSecondNumber1Index = sMask.indexOf("ss");
-			sMask = sMask.replace(/ss/g, "59");
+
+			sMask = sMask
+				.replace(/'mm(?=')/g, "'^mm")
+				.replace(/mm(?!')/g, "59")
+				.replace(/'ss(?=')/g, "'^ss")
+				.replace(/ss(?!')/g, "59")
+				.replace(/'/g, ""); // single quotes (like 'ч') are irrelevant for DateFormat, so they are for the mask
 
 			this._maskRuleMinSec = new MaskInputRule({
 				maskFormatSymbol: "5",
@@ -2300,7 +2278,7 @@ function(
 		};
 
 		function getDefaultDisplayFormat() {
-			var oLocale = sap.ui.getCore().getConfiguration().getFormatSettings().getFormatLocale(),
+			var oLocale = Configuration.getFormatSettings().getFormatLocale(),
 				oLocaleData = LocaleData.getInstance(oLocale);
 
 			return oLocaleData.getTimePattern(TimeFormatStyles.Medium);

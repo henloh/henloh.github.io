@@ -20,6 +20,7 @@ sap.ui.define([
 	'sap/base/Log',
 	'sap/base/security/encodeXML',
 	"sap/ui/thirdparty/jquery",
+	"sap/ui/core/Configuration",
 	// jQuery Plugin "addAriaDescribedBy"
 	'sap/ui/dom/jquery/Aria'
 ], function(
@@ -34,7 +35,8 @@ sap.ui.define([
 	KeyCodes,
 	Log,
 	encodeXML,
-	jQuery
+	jQuery,
+	Configuration
 ) {
 
 
@@ -63,12 +65,11 @@ sap.ui.define([
 	 * @implements sap.ui.core.IFormContent, sap.ui.unified.IProcessableBlobs
 	 *
 	 * @author SAP SE
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 *
 	 * @constructor
 	 * @public
 	 * @alias sap.ui.unified.FileUploader
-	 * @ui5-metamodel This control/element also will be described in the UI5 (legacy) designtime metamodel
 	 */
 	var FileUploader = Control.extend("sap.ui.unified.FileUploader", /** @lends sap.ui.unified.FileUploader.prototype */ { metadata : {
 
@@ -616,7 +617,7 @@ sap.ui.define([
 		// check if sap.m library is used
 		this.bMobileLib = this.oBrowse.getMetadata().getName() == "sap.m.Button";
 
-		if (sap.ui.getCore().getConfiguration().getAccessibility()) {
+		if (Configuration.getAccessibility()) {
 			if (!FileUploader.prototype._sAccText) {
 				var rb = sap.ui.getCore().getLibraryResourceBundle("sap.ui.unified");
 				FileUploader.prototype._sAccText = rb.getText("FILEUPLOAD_ACC");
@@ -1045,7 +1046,7 @@ sap.ui.define([
 	FileUploader.prototype.setEnabled = function(bEnabled){
 		var $oFileUpload = jQuery(this.oFileUpload);
 
-		this.setProperty("enabled", bEnabled);
+		this.setProperty("enabled", bEnabled, false);
 		this.oFilePath.setEnabled(bEnabled);
 		this.oBrowse.setEnabled(bEnabled);
 
@@ -1060,7 +1061,7 @@ sap.ui.define([
 
 	FileUploader.prototype.setValueState = function(sValueState) {
 
-		this.setProperty("valueState", sValueState, true);
+		this.setProperty("valueState", sValueState, false);
 		//as of 1.23.1 oFilePath can be an sap.ui.commons.TextField or an sap.m.Input, which both have a valueState
 		if (this.oFilePath.setValueState) {
 			this.oFilePath.setValueState(sValueState);
@@ -1097,7 +1098,7 @@ sap.ui.define([
 			Log.warning("Setting the valueStateText property with the combination of libraries used is not supported.", this);
 		}
 
-		return this.setProperty("valueStateText", sValueStateText, true);
+		return this.setProperty("valueStateText", sValueStateText, false);
 	};
 
 	FileUploader.prototype.setStyle = function(sStyle) {
@@ -1182,7 +1183,6 @@ sap.ui.define([
 	 *
 	 * @public
 	 * @since 1.25.0
-	 * @ui5-metamodel This method also will be described in the UI5 (legacy) designtime metamodel
 	 * @returns {this} The <code>sap.ui.unified.FileUploader</code> instance
 	 */
 	FileUploader.prototype.clear = function () {
@@ -1334,7 +1334,6 @@ sap.ui.define([
 	 *
 	 * @type void
 	 * @public
-	 * @ui5-metamodel This method also will be described in the UI5 (legacy) designtime metamodel
 	 */
 	FileUploader.prototype.upload = function(bPreProcessFiles) {
 		var uploadForm,
@@ -1396,7 +1395,6 @@ sap.ui.define([
 	 *                 The parameter is taken into account if the sHeaderParameterName parameter is provided too.
 	 * @public
 	 * @since 1.24.0
-	 * @ui5-metamodel This method also will be described in the UI5 (legacy) designtime metamodel
 	 */
 	FileUploader.prototype.abort = function(sHeaderParameterName, sHeaderParameterValue) {
 		if (!this.getUseMultipart()) {

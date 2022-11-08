@@ -34,12 +34,11 @@ sap.ui.define([
 	 * @class Item that represents one file to be uploaded using the {@link sap.m.upload.UploadSet} control.
 	 * @extends sap.ui.core.Element
 	 * @author SAP SE
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @constructor
 	 * @public
 	 * @since 1.63
 	 * @alias sap.m.upload.UploadSetItem
-	 * @ui5-metamodel This control/element also will be described in the UI5 (legacy) designtime metamodel.
 	 */
 	var UploadSetItem = Element.extend("sap.m.upload.UploadSetItem", {
 		metadata: {
@@ -175,8 +174,8 @@ sap.ui.define([
 				if (this._bInEditMode) {
 					oRm.class("sapMUCEditMode");
 				}
+				oRm.attr("id", oControl.getId());
 				oRm.openEnd();
-
 				oRm.openStart("div").class("sapMUSTextInnerContainer").openEnd();
 				oRm.renderControl(oItem._bInEditMode ? oItem._getFileNameEdit() : oItem._getFileNameLink());
 				oItem._renderMarkers(oRm);
@@ -525,7 +524,9 @@ sap.ui.define([
 				this._oIcon.addStyleClass("sapMUCItemImage sapMUCItemIcon");
 			} else {
 				this._oIcon = new Icon(this.getId() + "-icon", {
-					src: this._getIconByMimeType(this.getMediaType())
+					src: this._getIconByMimeType(this.getMediaType()),
+					decorative: false,
+					useIconTooltip: false
 				});
 				this._oIcon.addStyleClass("sapMUCItemIcon");
 			}

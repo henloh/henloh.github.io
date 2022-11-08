@@ -157,7 +157,7 @@ sap.ui.define([
 		 * @hideconstructor
 		 * @public
 		 * @since 1.37.0
-		 * @version 1.106.0
+		 * @version 1.108.0
 		 */
 		ODataMetaModel = MetaModel.extend("sap.ui.model.odata.v4.ODataMetaModel", {
 				constructor : constructor
@@ -696,13 +696,16 @@ sap.ui.define([
 	 *   Whether <code>&lt;edmx:Reference></code> and <code>&lt;edmx:Include></code> directives are
 	 *   supported in order to load schemas on demand from other $metadata documents and include
 	 *   them into the current service ("cross-service references").
+	 * @param {string} [sLanguage]
+	 *   The "sap-language" URL parameter
 	 */
-	function constructor(oRequestor, sUrl, vAnnotationUri, oModel, bSupportReferences) {
+	function constructor(oRequestor, sUrl, vAnnotationUri, oModel, bSupportReferences, sLanguage) {
 		MetaModel.call(this);
 		this.aAnnotationUris = vAnnotationUri && !Array.isArray(vAnnotationUri)
 			? [vAnnotationUri] : vAnnotationUri;
 		this.sDefaultBindingMode = BindingMode.OneTime;
 		this.mETags = {};
+		this.sLanguage = sLanguage;
 		this.oLastModified = new Date(0);
 		this.oMetadataPromise = null;
 		this.oModel = oModel;
@@ -1673,7 +1676,7 @@ sap.ui.define([
 	 * @param {string} sPropertyPath
 	 *   A path of a property in the OData data model, absolute or relative to <code>oContext</code>
 	 * @param {sap.ui.model.odata.v4.Context} oContext
-	 *   A context, used for building the path and for fetching key predicates
+	 *   A context, used for building the path and for determining the key predicate
 	 * @param {boolean} [bNoEditUrl]
 	 *   Whether no edit URL is required
 	 * @returns {sap.ui.base.SyncPromise}
@@ -2345,6 +2348,7 @@ sap.ui.define([
 				autoExpandSelect : bAutoExpandSelect,
 				groupId : sGroupId,
 				httpHeaders : this.oModel.getHttpHeaders(),
+				metadataUrlParams : this.sLanguage && {"sap-language" : this.sLanguage},
 				operationMode : OperationMode.Server,
 				serviceUrl : sUrl,
 				sharedRequests : true,
@@ -2442,8 +2446,9 @@ sap.ui.define([
 	 * @param {string} sPropertyPath
 	 *   An absolute path to an OData property within the OData data model
 	 * @returns {string|undefined}
-	 *   The path of the property's unit or currency relative to the property's entity, or
-	 *   <code>undefined</code> in case the property has no associated unit or currency
+	 *   The path of the property's unit or currency relative to the (entity or complex) type which
+	 *   contains the original property, or <code>undefined</code> in case the property has no
+	 *   associated unit or currency
 	 *
 	 * @private
 	 */
@@ -2555,24 +2560,20 @@ sap.ui.define([
 
 		return this.requestObject("/@com.sap.vocabularies.CodeList.v1." + sTerm)
 			.then(function (oCodeList) {
-				var sCacheKey,
-					oCodeListMetaModel,
-					oCodeListModel,
-					oPromise,
-					sTypePath;
+				var sCacheKey, oCodeListMetaModel, oCodeListModel, oPromise, sTypePath, sUrl;
 
 				if (!oCodeList) {
 					return null;
 				}
 
-				sCacheKey = that.getAbsoluteServiceUrl(oCodeList.Url)
-					+ "#" + oCodeList.CollectionPath;
+				sUrl = _Helper.setLanguage(oCodeList.Url, that.sLanguage);
+				sCacheKey = that.getAbsoluteServiceUrl(sUrl) + "#" + oCodeList.CollectionPath;
 				oPromise = mCodeListUrl2Promise.get(sCacheKey);
 				if (oPromise) {
 					return oPromise;
 				}
 
-				oCodeListModel = that.getOrCreateSharedModel(oCodeList.Url, "$direct");
+				oCodeListModel = that.getOrCreateSharedModel(sUrl, "$direct");
 				oCodeListMetaModel = oCodeListModel.getMetaModel();
 				sTypePath = "/" + oCodeList.CollectionPath + "/";
 				oPromise = oCodeListMetaModel.requestObject(sTypePath).then(function (oType) {
@@ -3426,7 +3427,7 @@ sap.ui.define([
 	 * Returns a string representation of this object including the URL to the $metadata document of
 	 * the service.
 	 *
-	 * @return {string} A string description of this model
+	 * @returns {string} A string description of this model
 	 *
 	 * @public
 	 * @since 1.37.0

@@ -14,7 +14,8 @@ sap.ui.define([
 	"sap/m/PDFViewerRenderer",
 	"sap/base/Log",
 	"sap/base/assert",
-	"sap/ui/thirdparty/jquery"
+	"sap/ui/thirdparty/jquery",
+	"./PDFViewerRenderer"
 ],
 	function(
 		library,
@@ -25,7 +26,8 @@ sap.ui.define([
 		PDFViewerRenderer,
 		Log,
 		assert,
-		jQuery
+		jQuery,
+		PDFViewerRenderer1
 	) {
 		"use strict";
 
@@ -45,14 +47,13 @@ sap.ui.define([
 		 * @extends sap.ui.core.Control
 		 *
 		 * @author SAP SE
-		 * @version 1.106.0
+		 * @version 1.108.0
 		 * @since 1.48
 		 *
 		 * @constructor
 		 * @public
 		 * @alias sap.m.PDFViewer
 		 * @see {@link topic:cd80a8bca4ac450b86547d78f0653330 PDF Viewer}
-		 * @ui5-metamodel This control/element also will be described in the UI5 (legacy) designtime metamodel
 		 */
 		var PDFViewer = Control.extend("sap.m.PDFViewer",
 			/** @lends sap.m.PDFViewer.prototype */
@@ -168,7 +169,9 @@ sap.ui.define([
 						 */
 						sourceValidationFailed: {}
 					}
-				}
+				},
+
+				renderer: PDFViewerRenderer1
 			});
 
 

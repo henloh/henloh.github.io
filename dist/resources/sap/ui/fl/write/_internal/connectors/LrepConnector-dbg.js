@@ -59,6 +59,7 @@ sap.ui.define([
 			DISCARD: "/flex/versions/draft/",
 			PUBLISH: "/flex/versions/publish/"
 		},
+		CONTEXT_BASED_ADAPTATION: "/flex/apps/",
 		MANI_FIRST_SUPPORTED: "/sap/bc/ui2/app_index/ui5_app_mani_first_supported"
 	};
 
@@ -76,6 +77,7 @@ sap.ui.define([
 	 * @param {boolean} [mPropertyBag.isContextSharing] Indicator whether this is a request for context sharing
 	 * @param {boolean} [mPropertyBag.skipIam=false] - Indicates whether the default IAM item creation and registration is skipped. This is S4/Hana specific flag passed by only Smart Business
 	 * @param {boolean} [mPropertyBag.isCondensingEnabled] Indicator whether this is a request for condensing
+	 * @param {boolean} [mPropertyBag.isContextBasedAdaptationEnabled] Indicator whether this is an context based adaptation
 	 * @param {boolean} [mPropertyBag.parentVersion] Indicates if changes should be written as a draft and on which version the changes should be based on
 	 * @private
 	 * @returns {Promise} Promise resolves as soon as the writing was completed
@@ -90,6 +92,8 @@ sap.ui.define([
 			sRoute = ROUTES.CONTEXTS;
 		} else if (mPropertyBag.isCondensingEnabled) {
 			sRoute = ROUTES.CONDENSE;
+		} else if (mPropertyBag.isContextBasedAdaptationEnabled) {
+			sRoute = ROUTES.CONTEXT_BASED_ADAPTATION + mPropertyBag.flexObject.reference + "/adaptations/";
 		} else {
 			sRoute = ROUTES.CHANGES;
 		}
@@ -164,7 +168,7 @@ sap.ui.define([
 	 *
 	 * @namespace sap.ui.fl.write._internal.connectors.LrepConnector
 	 * @since 1.67
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @private
 	 * @ui5-restricted sap.ui.fl.write._internal.Storage
 	 */
@@ -323,7 +327,7 @@ sap.ui.define([
 			InitialConnector._addClientInfo(mParameters);
 
 			var sDataUrl = InitialUtils.getUrl(ROUTES.FLEX_INFO, mPropertyBag, mParameters);
-			return InitialUtils.sendRequest(sDataUrl).then(function (oResult) {
+			return InitialUtils.sendRequest(sDataUrl, "GET", {initialConnector: InitialConnector}).then(function (oResult) {
 				return oResult.response;
 			});
 		},
@@ -344,7 +348,7 @@ sap.ui.define([
 			InitialConnector._addClientInfo(mParameters);
 
 			var sContextsUrl = InitialUtils.getUrl(ROUTES.CONTEXTS, mPropertyBag, mParameters);
-			return InitialUtils.sendRequest(sContextsUrl).then(function (oResult) {
+			return InitialUtils.sendRequest(sContextsUrl, "GET", {initialConnector: InitialConnector}).then(function (oResult) {
 				return oResult.response;
 			});
 		},
@@ -368,8 +372,9 @@ sap.ui.define([
 		 * Check if context sharing is enabled in the backend.
 		 *
 		 * @returns {Promise<boolean>} Promise resolves with true
+		 * @deprecated
 		 */
-		isContextSharingEnabled: function () {
+		 isContextSharingEnabled: function () {
 			return Promise.resolve(true);
 		},
 
@@ -389,8 +394,11 @@ sap.ui.define([
 			InitialConnector._addClientInfo(mParameters);
 
 			var sFeaturesUrl = InitialUtils.getUrl(ROUTES.SETTINGS, mPropertyBag, mParameters);
-			return InitialUtils.sendRequest(sFeaturesUrl).then(function (oResult) {
+			return InitialUtils.sendRequest(sFeaturesUrl, "GET", {initialConnector: InitialConnector}).then(function (oResult) {
 				oResult.response.isVariantAdaptationEnabled = !!oResult.response.isPublicLayerAvailable;
+				oResult.response.isContextSharingEnabled = true;
+				oResult.response.isContextSharingEnabledForComp = true;
+				oResult.response.isLocalResetEnabled = true;
 				return oResult.response;
 			});
 		},
@@ -486,7 +494,7 @@ sap.ui.define([
 		appVariant: {
 			getManifirstSupport: function (mPropertyBag) {
 				var sManifirstUrl = ROUTES.MANI_FIRST_SUPPORTED + "/?id=" + mPropertyBag.appId;
-				return InitialUtils.sendRequest(sManifirstUrl).then(function (oResponse) {
+				return InitialUtils.sendRequest(sManifirstUrl, "GET", {initialConnector: InitialConnector}).then(function (oResponse) {
 					return oResponse.response;
 				});
 			},
@@ -600,6 +608,13 @@ sap.ui.define([
 					"application/json; charset=utf-8", "json"
 				);
 				return WriteUtils.sendRequest(sAppVarOverviewUrl, "GET", oRequestOption);
+			}
+		},
+		contextBasedAdaptation: {
+			create: function(mPropertyBag) {
+				mPropertyBag.isContextBasedAdaptationEnabled = true;
+				mPropertyBag.method = "POST";
+				return _doWrite(mPropertyBag);
 			}
 		},
 		ui2Personalization: {

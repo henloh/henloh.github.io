@@ -38,6 +38,11 @@ sap.ui.define([], function() {
 		/**
 		 * Destroying a control or removing it from the container.
 		 */
-		Destroy: "destroy"
+		Destroy: "destroy",
+
+		/**
+		 * Updates another change and will be deleted afterwards. Only the last update is considered.
+		 */
+		Update: "update"
 	};
 });

@@ -42,7 +42,7 @@ sap.ui.define([
 		 * @hideconstructor
 		 * @public
 		 * @since 1.39.0
-		 * @version 1.106.0
+		 * @version 1.108.0
 		 */
 		Context = BaseContext.extend("sap.ui.model.odata.v4.Context", {
 				constructor : constructor
@@ -281,17 +281,17 @@ sap.ui.define([
 	 * immediately, even if {@link sap.ui.model.odata.v4.SubmitMode.API} is used, and the request is
 	 * only sent later when {@link sap.ui.model.odata.v4.ODataModel#submitBatch} is called. As long
 	 * as the context is deleted on the client, but not yet on the server, {@link #isDeleted}
-	 * returns <code>true</code>.
+	 * returns <code>true</code> and the context must not be used anymore (except for checking
+	 * {@link #isDeleted}), especially not as a binding context. The application has to take care
+	 * that the context is no longer used.
 	 *
 	 * Since 1.105 such a pending deletion is a pending change. It causes
 	 * <code>hasPendingChanges</code> to return <code>true</code> for the context, the binding
 	 * containing it, and the model. <code>resetChanges</code> in binding or model cancels the
 	 * deletion and restores the context.
 	 *
-	 * The usage of a group ID with {@link sap.ui.model.odata.v4.SubmitMode.API} is possible since
-	 * 1.105 - this is an experimental API.
-	 *
-	 * The context must not be used anymore after successful deletion.
+	 * If the DELETE request succeeds, the context is destroyed and must not be used anymore. If it
+	 * fails, the context is restored, reinserted into the list, and fully functional again.
 	 *
 	 * @param {string} [sGroupId]
 	 *   The group ID to be used for the DELETE request; if not specified, the update group ID for
@@ -299,7 +299,8 @@ sap.ui.define([
 	 *   is transient (see {@link #isTransient}), no group ID needs to be specified. Since 1.98.0,
 	 *   you can use <code>null</code> to prevent the DELETE request in case of a kept-alive context
 	 *   that is not in the collection and of which you know that it does not exist on the server
-	 *   anymore (for example, a draft after activation).
+	 *   anymore (for example, a draft after activation). Since 1.108.0 the usage of a group ID with
+	 *   {@link sap.ui.model.odata.v4.SubmitMode.API} is possible.
 	 * @param {boolean} [bDoNotRequestCount]
 	 *   Whether not to request the new count from the server; useful in case of
 	 *   {@link #replaceWith} where it is known that the count remains unchanged (since 1.97.0).
@@ -325,21 +326,18 @@ sap.ui.define([
 	 *     <li> a <code>null</code> group ID is used with a context which is not
 	 *       {@link #isKeepAlive kept alive},
 	 *     <li> the context is already being deleted,
-	 *     <li> the resulting group ID has {@link sap.ui.model.odata.v4.SubmitMode.API}, and the
-	 *       context is {@link #isKeepAlive kept alive}, but not in the current collection,
-	 *     <li> (only before 1.105) the resulting group ID has
-	 *       {@link sap.ui.model.odata.v4.SubmitMode.API}
+	 *     <li> the context's binding is a list binding with data aggregation,
 	 *   </ul>
 	 *
 	 * @function
 	 * @public
-	 * @see {#hasPendingChanges}
-	 * @see {sap.ui.model.odata.v4.ODataContextBinding#hasPendingChanges}
-	 * @see {sap.ui.model.odata.v4.ODataListBinding#hasPendingChanges}
-	 * @see {sap.ui.model.odata.v4.ODataModel#hasPendingChanges}
-	 * @see {sap.ui.model.odata.v4.ODataContextBinding#resetChanges}
-	 * @see {sap.ui.model.odata.v4.ODataListBinding#resetChanges}
-	 * @see {sap.ui.model.odata.v4.ODataModel#resetChanges}
+	 * @see #hasPendingChanges
+	 * @see sap.ui.model.odata.v4.ODataContextBinding#hasPendingChanges
+	 * @see sap.ui.model.odata.v4.ODataListBinding#hasPendingChanges
+	 * @see sap.ui.model.odata.v4.ODataModel#hasPendingChanges
+	 * @see sap.ui.model.odata.v4.ODataContextBinding#resetChanges
+	 * @see sap.ui.model.odata.v4.ODataListBinding#resetChanges
+	 * @see sap.ui.model.odata.v4.ODataModel#resetChanges
 	 * @since 1.41.0
 	 */
 	Context.prototype.delete = function (sGroupId, bDoNotRequestCount/*, bRejectIfNotFound*/) {
@@ -349,6 +347,9 @@ sap.ui.define([
 
 		if (this.isDeleted()) {
 			throw new Error("Must not delete twice: " + this);
+		}
+		if (this.oBinding.mParameters.$$aggregation) {
+			throw new Error("Cannot delete " + this + " when using data aggregation");
 		}
 		this.oBinding.checkSuspended();
 		if (this.isTransient()) {
@@ -361,7 +362,7 @@ sap.ui.define([
 		if (sGroupId === null) {
 			bDoNotRequestCount = true;
 		} else {
-			oModel.checkGroupId(sGroupId);
+			_Helper.checkGroupId(sGroupId);
 			oGroupLock = this.oBinding.lockGroup(sGroupId, true, true);
 		}
 
@@ -381,7 +382,7 @@ sap.ui.define([
 			if (oGroupLock) {
 				oGroupLock.unlock(true);
 			}
-			oModel.reportError("Failed to delete " + that, sClassName, oError);
+			oModel.reportError("Failed to delete " + that.getPath(), sClassName, oError);
 			that.bDeleted = false;
 			that.checkUpdate();
 			throw oError;
@@ -432,6 +433,8 @@ sap.ui.define([
 	 * @param {boolean} [bSkipRetry]
 	 *   Whether to skip retries of failed PATCH requests and instead fail accordingly, but still
 	 *   fire "patchSent" and "patchCompleted" events
+	 * @param {boolean} [bUpdating]
+	 *   Whether the given property will not be overwritten by a creation POST(+GET) response
 	 * @returns {sap.ui.base.SyncPromise}
 	 *   A promise which is resolved without a result in case of success, or rejected with an
 	 *   instance of <code>Error</code> in case of failure, for example if the annotation belongs to
@@ -440,7 +443,7 @@ sap.ui.define([
 	 *
 	 * @private
 	 */
-	Context.prototype.doSetProperty = function (sPath, vValue, oGroupLock, bSkipRetry) {
+	Context.prototype.doSetProperty = function (sPath, vValue, oGroupLock, bSkipRetry, bUpdating) {
 		var oModel = this.oModel,
 			oMetaModel = oModel.getMetaModel(),
 			oPromise,
@@ -459,7 +462,7 @@ sap.ui.define([
 			if (oPromise instanceof Promise) {
 				oGroupLock.unlock();
 				oGroupLock = oGroupLock.getUnlockedCopy();
-				this.doSetProperty(sPath, vValue, null, true) // early UI update
+				this.doSetProperty(sPath, vValue, null, true, true) // early UI update
 					.catch(this.oModel.getReporter());
 
 				return oPromise.then(function (bSuccess) {
@@ -520,7 +523,8 @@ sap.ui.define([
 					}
 
 					if (!oGroupLock) {
-						return oCache.setProperty(oResult.propertyPath, vValue, sEntityPath);
+						return oCache.setProperty(oResult.propertyPath, vValue, sEntityPath,
+							bUpdating);
 					}
 
 					if (that.isInactive()) {
@@ -1096,10 +1100,15 @@ sap.ui.define([
 	 * @throws {Error} If
 	 *   <ul>
 	 *     <li> this context's root binding is suspended,
-	 *     <li> this context is transient (see {@link #isTransient}),
-	 *     <li> the given other context does not belong to the same list binding as this context, is
-	 *       already in the collection (has an index, see {@link #getIndex}), or is not
-	 *       {@link #isKeepAlive kept alive}.
+	 *     <li> this context is {@link #isTransient transient},
+	 *     <li> this context is {@link #isDeleted deleted},
+	 *     <li> the given other context
+	 *       <ul>
+	 *         <li> does not belong to the same list binding as this context,
+	 *         <li> is already in the collection (has an {@link #getIndex index}),
+	 *         <li> is {@link #delete deleted},
+	 *         <li> or is not {@link #isKeepAlive kept alive}.
+	 *     </ul>
 	 *   </ul>
 	 *
 	 * @public
@@ -1109,11 +1118,11 @@ sap.ui.define([
 		var oElement;
 
 		this.oBinding.checkSuspended();
-		if (this.isTransient()) {
+		if (this.isTransient() || this.isDeleted()) {
 			throw new Error("Cannot replace " + this);
 		}
 		if (oOtherContext.oBinding !== this.oBinding || oOtherContext.iIndex !== undefined
-				|| !oOtherContext.bKeepAlive) {
+			|| oOtherContext.bDeleted || !oOtherContext.bKeepAlive) {
 			throw new Error("Cannot replace with " + oOtherContext);
 		}
 		oElement = oOtherContext.getValue();
@@ -1240,7 +1249,7 @@ sap.ui.define([
 	Context.prototype.requestRefresh = function (sGroupId, bAllowRemoval) {
 		var oPromise;
 
-		this.oModel.checkGroupId(sGroupId);
+		_Helper.checkGroupId(sGroupId);
 		this.oBinding.checkSuspended();
 		if (this.hasPendingChanges()) {
 			throw new Error("Cannot refresh entity due to pending changes: " + this);
@@ -1334,6 +1343,10 @@ sap.ui.define([
 	 *   effects fails. Use it to set fields affected by side effects to read-only before
 	 *   {@link #requestSideEffects} and make them editable again when the promise resolves; in the
 	 *   error handler, you can repeat the loading of side effects.
+	 *   <br>
+	 *   The promise is rejected if the call wants to refresh a whole list binding (via header
+	 *   context or an absolute path), but the deletion of a row context (see {@link #delete}) is
+	 *   pending with a different group ID.
 	 * @throws {Error} If
 	 *   <ul>
 	 *     <li> metadata has not yet been loaded
@@ -1348,6 +1361,7 @@ sap.ui.define([
 	 *       {@link sap.ui.model.odata.v4.ODataPropertyBinding#getRootBinding}, and
 	 *       {@link sap.ui.model.Binding#isSuspended})
 	 *     <li> this context is transient (see {@link #isTransient})
+	 *     <li> this context is deleted (see {@link #isDeleted})
 	 *     <li> the binding of this context is unresolved (see
 	 *       {@link sap.ui.model.Binding#isResolved})
 	 *     <li> the group ID is invalid
@@ -1394,8 +1408,8 @@ sap.ui.define([
 		}
 
 		this.oBinding.checkSuspended();
-		this.oModel.checkGroupId(sGroupId);
-		if (this.isTransient()) {
+		_Helper.checkGroupId(sGroupId);
+		if (this.isTransient() || this.isDeleted()) {
 			throw new Error("Unsupported context: " + this);
 		}
 		if (!aPathExpressions || !aPathExpressions.length) {
@@ -1591,6 +1605,7 @@ sap.ui.define([
 	 *     <li> this context is not a list binding's context,
 	 *     <li> it is the header context,
 	 *     <li> it is transient,
+	 *     <li> it is deleted and <code>bKeepAlive</code> is <code>true</code>,
 	 *     <li> it does not point to an entity,
 	 *     <li> a key property of the entity has not been requested,
 	 *     <li> the list binding is relative and does not use the <code>$$ownRequest</code>
@@ -1610,10 +1625,10 @@ sap.ui.define([
 	Context.prototype.setKeepAlive = function (bKeepAlive, fnOnBeforeDestroy, bRequestMessages) {
 		var that = this;
 
-		if (this.isTransient()) {
-			throw new Error("Unsupported transient context " + this);
+		if (this.isTransient() || bKeepAlive && this.isDeleted()) {
+			throw new Error("Unsupported context " + this);
 		}
-		this.oModel.getPredicateIndex(this.sPath);
+		_Helper.getPredicateIndex(this.sPath);
 		this.oBinding.checkKeepAlive(this);
 
 		if (bKeepAlive && bRequestMessages) {
@@ -1699,7 +1714,7 @@ sap.ui.define([
 			throw new Error("Not a primitive value");
 		}
 		if (sGroupId !== null) {
-			this.oModel.checkGroupId(sGroupId);
+			_Helper.checkGroupId(sGroupId);
 			oGroupLock = this.oBinding.lockGroup(sGroupId, true, true);
 		}
 
@@ -1715,11 +1730,11 @@ sap.ui.define([
 	};
 
 	/**
-	 * Returns a string representation of this object including the {@link #getPath binding path),
+	 * Returns a string representation of this object including the {@link #getPath binding path},
 	 * {@link #getIndex index}, and state (see also "Context states" of
 	 * {@link topic:c9723f8265f644af91c0ed941e114d46 Creating an Entity}).
 	 *
-	 * @return {string} A string description of this binding
+	 * @returns {string} A string description of this binding
 	 *
 	 * @public
 	 * @see #destroy
@@ -1772,6 +1787,8 @@ sap.ui.define([
 	 * @returns {sap.ui.base.SyncPromise} A sync promise that is resolved with either the result of
 	 *   the processor or <code>undefined</code> if there is no cache for this binding, or if the
 	 *   cache determination is not yet completed
+	 *
+	 * @private
 	 */
 	Context.prototype.withCache = function (fnProcessor, sPath, bSync, bWithOrWithoutCache) {
 		if (this.iIndex === iVIRTUAL) {

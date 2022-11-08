@@ -42,13 +42,12 @@ function(
 		 * @extends sap.m.SliderTooltipBase
 		 *
 		 * @author SAP SE
-		 * @version 1.106.0
+		 * @version 1.108.0
 		 *
 		 * @constructor
 		 * @private
 		 * @since 1.54
 		 * @alias sap.m.SliderTooltip
-		 * @ui5-metamodel This control/element also will be described in the UI5 (legacy) designtime metamodel
 		 */
 		var SliderTooltip = SliderTooltipBase.extend("sap.m.SliderTooltip", /** @lends sap.m.SliderTooltip.prototype */ {
 			metadata: {
@@ -105,10 +104,13 @@ function(
 						}
 					}
 				}
-			}
+			},
+
+			renderer: SliderTooltipRenderer
 		});
 
 		SliderTooltip.prototype.init = function () {
+			SliderTooltipBase.prototype.init.apply(this, arguments);
 			this._oValueStateMessage = new ValueStateMessage(this);
 
 			this._fLastValidValue = 0;
@@ -122,8 +124,6 @@ function(
 		};
 
 		SliderTooltip.prototype.onBeforeRendering = function () {
-			SliderTooltipBase.prototype.setValue.call(this, this.getValue());
-
 			if (!this.oInvisibleMessage) {
 				this.oInvisibleMessage = InvisibleMessage.getInstance();
 			}

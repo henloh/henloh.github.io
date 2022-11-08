@@ -7,11 +7,13 @@
 sap.ui.define([
 	"sap/ui/fl/changeHandler/common/revertAddedControls",
 	"sap/ui/fl/changeHandler/common/getTargetAggregationIndex",
-	"sap/ui/fl/changeHandler/common/createIFrame"
+	"sap/ui/fl/changeHandler/common/createIFrame",
+	"sap/ui/fl/changeHandler/condenser/Classification"
 ], function(
 	revertAddedControls,
 	getTargetAggregationIndex,
-	createIFrame
+	createIFrame,
+	Classification
 ) {
 	"use strict";
 
@@ -20,7 +22,7 @@ sap.ui.define([
 	 *
 	 * @alias sap.ui.fl.changeHandler.AddIFrame
 	 * @author SAP SE
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @since 1.72
 	 * @private
 	 */
@@ -109,6 +111,26 @@ sap.ui.define([
 	AddIFrame.getChangeVisualizationInfo = function(oChange) {
 		return {
 			affectedControls: [oChange.getContent().selector]
+		};
+	};
+
+	AddIFrame.getCondenserInfo = function(oChange) {
+		var oContent = oChange.getContent();
+		return {
+			classification: Classification.Create,
+			uniqueKey: "iFrame",
+			affectedControl: oContent.selector,
+			targetContainer: oChange.getSelector(),
+			targetAggregation: oContent.targetAggregation,
+			setTargetIndex: function(oChange, iNewTargetIndex) {
+				oChange.getContent().index = iNewTargetIndex;
+			},
+			getTargetIndex: function(oChange) {
+				return oChange.getContent().index;
+			},
+			update: function(oChange, oNewContent) {
+				Object.assign(oChange.getContent(), oNewContent);
+			}
 		};
 	};
 

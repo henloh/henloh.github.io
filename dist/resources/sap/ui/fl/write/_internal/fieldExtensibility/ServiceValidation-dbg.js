@@ -19,7 +19,7 @@ sap.ui.define([
 	 * @namespace sap.ui.fl.write._internal.fieldExtensibility.ServiceValidation
 	 * @experimental Since 1.87.0
 	 * @author SAP SE
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 */
 	var ServiceValidation = {};
 

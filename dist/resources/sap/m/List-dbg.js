@@ -30,26 +30,29 @@ sap.ui.define(["./library", "./ListBase", "./ListRenderer"],
 	 * @extends sap.m.ListBase
 	 *
 	 * @author SAP SE
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 *
 	 * @constructor
 	 * @public
 	 * @alias sap.m.List
 	 * @see {@link fiori:/list-overview/ List}
-	 * @ui5-metamodel This control/element also will be described in the UI5 (legacy) designtime metamodel
 	 */
-	var List = ListBase.extend("sap.m.List", /** @lends sap.m.List.prototype */ { metadata : {
+	var List = ListBase.extend("sap.m.List", /** @lends sap.m.List.prototype */ {
+		metadata : {
 
-		library : "sap.m",
-		properties : {
+			library : "sap.m",
+			properties : {
 
-			/**
-			 * Sets the background style of the list. Depending on the theme, you can change the state of the background from <code>Solid</code> to <code>Translucent</code> or to <code>Transparent</code>.
-			 * @since 1.14
-			 */
-			backgroundDesign : {type : "sap.m.BackgroundDesign", group : "Appearance", defaultValue : BackgroundDesign.Solid}
-		}
-	}});
+				/**
+				 * Sets the background style of the list. Depending on the theme, you can change the state of the background from <code>Solid</code> to <code>Translucent</code> or to <code>Transparent</code>.
+				 * @since 1.14
+				 */
+				backgroundDesign : {type : "sap.m.BackgroundDesign", group : "Appearance", defaultValue : BackgroundDesign.Solid}
+			}
+		},
+
+		renderer: ListRenderer
+	});
 
 	List.prototype.getAriaRole = function() {
 		return this._sAriaRole || "list";

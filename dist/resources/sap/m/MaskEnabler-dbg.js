@@ -14,9 +14,9 @@ sap.ui.define([
 	"sap/base/Log",
 	"sap/ui/thirdparty/jquery",
 	"sap/m/MaskInputRule",
-	// jQuery Plugin "cursorPos"
-	"sap/ui/dom/jquery/cursorPos"
-], function(Control, InputBase, Device, coreLibrary, IconPool, KeyCodes, Log, jQuery, MaskInputRule) {
+	"sap/ui/core/Configuration",
+	"sap/ui/dom/jquery/cursorPos" // jQuery Plugin "cursorPos"
+], function(Control, InputBase, Device, coreLibrary, IconPool, KeyCodes, Log, jQuery, MaskInputRule, Configuration) {
 	"use strict";
 
 	// shortcut for sap.ui.core.TextDirection
@@ -26,7 +26,7 @@ sap.ui.define([
 	 * Applies mask support for input controls.
 	 * It should should be applied to the prototype of a <code>sap.m.InputBase</code>.
 	 *
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 * @private
 	 * @mixin
 	 * @alias sap.m.MaskEnabler
@@ -1427,7 +1427,7 @@ sap.ui.define([
 		 * @returns {boolean} Whether the current control is in RTL mode
 		 */
 		this._isRtlMode = function () {
-			return sap.ui.getCore().getConfiguration().getRTL() || (this.getTextDirection() === TextDirection.RTL);
+			return Configuration.getRTL() || (this.getTextDirection() === TextDirection.RTL);
 		};
 
 		/**

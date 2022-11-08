@@ -36,13 +36,12 @@ sap.ui.define([
 	 * <li>If the execution needs to branch after a given step, you should set all possible next steps in the <code>subsequentSteps</code> aggregation.
 	 * @extends sap.ui.core.Control
 	 * @author SAP SE
-	 * @version 1.106.0
+	 * @version 1.108.0
 	 *
 	 * @constructor
 	 * @public
 	 * @since 1.30
 	 * @alias sap.m.WizardStep
-	 * @ui5-metamodel This control/element also will be described in the UI5 (legacy) designtime metamodel
 	 */
 	var WizardStep = Control.extend("sap.m.WizardStep", /** @lends sap.m.WizardStep.prototype */ {
 		metadata: {
@@ -116,7 +115,9 @@ sap.ui.define([
 				 */
 				nextStep : {type: "sap.m.WizardStep", multiple: false}
 			}
-		}
+		},
+
+		renderer: WizardStepRenderer
 	});
 
 	// shortcut for sap.m.ButtonType
