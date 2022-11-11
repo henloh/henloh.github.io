@@ -119,7 +119,7 @@ sap.ui.define(["./BaseController", "../model/formatter", "sap/ui/model/json/JSON
       };
 
       var getFactoryOrSelectWithPanel = function (good, isParentActive) {
-        currentPath += "/" + good.Name.replace(/\s/g, ''); //console.log(currentPath);
+        currentPath = currentPath + "/" + good.Name.replace(/\s/g, ''); //console.log(currentPath);
 
         var id = good.Name.replace(/\s/g, ''); //console.log(`{View>/tree${currentPath}/Name}`);
 

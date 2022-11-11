@@ -122,7 +122,7 @@ export default class ProductionLine extends BaseController {
 			return good;
 		}
 		var getFactoryOrSelectWithPanel = function(good: treeGood, isParentActive?: boolean): treeGood {
-			currentPath+= "/" + good.Name.replace(/\s/g, '');
+			currentPath = currentPath + "/" + good.Name.replace(/\s/g, '');
 			//console.log(currentPath);
 			
 			var id = good.Name.replace(/\s/g, '');

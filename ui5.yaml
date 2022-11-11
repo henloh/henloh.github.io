@@ -1,4 +1,4 @@
-specVersion: "2.0"
+specVersion: "2.6"
 metadata:
   name: de.henloh.prodts
 type: application
@@ -6,8 +6,6 @@ framework:
   name: OpenUI5
   version: "1.108.0"
   libraries:
-    - name: sap.m
-    - name: sap.ui.core
     - name: sap.ui.layout
     - name: sap.ui.support
     - name: sap.ui.testrecorder
