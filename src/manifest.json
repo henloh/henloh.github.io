@@ -89,6 +89,10 @@
                 "pattern": "productionLine/:?query:",
                 "name": "productionLine",
                 "target": "productionLine"
+            },{
+                "pattern": "permutation",
+                "name": "permutation",
+                "target": "permutation"
             }],
             "targets": {
                 "main": {
@@ -98,6 +102,10 @@
                 "productionLine": {
                     "viewId": "productionLine",
                     "viewName": "ProductionLine"
+                },
+                "permutation": {
+                    "viewId": "permutation",
+                    "viewName": "Permutation"
                 }
             }
         }

@@ -1,5 +1,6 @@
 # Avorion Production
 [Overview](https://henloh.github.io/dist/index.html)
+[Permutation Generator](https://henloh.github.io/dist/index.html#/permutation)
 
 ## Description
 See what station buys which product and the other way round. 
