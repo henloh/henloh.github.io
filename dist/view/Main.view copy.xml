@@ -43,9 +43,9 @@
 								placeholder="Enter product"
 								showSuggestion="true"
 								submit="submitGood"
-								suggestionItems="{path:'Data>/Goods', length:200}">
+								suggestionItems="{path:'GoodModel>/Goods', length:200}">
 								<suggestionItems>
-									<SuggestionItem text="{Data>Name}" />
+									<SuggestionItem text="{GoodModel>Name}" />
 								</suggestionItems>
 							</Input>
                         </f:fields>
@@ -67,9 +67,9 @@
 								placeholder="Enter product"
 								showSuggestion="true"
 								submit="submitFactory"
-								suggestionItems="{path:'Data>/Factories', length:200}">
+								suggestionItems="{path:'FactorieModel>/Factories', length:200}">
 								<suggestionItems>
-									<SuggestionItem text="{Data>Name}" />
+									<SuggestionItem text="{FactorieModel>Name}" />
 								</suggestionItems>
 							</Input>
                         </f:fields>
