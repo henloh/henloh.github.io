@@ -1,9 +1,28 @@
 # Avorion Production
 [Overview](https://henloh.github.io/dist/index.html)
+
 [Permutation Generator](https://henloh.github.io/dist/index.html#/permutation)
 
 ## Description
 See what station buys which product and the other way round. 
+
+# Permutation JSON Input
+The title is plain text and generates a headline.
+The parts can be one ore two level deep.
+````
+{
+    "columns": [{
+        "title": "",
+        "parts": [[Varibale, SecondLvlVariable]]
+    }],
+    "data": {
+        "Variable1": [{
+            "SecondLvlVariable": " "
+        }],
+        "Variable2": ["SomeText"]
+    }
+}
+````
 
 ### List of Products:
 Acid, Acron Drug, Adhesive, Aluminium, Ammunition, Ammunition S, Ammunition M, Ammunition L, Antigrav Generator, Antigrav Unit, Beer, Body Armor, Book, Bio Gas, Carbon, Cattle, Chemicals, Coolant, Clothes, Coal, Cocoa, Coffee, Computation Mainframe, Conductor, Copper, Corn, Crystal, Chlorine, Diamond, Display, Dairy, Drill, Drone, Electron Accelerator, Electro Magnet, Electromagnetic Charge, Energy Container, Energy Generator, Energy Inverter, Energy Tube, Energy Cell, Explosive Charge, Fabric, Fertilizer, Fish, Food Bar, Food, Force Generator, Fruit, Fusion Core, Fusion Generator, Fuel, Fungus, Fluorine, Gem, Glass, Gun, Gold, Gauss Rail, Helium, Hydrogen, High Capacity Lens, High Pressure Tube, Industrial Tesla Coil, Jewelry, Leather, Liquor, Laser Compressor, Laser Head, Laser Modulator, Lead, Luxury Food, Medical Supplies, Metal Plate, Military Tesla Coil, Meat, Microchip, Mineral, Mining Robot, Morn Drug, Neutron Accelerator, Nitrogen, Neon, Nanobot, Oxygen, Oil, Ore, Paint, Proton Accelerator, Processor, Plankton, Platinum, Paper, Plant, Plasma Cell, Plastic, Potato, Power Unit, Protein, Raw Oil, Rice, Rift Research Data, Rocket, Rubber, Satellite, Scrap Metal, Semi Conductor, Servo, Sheep, Silicon, Solar Cell, Solar Panel, Spices, Steel, Steel Tube, Slave, Solvent, Silver, Toxic Waste, Targeting Card, Targeting System, Tea, Teleporter, Tools, Transformator, Turbine, Vegetable, Vehicle, War Robot, Warhead, Water, Wheat, Wine, Wire, Wood, Zinc

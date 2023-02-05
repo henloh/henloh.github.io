@@ -22,6 +22,22 @@ sap.ui.define(["./BaseController", "../model/formatter", "sap/ui/model/json/JSON
       this.getRouter().getRoute("main").attachPatternMatched(this.onPatternMatched, this);
     },
     onPatternMatched: function _onPatternMatched(event) {},
+    clearData: function _clearData(event) {
+      var model = this.getView().getModel("View");
+      model.setProperty("/Final", " ");
+      model.setProperty("/text", " ");
+    },
+    downloadCSV: function _downloadCSV(event) {
+      var model = this.getView().getModel("View");
+      var csvContent = model.getProperty("/Final");
+      var hiddenElement = document.createElement('a');
+      hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csvContent);
+      hiddenElement.target = '_blank';
+
+      //provide the name for the CSV file to be downloaded  
+      hiddenElement.download = 'generiert.csv';
+      hiddenElement.click();
+    },
     generateCSV: function _generateCSV(event) {
       var model = this.getView().getModel("View");
       var data = model.getProperty("/text");

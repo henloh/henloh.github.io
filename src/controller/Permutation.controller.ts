@@ -20,6 +20,23 @@ export default class Permutation extends BaseController {
 	public onPatternMatched(event: Event): void {
 
 	}
+	public clearData(event: Event): void {
+		var model = this.getView().getModel("View") as JSONModel;
+		model.setProperty("/Final", " ")
+		model.setProperty("/text", " ");
+	}
+	public downloadCSV(event: Event): void {
+		var model = this.getView().getModel("View") as JSONModel;
+		var csvContent = model.getProperty("/Final");
+		
+		var hiddenElement = document.createElement('a');  
+		hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csvContent);  
+		hiddenElement.target = '_blank';  
+		  
+		//provide the name for the CSV file to be downloaded  
+		hiddenElement.download = 'generiert.csv';  
+		hiddenElement.click();
+	}
 	public generateCSV(event: Event): void {
 		var model = this.getView().getModel("View") as JSONModel;
 		var data = model.getProperty("/text");

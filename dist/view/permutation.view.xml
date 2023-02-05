@@ -10,10 +10,13 @@
         <!-- <Button text="Build production line" press="buildProdLine" /> -->
     </headerContent>
 <content>
-	<Textarea class="sapUiSmallMargin" value="{View>/text}" width="96%" growing="false" />
+	<Button text="Löschen" press="clearData" class="sapUiSmallMarginBegin" />
+	<TextArea class="sapUiSmallMargin" value="{View>/text}" width="96%" growing="false" />
 	<Button text="Generieren" press="generateCSV" class="sapUiSmallMarginBegin" />
 	<Label text="Generierte Zeilen: {View>/rowCount}" class="sapUiTinyMargin"  />
-	<Textarea class="sapUiSmallMargin" value="{View>/Final}" width="96%" growing="true" />
+	<Label text=" " width="100%" />
+	<Button text="Download" press="downloadCSV" class="sapUiSmallMarginBegin" />
+	<TextArea class="sapUiSmallMargin" value="{View>/Final}" width="96%" growing="true" />
 	
 </content>
 </Page>
