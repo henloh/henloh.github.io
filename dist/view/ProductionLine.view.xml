@@ -1,0 +1,83 @@
+<mvc:View xmlns:dnd="sap.ui.core.dnd"
+	controllerName="de.henloh.prodts.controller.ProductionLine"
+	displayBlock="true"
+	xmlns="sap.m"
+	xmlns:f="sap.ui.layout.form"
+    xmlns:c="sap.ui.core"
+	xmlns:mvc="sap.ui.core.mvc">
+<Page title="Avorion Production Line" id="prodPage" showNavButton="true" navButtonPress="onNavBack">
+<headerContent>
+    <Button
+        text="Export"
+        press="handleDownloadPress" />
+    <Button
+        text="Import"
+        press="openUploadDialog" />
+</headerContent>
+<content>
+	
+    <Title text="Target Factory" 
+        width="90%"
+        class="sapUiSmallMargin" />
+    <Input
+        id="targetFactoryInput"
+        width="300px"
+        class="sapUiSmallMarginBegin sapUiSmallMarginEnd"
+        value="{View>/TargetFactory}"
+        placeholder="Target Factory"
+        showSuggestion="true"
+        submit="generateProductionLine"
+        suggestionItems="{path:'FactorieModel>/Factories', length:200}">
+        <suggestionItems>
+            <SuggestionItem text="{FactorieModel>Name}" />
+        </suggestionItems>
+    </Input>
+    <Button text="Show Production Line" press="generateProductionLine" />
+    <!--
+    .########....###.....######..########..#######..########..##....##
+    .##.........##.##...##....##....##....##.....##.##.....##..##..##.
+    .##........##...##..##..........##....##.....##.##.....##...####..
+    .######...##.....##.##..........##....##.....##.########.....##...
+    .##.......#########.##..........##....##.....##.##...##......##...
+    .##.......##.....##.##....##....##....##.....##.##....##.....##...
+    .##.......##.....##..######.....##.....#######..##.....##....##...
+    -->
+    <List headerText="Products" items="{View>/products}">
+        <StandardListItem title="{View>Name}"></StandardListItem>
+    </List>
+    <!--  
+        <Button press="checkSanity" text="check Sanity" />
+    -->
+    <!-- This is where the Magic happens -->
+    <VBox id="DetailedProdList" />
+    <!--  -->
+    <List items="{path:'View>/requiredFactories'}"
+        width="42.5%"
+        class="bottomTwoListLeft sapUiLargeMarginTop sapUiLargeMarginBottom" >
+        <headerToolbar>
+            <Toolbar>
+                <Text text="Required Factories" />
+            </Toolbar>
+        </headerToolbar>
+        <items>
+            <StandardListItem title="{View>}" />
+        </items>
+    </List>
+    <List items="{path:'View>/availableGoods'}"
+        width="42.5%"
+        class="bottomTwoListRight sapUiLargeMarginTop sapUiLargeMarginBottom" >
+        <headerToolbar>
+            <Toolbar>
+                <Text text="Available goods" />
+                <ToolbarSpacer />
+                <Button text="Add Good" press="addAvailableGood" />
+            </Toolbar>
+        </headerToolbar>
+        <items>
+            <StandardListItem title="{View>}" />
+        </items>
+    </List>
+</content>
+</Page>
+
+</mvc:View>

@@ -1,0 +1,2175 @@
+{
+    "Goods": [{
+            "Name": "Acid",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 402,
+            "Level": 3,
+            "Customers": [
+                "Chemical Factory",
+                "Rubber Factory"
+            ],
+            "Manufacturer": [
+                "Explosive Charge Factory",
+                "Paint Manufacturer"
+            ]
+        },
+        {
+            "Name": "Acron Drug",
+            "Dangerous": false,
+            "Illegal": true,
+            "AvgPrice": 6000,
+            "Level": 0,
+            "Customers": [],
+            "Manufacturer": []
+        },
+        {
+            "Name": "Adhesive",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 402,
+            "Level": 3,
+            "Customers": [
+                "Ammunition Factory 1",
+                "Explosive Charge Factory",
+                "High Pressure Tube Factory"
+            ],
+            "Manufacturer": [
+                "Chemical Factory"
+            ]
+        },
+        {
+            "Name": "Aluminium",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 200,
+            "Level": 0,
+            "Customers": [
+                "Ammunition Factory 1",
+                "Gun Factory",
+                "High Pressure Tube Factory",
+                "Laser Head Factory",
+                "Servo Factory",
+                "Steel Tube Factory",
+                "Shipyard",
+                "Tools Factory"
+            ],
+            "Manufacturer": [
+                "Aluminium Mine"
+            ]
+        },
+        {
+            "Name": "Ammunition",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 3786,
+            "Level": 5,
+            "Customers": [
+                "Equipment Dock",
+                "Gun Factory",
+                "Military Outpost"
+            ],
+            "Manufacturer": [
+                "Ammunition Factory 2"
+            ]
+        },
+        {
+            "Name": "Ammunition S",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 422,
+            "Level": 4,
+            "Customers": [
+                "Equipment Dock",
+                "Military Outpost"
+            ],
+            "Manufacturer": [
+                "Ammunition Factory 1"
+            ]
+        },
+        {
+            "Name": "Ammunition M",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 422,
+            "Level": 4,
+            "Customers": [
+                "Equipment Dock",
+                "Military Outpost"
+            ],
+            "Manufacturer": [
+                "Ammunition Factory 1"
+            ]
+        },
+        {
+            "Name": "Ammunition L",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 422,
+            "Level": 4,
+            "Customers": [
+                "Equipment Dock",
+                "Military Outpost"
+            ],
+            "Manufacturer": [
+                "Ammunition Factory 1"
+            ]
+        },
+        {
+            "Name": "Antigrav Generator",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 71632,
+            "Level": 8,
+            "Customers": [
+                "Research Station"
+            ],
+            "Manufacturer": [
+                "Antigrav Generator Factory"
+            ]
+        },
+        {
+            "Name": "Antigrav Unit",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 25391,
+            "Level": 7,
+            "Customers": [
+                "Antigrav Generator Factory",
+                "Body Armor Factory",
+                "Vehicle Factory",
+                "Shipyard",
+                "Repair Dock",
+                "Equipment Dock",
+                "Teleporter Factory"
+            ],
+            "Manufacturer": [
+                "Antigrav Unit Factory"
+            ]
+        },
+        {
+            "Name": "Beer",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 216,
+            "Level": 4,
+            "Customers": [
+                "Casino",
+                "Habitat"
+            ],
+            "Manufacturer": [
+                "Brewery"
+            ]
+        },
+        {
+            "Name": "Body Armor",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 95906,
+            "Level": 9,
+            "Customers": [
+                "Military Outpost"
+            ],
+            "Manufacturer": [
+                "Body Armor Factory"
+            ]
+        },
+        {
+            "Name": "Book",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 319,
+            "Level": 3,
+            "Customers": [
+                "Habitat"
+            ],
+            "Manufacturer": [
+                "Book Factory"
+            ]
+        },
+        {
+            "Name": "Bio Gas",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 213,
+            "Level": 2,
+            "Customers": [
+                "Chemical Factory",
+                "Fungus Farm",
+                "Plasma Cell Factory"
+            ],
+            "Manufacturer": [
+                "Cattle Ranch 1",
+                "Fish Farm",
+                "Sheep Ranch 2"
+            ]
+        },
+        {
+            "Name": "Carbon",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 423,
+            "Level": 2,
+            "Customers": [
+                "Body Armor Factory",
+                "Chemical Factory",
+                "High Capacity Lens Factory",
+                "High Pressure Tube Factory",
+                "Steel Factory 2"
+            ],
+            "Manufacturer": [
+                "Carbon Extractor 1",
+                "Carbon Extractor 2",
+                "Carbon Extractor 3",
+                "Carbon Extractor 4",
+                "Planetary Trading Post"
+            ]
+        },
+        {
+            "Name": "Cattle",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 254,
+            "Level": 2,
+            "Customers": [
+                "Biotope",
+                "Dairy Farm",
+                "Meat Factory"
+            ],
+            "Manufacturer": [
+                "Cattle Ranch 1",
+                "Cattle Ranch 2"
+            ]
+        },
+        {
+            "Name": "Chemicals",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 402,
+            "Level": 3,
+            "Customers": [
+                "Ammunition Factory 2",
+                "Explosive Charge Factory",
+                "Fertilizer Factory 1",
+                "Medical Supplies Factory",
+                "Paint Manufacturer",
+                "Warhead Factory"
+            ],
+            "Manufacturer": [
+                "Chemical Factory"
+            ]
+        },
+        {
+            "Name": "Coolant",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 402,
+            "Level": 3,
+            "Customers": [
+                "Body Armor Factory",
+                "Mining Robot Factory",
+                "Turbine Factory",
+                "War Robot Factory"
+            ],
+            "Manufacturer": [
+                "Chemical Factory"
+            ]
+        },
+        {
+            "Name": "Clothes",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 102,
+            "Level": 4,
+            "Customers": [],
+            "Manufacturer": [
+                "Clothes Factory"
+            ]
+        },
+        {
+            "Name": "Coal",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 200,
+            "Level": 0,
+            "Customers": [
+                "Biotope",
+                "Steel Factory 1",
+                "Steel Factory 2"
+            ],
+            "Manufacturer": [
+                "Coal Mine"
+            ]
+        },
+        {
+            "Name": "Cocoa",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 87,
+            "Level": 5,
+            "Customers": [
+                "Habitat"
+            ],
+            "Manufacturer": [
+                "Cocoa Farm"
+            ]
+        },
+        {
+            "Name": "Coffee",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 187,
+            "Level": 5,
+            "Customers": [
+                "Habitat"
+            ],
+            "Manufacturer": [
+                "Coffee Farm"
+            ]
+        },
+        {
+            "Name": "Computation Mainframe",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 37940,
+            "Level": 7,
+            "Customers": [
+                "Shipyard"
+            ],
+            "Manufacturer": [
+                "Computation Mainframe Factory"
+            ]
+        },
+        {
+            "Name": "Conductor",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 168,
+            "Level": 4,
+            "Customers": [
+                "Accelerator Factory",
+                "Electro Magnet Factory",
+                "Energy Generator Factory",
+                "Energy Inverter Factory",
+                "Laser Head Factory",
+                "Servo Factory",
+                "Targeting System Factory",
+                "Teleporter Factory",
+                "Warhead Factory"
+            ],
+            "Manufacturer": [
+                "Conductor Factory"
+            ]
+        },
+        {
+            "Name": "Copper",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 350,
+            "Level": 0,
+            "Customers": [
+                "Computer Component Factory",
+                "Electro Magnet Factory",
+                "Processor Factory",
+                "Targeting Card Factory",
+                "Tesla Coil Factory"
+            ],
+            "Manufacturer": [
+                "Copper Mine",
+                "Planetary Trading Post"
+            ]
+        },
+        {
+            "Name": "Corn",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 28,
+            "Level": 1,
+            "Customers": [
+                "Biotope",
+                "Carbon Extractor 3",
+                "Cattle Ranch 2",
+                "Food Bar Factory",
+                "Food Factory",
+                "Sheep Ranch 2"
+            ],
+            "Manufacturer": [
+                "Corn Farm"
+            ]
+        },
+        {
+            "Name": "Crystal",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 190,
+            "Level": 0,
+            "Customers": [
+                "Glass Manufacturer",
+                "Nanobot Factory"
+            ],
+            "Manufacturer": [
+                "Crystal Farm"
+            ]
+        },
+        {
+            "Name": "Chlorine",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 150,
+            "Level": 0,
+            "Customers": [
+                "Medical Supplies Factory"
+            ],
+            "Manufacturer": [
+                "Gas Collector 1",
+                "Gas Collector 2",
+                "Gas Collector 4"
+            ]
+        },
+        {
+            "Name": "Diamond",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 750,
+            "Level": 0,
+            "Customers": [
+                "Drill Factory",
+                "High Capacity Lens Factory",
+                "Jewelry Manufacturer 1"
+            ],
+            "Manufacturer": [
+                "Trading Post"
+            ]
+        },
+        {
+            "Name": "Display",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 7858,
+            "Level": 6,
+            "Customers": [
+                "Computation Mainframe Factory",
+                "Mining Robot Factory",
+                "Satellite Factory",
+                "Shipyard",
+                "Equipment Dock",
+                "Repair Dock",
+                "Vehicle Factory",
+                "War Robot Factory"
+            ],
+            "Manufacturer": [
+                "Computer Component Factory",
+                "Display Factory"
+            ]
+        },
+        {
+            "Name": "Dairy",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 19,
+            "Level": 3,
+            "Customers": [
+                "Protein Factory"
+            ],
+            "Manufacturer": [
+                "Dairy Farm"
+            ]
+        },
+        {
+            "Name": "Drill",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 20443,
+            "Level": 7,
+            "Customers": [
+                "Mining Robot Factory",
+                "Planetary Trading Post",
+                "Research Station",
+                "Equipment Dock"
+            ],
+            "Manufacturer": [
+                "Drill Factory"
+            ]
+        },
+        {
+            "Name": "Drone",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 7754,
+            "Level": 5,
+            "Customers": [
+                "Equipment Dock",
+                "Planetary Trading Post"
+            ],
+            "Manufacturer": [
+                "Drone Factory"
+            ]
+        },
+        {
+            "Name": "Electron Accelerator",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 125431,
+            "Level": 8,
+            "Customers": [
+                "Research Station",
+                "Travel Hub"
+            ],
+            "Manufacturer": [
+                "Accelerator Factory"
+            ]
+        },
+        {
+            "Name": "Electro Magnet",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 483,
+            "Level": 5,
+            "Customers": [
+                "Antigrav Generator Factory",
+                "Electromagnetic Charge Factory",
+                "Force Generator Factory",
+                "Gauss Rail Factory"
+            ],
+            "Manufacturer": [
+                "Electro Magnet Factory"
+            ]
+        },
+        {
+            "Name": "Electromagnetic Charge",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 13985,
+            "Level": 6,
+            "Customers": [
+                "Military Outpost"
+            ],
+            "Manufacturer": [
+                "Electromagnetic Charge Factory"
+            ]
+        },
+        {
+            "Name": "Energy Container",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 1087,
+            "Level": 5,
+            "Customers": [
+                "Electromagnetic Charge Factory",
+                "Satellite Factory",
+                "Shipyard"
+            ],
+            "Manufacturer": [
+                "Energy Container Factory"
+            ]
+        },
+        {
+            "Name": "Energy Generator",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 15957,
+            "Level": 6,
+            "Customers": [
+                "Antigrav Generator Factory",
+                "Force Generator Factory",
+                "Planetary Trading Post",
+                "Vehicle Factory"
+            ],
+            "Manufacturer": [
+                "Energy Generator Factory"
+            ]
+        },
+        {
+            "Name": "Energy Inverter",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 1277,
+            "Level": 6,
+            "Customers": [],
+            "Manufacturer": [
+                "Energy Inverter Factory"
+            ]
+        },
+        {
+            "Name": "Energy Tube",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 2895,
+            "Level": 5,
+            "Customers": [
+                "Accelerator Factory",
+                "Electromagnetic Charge Factory",
+                "Energy Inverter Factory",
+                "Fusion Core Factory",
+                "Gauss Rail Factory",
+                "Laser Compressor Factory",
+                "Laser Modulator Factory",
+                "Repair Dock",
+                "Shipyard"
+            ],
+            "Manufacturer": [
+                "Energy Tube Factory"
+            ]
+        },
+        {
+            "Name": "Energy Cell",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 50,
+            "Level": 0,
+            "Customers": [
+                "Ammunition Factory 1",
+                "Antigrav Unit Factory",
+                "Book Factory",
+                "Chemical Factory",
+                "Cocoa Farm",
+                "Coffee Farm",
+                "Conductor Factory",
+                "Corn Farm",
+                "Distillery",
+                "Energy Container Factory",
+                "Energy Generator Factory",
+                "Energy Tube Factory",
+                "Explosive Charge Factory",
+                "Fertilizer Factory 1",
+                "Fertilizer Factory 2",
+                "Food Bar Factory",
+                "Fruit Farm",
+                "Fuel Factory",
+                "Gauss Rail Factory",
+                "Laser Head Factory",
+                "Laser Modulator Factory",
+                "Luxury Food Factory",
+                "Microchip Factory",
+                "Oil Refinery",
+                "Planetary Trading Post",
+                "Plant Farm",
+                "Plasma Cell Factory",
+                "Plastic Manufacturer",
+                "Potato Farm",
+                "Power Unit Factory",
+                "Rice Farm",
+                "Rubber Factory",
+                "Semi Conductor Manufacturer",
+                "Sheep Ranch 1",
+                "Sheep Ranch 2",
+                "Solar Cell Factory",
+                "Spices Farm",
+                "Targeting System Factory",
+                "Tea Farm",
+                "Tools Factory",
+                "Transformator Factory",
+                "Travel Hub",
+                "Vegetable Farm",
+                "Wheat Farm",
+                "Wood Farm"
+            ],
+            "Manufacturer": [
+                "Solar Power Plant"
+            ]
+        },
+        {
+            "Name": "Explosive Charge",
+            "Dangerous": true,
+            "Illegal": false,
+            "AvgPrice": 1423,
+            "Level": 4,
+            "Customers": [
+                "Military Outpost",
+                "Planetary Trading Post"
+            ],
+            "Manufacturer": [
+                "Explosive Charge Factory"
+            ]
+        },
+        {
+            "Name": "Fabric",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 91,
+            "Level": 3,
+            "Customers": [
+                "Clothes Factory",
+                "Sheep Ranch 1",
+                "Sheep Ranch 2",
+                "Medical Supplies Factory"
+            ],
+            "Manufacturer": [
+                "Fabric Factory"
+            ]
+        },
+        {
+            "Name": "Fertilizer",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 319,
+            "Level": 1,
+            "Customers": [
+                "Cocoa Farm",
+                "Coffee Farm",
+                "Spices Farm"
+            ],
+            "Manufacturer": [
+                "Fertilizer Factory 1",
+                "Fertilizer Factory 2"
+            ]
+        },
+        {
+            "Name": "Fish",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 152,
+            "Level": 2,
+            "Customers": [
+                "Biotope"
+            ],
+            "Manufacturer": [
+                "Fish Farm"
+            ]
+        },
+        {
+            "Name": "Food Bar",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 223,
+            "Level": 2,
+            "Customers": [
+                "Biotope",
+                "Military Outpost"
+            ],
+            "Manufacturer": [
+                "Food Bar Factory"
+            ]
+        },
+        {
+            "Name": "Food",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 300,
+            "Level": 4,
+            "Customers": [
+                "Biotope",
+                "Casino",
+                "Habitat"
+            ],
+            "Manufacturer": [
+                "Food Factory"
+            ]
+        },
+        {
+            "Name": "Force Generator",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 49576,
+            "Level": 7,
+            "Customers": [
+                "Research Station",
+                "Repair Dock",
+                "Travel Hub"
+            ],
+            "Manufacturer": [
+                "Force Generator Factory"
+            ]
+        },
+        {
+            "Name": "Fruit",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 56,
+            "Level": 1,
+            "Customers": [
+                "Habitat",
+                "Luxury Food Factory",
+                "Wine Factory"
+            ],
+            "Manufacturer": [
+                "Fruit Farm"
+            ]
+        },
+        {
+            "Name": "Fusion Core",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 5114,
+            "Level": 6,
+            "Customers": [
+                "Equipment Dock",
+                "Fusion Generator Factory",
+                "Shipyard",
+                "Repair Dock",
+                "Tesla Coil Factory",
+                "Travel Hub"
+            ],
+            "Manufacturer": [
+                "Fusion Core Factory"
+            ]
+        },
+        {
+            "Name": "Fusion Generator",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 39553,
+            "Level": 7,
+            "Customers": [
+                "Accelerator Factory",
+                "Research Station",
+                "Travel Hub"
+            ],
+            "Manufacturer": [
+                "Fusion Generator Factory"
+            ]
+        },
+        {
+            "Name": "Fuel",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 1232,
+            "Level": 2,
+            "Customers": [
+                "Drone Factory",
+                "Equipment Dock",
+                "Planetary Trading Post",
+                "Repair Dock",
+                "Rocket Factory"
+            ],
+            "Manufacturer": [
+                "Fuel Factory"
+            ]
+        },
+        {
+            "Name": "Fungus",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 46,
+            "Level": 3,
+            "Customers": [
+                "Biotope",
+                "Brewery",
+                "Wine Factory"
+            ],
+            "Manufacturer": [
+                "Fungus Farm"
+            ]
+        },
+        {
+            "Name": "Fluorine",
+            "Dangerous": true,
+            "Illegal": false,
+            "AvgPrice": 250,
+            "Level": 0,
+            "Customers": [
+                "Explosive Charge Factory",
+                "Fuel Factory"
+            ],
+            "Manufacturer": [
+                "Gas Collector 2",
+                "Gas Collector 4"
+            ]
+        },
+        {
+            "Name": "Gem",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 400,
+            "Level": 0,
+            "Customers": [
+                "Jewelry Manufacturer 2"
+            ],
+            "Manufacturer": [
+                "Planetary Trading Post"
+            ]
+        },
+        {
+            "Name": "Glass",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 182,
+            "Level": 1,
+            "Customers": [
+                "Biotope",
+                "Display Factory",
+                "High Capacity Lens Factory",
+                "Laser Head Factory"
+            ],
+            "Manufacturer": [
+                "Glass Manufacturer"
+            ]
+        },
+        {
+            "Name": "Gun",
+            "Dangerous": true,
+            "Illegal": false,
+            "AvgPrice": 1232,
+            "Level": 6,
+            "Customers": [
+                "Military Outpost",
+                "War Robot Factory"
+            ],
+            "Manufacturer": [
+                "Gun Factory"
+            ]
+        },
+        {
+            "Name": "Gold",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 600,
+            "Level": 0,
+            "Customers": [
+                "Computer Component Factory",
+                "Conductor Factory",
+                "Fusion Core Factory",
+                "Jewelry Manufacturer 1",
+                "Processor Factory",
+                "Semi Conductor Manufacturer",
+                "Solar Cell Factory",
+                "Wire Manufacturer"
+            ],
+            "Manufacturer": [
+                "Noble Metal Mine 1",
+                "Noble Metal Mine 3",
+                "Planetary Trading Post"
+            ]
+        },
+        {
+            "Name": "Gauss Rail",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 7735,
+            "Level": 6,
+            "Customers": [
+                "Accelerator Factory"
+            ],
+            "Manufacturer": [
+                "Gauss Rail Factory"
+            ]
+        },
+        {
+            "Name": "Helium",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 50,
+            "Level": 0,
+            "Customers": [
+                "Plasma Cell Factory"
+            ],
+            "Manufacturer": [
+                "Gas Collector 1",
+                "Gas Collector 4"
+            ]
+        },
+        {
+            "Name": "Hydrogen",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 150,
+            "Level": 0,
+            "Customers": [
+                "Chemical Factory",
+                "Fusion Core Factory"
+            ],
+            "Manufacturer": [
+                "Gas Collector 1",
+                "Gas Collector 3",
+                "Gas Collector 4"
+            ]
+        },
+        {
+            "Name": "High Capacity Lens",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 4689,
+            "Level": 3,
+            "Customers": [
+                "Research Station"
+            ],
+            "Manufacturer": [
+                "High Capacity Lens Factory"
+            ]
+        },
+        {
+            "Name": "High Pressure Tube",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 1650,
+            "Level": 5,
+            "Customers": [
+                "Accelerator Factory",
+                "Gauss Rail Factory"
+            ],
+            "Manufacturer": [
+                "High Pressure Tube Factory"
+            ]
+        },
+        {
+            "Name": "Industrial Tesla Coil",
+            "Dangerous": true,
+            "Illegal": false,
+            "AvgPrice": 10314,
+            "Level": 7,
+            "Customers": [
+                "Shipyard"
+            ],
+            "Manufacturer": [
+                "Tesla Coil Factory"
+            ]
+        },
+        {
+            "Name": "Jewelry",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 1260,
+            "Level": 1,
+            "Customers": [],
+            "Manufacturer": [
+                "Jewelry Manufacturer 1",
+                "Jewelry Manufacturer 2"
+            ]
+        },
+        {
+            "Name": "Leather",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 37,
+            "Level": 3,
+            "Customers": [
+                "Habitat"
+            ],
+            "Manufacturer": [
+                "Dairy Farm",
+                "Meat Factory"
+            ]
+        },
+        {
+            "Name": "Liquor",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 1867,
+            "Level": 2,
+            "Customers": [
+                "Casino",
+                "Habitat"
+            ],
+            "Manufacturer": [
+                "Distillery"
+            ]
+        },
+        {
+            "Name": "Laser Compressor",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 6577,
+            "Level": 6,
+            "Customers": [
+                "Equipment Dock"
+            ],
+            "Manufacturer": [
+                "Laser Compressor Factory"
+            ]
+        },
+        {
+            "Name": "Laser Head",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 4690,
+            "Level": 5,
+            "Customers": [
+                "Drill Factory",
+                "Equipment Dock"
+            ],
+            "Manufacturer": [
+                "Laser Head Factory"
+            ]
+        },
+        {
+            "Name": "Laser Modulator",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 16742,
+            "Level": 6,
+            "Customers": [],
+            "Manufacturer": [
+                "Laser Modulator Factory"
+            ]
+        },
+        {
+            "Name": "Lead",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 200,
+            "Level": 0,
+            "Customers": [
+                "Ammunition Factory 1"
+            ],
+            "Manufacturer": [
+                "Lead Mine",
+                "Planetary Trading Post"
+            ]
+        },
+        {
+            "Name": "Luxury Food",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 6452,
+            "Level": 6,
+            "Customers": [
+                "Casino"
+            ],
+            "Manufacturer": [
+                "Luxury Food Factory"
+            ]
+        },
+        {
+            "Name": "Medical Supplies",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 3006,
+            "Level": 4,
+            "Customers": [
+                "Casino",
+                "Military Outpost",
+                "Repair Dock",
+                "Shipyard"
+            ],
+            "Manufacturer": [
+                "Medical Supplies Factory"
+            ]
+        },
+        {
+            "Name": "Metal Plate",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 792,
+            "Level": 4,
+            "Customers": [
+                "Body Armor Factory",
+                "Drone Factory",
+                "Repair Dock",
+                "Shipyard",
+                "Teleporter Factory",
+                "Vehicle Factory",
+                "Warhead Factory"
+            ],
+            "Manufacturer": [
+                "Metal Plate Factory"
+            ]
+        },
+        {
+            "Name": "Military Tesla Coil",
+            "Dangerous": true,
+            "Illegal": false,
+            "AvgPrice": 10314,
+            "Level": 7,
+            "Customers": [
+                "Military Outpost"
+            ],
+            "Manufacturer": [
+                "Tesla Coil Factory"
+            ]
+        },
+        {
+            "Name": "Meat",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 37,
+            "Level": 3,
+            "Customers": [
+                "Food Factory",
+                "Habitat",
+                "Protein Factory"
+            ],
+            "Manufacturer": [
+                "Meat Factory"
+            ]
+        },
+        {
+            "Name": "Microchip",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 896,
+            "Level": 5,
+            "Customers": [
+                "Computation Mainframe Factory",
+                "Computer Component Factory",
+                "Display Factory",
+                "Energy Generator Factory",
+                "Processor Factory",
+                "Rocket Factory",
+                "Targeting Card Factory"
+            ],
+            "Manufacturer": [
+                "Microchip Factory"
+            ]
+        },
+        {
+            "Name": "Mineral",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 500,
+            "Level": 0,
+            "Customers": [
+                "Fertilizer Factory 2",
+                "Fungus Farm"
+            ],
+            "Manufacturer": [
+                "Mineral Extractor",
+                "Planetary Trading Post"
+            ]
+        },
+        {
+            "Name": "Mining Robot",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 145977,
+            "Level": 9,
+            "Customers": [
+                "Planetary Trading Post"
+            ],
+            "Manufacturer": [
+                "Mining Robot Factory"
+            ]
+        },
+        {
+            "Name": "Morn Drug",
+            "Dangerous": false,
+            "Illegal": true,
+            "AvgPrice": 5000,
+            "Level": 0,
+            "Customers": [],
+            "Manufacturer": []
+        },
+        {
+            "Name": "Neutron Accelerator",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 125431,
+            "Level": 8,
+            "Customers": [
+                "Research Station",
+                "Travel Hub"
+            ],
+            "Manufacturer": [
+                "Accelerator Factory"
+            ]
+        },
+        {
+            "Name": "Nitrogen",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 40,
+            "Level": 0,
+            "Customers": [
+                "Chemical Factory",
+                "Fuel Factory"
+            ],
+            "Manufacturer": [
+                "Gas Collector 2",
+                "Gas Collector 3"
+            ]
+        },
+        {
+            "Name": "Neon",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 200,
+            "Level": 0,
+            "Customers": [
+                "Energy Tube Factory",
+                "Plasma Cell Factory"
+            ],
+            "Manufacturer": [
+                "Gas Collector 1",
+                "Gas Collector 2"
+            ]
+        },
+        {
+            "Name": "Nanobot",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 1338,
+            "Level": 5,
+            "Customers": [
+                "Body Armor Factory",
+                "Force Generator Factory",
+                "Mining Robot Factory",
+                "Repair Dock",
+                "War Robot Factory"
+            ],
+            "Manufacturer": [
+                "Nanobot Factory"
+            ]
+        },
+        {
+            "Name": "Oxygen",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 80,
+            "Level": 0,
+            "Customers": [
+                "Cattle Ranch 1",
+                "Cattle Ranch 2",
+                "Chemical Factory",
+                "Fish Farm",
+                "Repair Dock",
+                "Sheep Ranch 1",
+                "Sheep Ranch 2"
+            ],
+            "Manufacturer": [
+                "Cocoa Farm",
+                "Coffee Farm",
+                "Corn Farm",
+                "Fruit Farm",
+                "Gas Collector 3",
+                "Plant Farm",
+                "Potato Farm",
+                "Rice Farm",
+                "Spices Farm",
+                "Tea Farm",
+                "Vegetable Farm",
+                "Wheat Farm",
+                "Wood Farm"
+            ]
+        },
+        {
+            "Name": "Oil",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 490,
+            "Level": 1,
+            "Customers": [
+                "Fuel Factory",
+                "Paint Manufacturer",
+                "Plastic Manufacturer",
+                "Rubber Factory"
+            ],
+            "Manufacturer": [
+                "Oil Refinery"
+            ]
+        },
+        {
+            "Name": "Ore",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 70,
+            "Level": 0,
+            "Customers": [
+                "Glass Manufacturer",
+                "Steel Factory 2"
+            ],
+            "Manufacturer": [
+                "Ore Mine",
+                "Planetary Trading Post"
+            ]
+        },
+        {
+            "Name": "Paint",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 481,
+            "Level": 1,
+            "Customers": [
+                "Ammunition Factory 2"
+            ],
+            "Manufacturer": [
+                "Paint Manufacturer"
+            ]
+        },
+        {
+            "Name": "Proton Accelerator",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 125431,
+            "Level": 8,
+            "Customers": [
+                "Research Station",
+                "Travel Hub"
+            ],
+            "Manufacturer": [
+                "Accelerator Factory"
+            ]
+        },
+        {
+            "Name": "Processor",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 7858,
+            "Level": 6,
+            "Customers": [
+                "Antigrav Unit Factory",
+                "Computation Mainframe Factory",
+                "Drill Factory",
+                "Mining Robot Factory",
+                "Satellite Factory",
+                "Repair Dock",
+                "Targeting Card Factory",
+                "Targeting System Factory",
+                "War Robot Factory"
+            ],
+            "Manufacturer": [
+                "Computer Component Factory",
+                "Processor Factory"
+            ]
+        },
+        {
+            "Name": "Plankton",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 50,
+            "Level": 0,
+            "Customers": [
+                "Fertilizer Factory 2"
+            ],
+            "Manufacturer": [
+                "Fish Farm",
+                "Plankton Collector"
+            ]
+        },
+        {
+            "Name": "Platinum",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 750,
+            "Level": 0,
+            "Customers": [
+                "Computer Component Factory",
+                "Conductor Factory",
+                "Energy Tube Factory",
+                "Jewelry Manufacturer 2",
+                "Processor Factory",
+                "Solar Cell Factory",
+                "Tools Factory"
+            ],
+            "Manufacturer": [
+                "Noble Metal Mine 2",
+                "Noble Metal Mine 3"
+            ]
+        },
+        {
+            "Name": "Paper",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 46,
+            "Level": 2,
+            "Customers": [
+                "Book Factory"
+            ],
+            "Manufacturer": [
+                "Paper Factory"
+            ]
+        },
+        {
+            "Name": "Plant",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 14,
+            "Level": 1,
+            "Customers": [
+                "Biotope"
+            ],
+            "Manufacturer": [
+                "Plant Farm"
+            ]
+        },
+        {
+            "Name": "Plasma Cell",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 174,
+            "Level": 4,
+            "Customers": [
+                "Accelerator Factory",
+                "Display Factory",
+                "Drone Factory",
+                "Fusion Core Factory",
+                "Fusion Generator Factory",
+                "Laser Compressor Factory",
+                "Power Unit Factory",
+                "Teleporter Factory",
+                "Travel Hub"
+            ],
+            "Manufacturer": [
+                "Plasma Cell Factory"
+            ]
+        },
+        {
+            "Name": "Plastic",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 137,
+            "Level": 2,
+            "Customers": [
+                "Energy Tube Factory",
+                "Explosive Charge Factory",
+                "Force Generator Factory",
+                "Gun Factory",
+                "High Capacity Lens Factory",
+                "Servo Factory",
+                "Shipyard",
+                "Equipment Dock",
+                "Repair Dock",
+                "Tesla Coil Factory",
+                "Transformator Factory",
+                "Wire Manufacturer"
+            ],
+            "Manufacturer": [
+                "Plastic Manufacturer"
+            ]
+        },
+        {
+            "Name": "Potato",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 24,
+            "Level": 1,
+            "Customers": [
+                "Carbon Extractor 1"
+            ],
+            "Manufacturer": [
+                "Potato Farm"
+            ]
+        },
+        {
+            "Name": "Power Unit",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 1211,
+            "Level": 5,
+            "Customers": [
+                "Antigrav Unit Factory",
+                "Computation Mainframe Factory",
+                "Fusion Generator Factory",
+                "Mining Robot Factory",
+                "Teleporter Factory",
+                "Shipyard",
+                "Repair Dock",
+                "Equipment Dock",
+                "Turbine Factory",
+                "Vehicle Factory",
+                "War Robot Factory"
+            ],
+            "Manufacturer": [
+                "Power Unit Factory"
+            ]
+        },
+        {
+            "Name": "Protein",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 34,
+            "Level": 4,
+            "Customers": [],
+            "Manufacturer": [
+                "Protein Factory"
+            ]
+        },
+        {
+            "Name": "Raw Oil",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 150,
+            "Level": 0,
+            "Customers": [
+                "Oil Refinery"
+            ],
+            "Manufacturer": [
+                "Oil Rig",
+                "Planetary Trading Post"
+            ]
+        },
+        {
+            "Name": "Rice",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 15,
+            "Level": 1,
+            "Customers": [
+                "Biotope",
+                "Carbon Extractor 4",
+                "Food Bar Factory"
+            ],
+            "Manufacturer": [
+                "Rice Farm"
+            ]
+        },
+        {
+            "Name": "Rift Research Data",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 5000,
+            "Level": 0,
+            "Customers": [
+                "Rift Research Station"
+            ],
+            "Manufacturer": []
+        },
+        {
+            "Name": "Rocket",
+            "Dangerous": true,
+            "Illegal": false,
+            "AvgPrice": 11250,
+            "Level": 6,
+            "Customers": [
+                "Equipment Dock"
+            ],
+            "Manufacturer": [
+                "Rocket Factory"
+            ]
+        },
+        {
+            "Name": "Rubber",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 686,
+            "Level": 2,
+            "Customers": [
+                "Vehicle Factory"
+            ],
+            "Manufacturer": [
+                "Rubber Factory"
+            ]
+        },
+        {
+            "Name": "Satellite",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 65714,
+            "Level": 7,
+            "Customers": [
+                "Equipment Dock",
+                "Research Station"
+            ],
+            "Manufacturer": [
+                "Satellite Factory"
+            ]
+        },
+        {
+            "Name": "Scrap Metal",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 25,
+            "Level": 0,
+            "Customers": [
+                "Steel Factory 1"
+            ],
+            "Manufacturer": [
+                "Drill Factory",
+                "Drone Factory",
+                "Laser Compressor Factory",
+                "Mining Robot Factory",
+                "Satellite Factory",
+                "Scrap Metal Trader",
+                "Teleporter Factory",
+                "Vehicle Factory",
+                "War Robot Factory",
+                "Warhead Factory"
+            ]
+        },
+        {
+            "Name": "Semi Conductor",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 129,
+            "Level": 4,
+            "Customers": [
+                "Computer Component Factory",
+                "Display Factory",
+                "Microchip Factory",
+                "Nanobot Factory",
+                "Processor Factory"
+            ],
+            "Manufacturer": [
+                "Semi Conductor Manufacturer"
+            ]
+        },
+        {
+            "Name": "Servo",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 1387,
+            "Level": 5,
+            "Customers": [
+                "Antigrav Generator Factory",
+                "Laser Modulator Factory",
+                "Turbine Factory"
+            ],
+            "Manufacturer": [
+                "Servo Factory"
+            ]
+        },
+        {
+            "Name": "Sheep",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 130,
+            "Level": 2,
+            "Customers": [
+                "Biotope",
+                "Fabric Factory"
+            ],
+            "Manufacturer": [
+                "Sheep Ranch 1",
+                "Sheep Ranch 2"
+            ]
+        },
+        {
+            "Name": "Silicon",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 500,
+            "Level": 0,
+            "Customers": [
+                "Semi Conductor Manufacturer",
+                "Solar Cell Factory",
+                "Transformator Factory"
+            ],
+            "Manufacturer": [
+                "Silicon Mine",
+                "Planetary Trading Post"
+            ]
+        },
+        {
+            "Name": "Solar Cell",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 469,
+            "Level": 1,
+            "Customers": [
+                "Solar Panel Factory",
+                "Repair Dock",
+                "Shipyard"
+            ],
+            "Manufacturer": [
+                "Solar Cell Factory"
+            ]
+        },
+        {
+            "Name": "Solar Panel",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 6858,
+            "Level": 5,
+            "Customers": [
+                "Planetary Trading Post",
+                "Repair Dock",
+                "Satellite Factory"
+            ],
+            "Manufacturer": [
+                "Solar Panel Factory"
+            ]
+        },
+        {
+            "Name": "Spices",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 268,
+            "Level": 5,
+            "Customers": [
+                "Habitat",
+                "Luxury Food Factory"
+            ],
+            "Manufacturer": [
+                "Spices Farm"
+            ]
+        },
+        {
+            "Name": "Steel",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 277,
+            "Level": 1,
+            "Customers": [
+                "Ammunition Factory 1",
+                "Ammunition Factory 2",
+                "Conductor Factory",
+                "Drill Factory",
+                "Electro Magnet Factory",
+                "Energy Tube Factory",
+                "Explosive Charge Factory",
+                "Force Generator Factory",
+                "Fusion Generator Factory",
+                "Gun Factory",
+                "High Pressure Tube Factory",
+                "Metal Plate Factory",
+                "Plasma Cell Factory",
+                "Repair Dock",
+                "Rocket Factory",
+                "Semi Conductor Manufacturer",
+                "Servo Factory",
+                "Steel Tube Factory",
+                "Tesla Coil Factory",
+                "Tools Factory",
+                "Shipyard",
+                "Transformator Factory",
+                "Turbine Factory",
+                "Wire Manufacturer"
+            ],
+            "Manufacturer": [
+                "Steel Factory 1",
+                "Steel Factory 2"
+            ]
+        },
+        {
+            "Name": "Steel Tube",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 704,
+            "Level": 4,
+            "Customers": [
+                "Energy Tube Factory",
+                "High Pressure Tube Factory",
+                "Satellite Factory"
+            ],
+            "Manufacturer": [
+                "Steel Tube Factory"
+            ]
+        },
+        {
+            "Name": "Slave",
+            "Dangerous": false,
+            "Illegal": true,
+            "AvgPrice": 15000,
+            "Level": 0,
+            "Customers": [],
+            "Manufacturer": []
+        },
+        {
+            "Name": "Solvent",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 402,
+            "Level": 3,
+            "Customers": [
+                "Fertilizer Factory 1",
+                "Paint Manufacturer"
+            ],
+            "Manufacturer": [
+                "Chemical Factory"
+            ]
+        },
+        {
+            "Name": "Silver",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 300,
+            "Level": 0,
+            "Customers": [
+                "Metal Plate Factory",
+                "Tools Factory",
+                "Transformator Factory"
+            ],
+            "Manufacturer": [
+                "Noble Metal Mine 1",
+                "Noble Metal Mine 2"
+            ]
+        },
+        {
+            "Name": "Toxic Waste",
+            "Dangerous": true,
+            "Illegal": false,
+            "AvgPrice": 15,
+            "Level": -1,
+            "Customers": [],
+            "Manufacturer": [
+                "Ammunition Factory 2",
+                "Fertilizer Factory 1",
+                "Fuel Factory",
+                "Fungus Farm",
+                "Laser Head Factory",
+                "Paint Manufacturer",
+                "Rubber Factory"
+            ]
+        },
+        {
+            "Name": "Targeting Card",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 11873,
+            "Level": 6,
+            "Customers": [
+                "Targeting System Factory"
+            ],
+            "Manufacturer": [
+                "Computer Component Factory",
+                "Targeting Card Factory"
+            ]
+        },
+        {
+            "Name": "Targeting System",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 29674,
+            "Level": 8,
+            "Customers": [
+                "Military Outpost"
+            ],
+            "Manufacturer": [
+                "Targeting System Factory"
+            ]
+        },
+        {
+            "Name": "Tea",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 37,
+            "Level": 1,
+            "Customers": [
+                "Habitat"
+            ],
+            "Manufacturer": [
+                "Tea Farm"
+            ]
+        },
+        {
+            "Name": "Teleporter",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 39365,
+            "Level": 8,
+            "Customers": [
+                "Body Armor Factory",
+                "Mining Robot Factory",
+                "War Robot Factory",
+                "Research Station"
+            ],
+            "Manufacturer": [
+                "Teleporter Factory"
+            ]
+        },
+        {
+            "Name": "Tools",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 214,
+            "Level": 4,
+            "Customers": [
+                "Equipment Dock",
+                "Planetary Trading Post"
+            ],
+            "Manufacturer": [
+                "Tools Factory"
+            ]
+        },
+        {
+            "Name": "Transformator",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 209,
+            "Level": 4,
+            "Customers": [
+                "Electro Magnet Factory",
+                "Electromagnetic Charge Factory",
+                "Energy Container Factory",
+                "Energy Inverter Factory",
+                "Fusion Core Factory",
+                "Gauss Rail Factory",
+                "Laser Compressor Factory",
+                "Laser Modulator Factory",
+                "Power Unit Factory",
+                "Solar Panel Factory",
+                "Teleporter Factory"
+            ],
+            "Manufacturer": [
+                "Transformator Factory"
+            ]
+        },
+        {
+            "Name": "Turbine",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 16729,
+            "Level": 6,
+            "Customers": [
+                "Accelerator Factory",
+                "Research Station",
+                "Shipyard",
+                "Travel Hub"
+            ],
+            "Manufacturer": [
+                "Turbine Factory"
+            ]
+        },
+        {
+            "Name": "Vegetable",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 32,
+            "Level": 1,
+            "Customers": [
+                "Biotope",
+                "Food Factory",
+                "Habitat"
+            ],
+            "Manufacturer": [
+                "Vegetable Farm"
+            ]
+        },
+        {
+            "Name": "Vehicle",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 77087,
+            "Level": 8,
+            "Customers": [
+                "Military Outpost"
+            ],
+            "Manufacturer": [
+                "Vehicle Factory"
+            ]
+        },
+        {
+            "Name": "War Robot",
+            "Dangerous": true,
+            "Illegal": false,
+            "AvgPrice": 92186,
+            "Level": 9,
+            "Customers": [
+                "Military Outpost"
+            ],
+            "Manufacturer": [
+                "War Robot Factory"
+            ]
+        },
+        {
+            "Name": "Warhead",
+            "Dangerous": true,
+            "Illegal": false,
+            "AvgPrice": 5630,
+            "Level": 5,
+            "Customers": [
+                "Equipment Dock",
+                "Rocket Factory"
+            ],
+            "Manufacturer": [
+                "Warhead Factory"
+            ]
+        },
+        {
+            "Name": "Water",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 20,
+            "Level": 0,
+            "Customers": [
+                "Biotope",
+                "Brewery",
+                "Casino",
+                "Cattle Ranch 1",
+                "Cattle Ranch 2",
+                "Chemical Factory",
+                "Cocoa Farm",
+                "Coffee Farm",
+                "Corn Farm",
+                "Distillery",
+                "Fish Farm",
+                "Fruit Farm",
+                "Fungus Farm",
+                "Habitat",
+                "Medical Supplies Factory",
+                "Paint Manufacturer",
+                "Paper Factory",
+                "Plant Farm",
+                "Potato Farm",
+                "Rice Farm",
+                "Sheep Ranch 1",
+                "Sheep Ranch 2",
+                "Spices Farm",
+                "Tea Farm",
+                "Vegetable Farm",
+                "Wheat Farm",
+                "Wood Farm"
+            ],
+            "Manufacturer": [
+                "Ice Mine",
+                "Water Collector"
+            ]
+        },
+        {
+            "Name": "Wheat",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 23,
+            "Level": 1,
+            "Customers": [
+                "Biotope",
+                "Brewery",
+                "Carbon Extractor 2",
+                "Cattle Ranch",
+                "Distillery",
+                "Fish Farm",
+                "Food Bar Factory",
+                "Food Factory",
+                "Luxury Food Factory",
+                "Sheep Ranch 1"
+            ],
+            "Manufacturer": [
+                "Wheat Farm"
+            ]
+        },
+        {
+            "Name": "Wine",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 182,
+            "Level": 4,
+            "Customers": [
+                "Casino",
+                "Luxury Food Factory",
+                "Habitat"
+            ],
+            "Manufacturer": [
+                "Wine Factory"
+            ]
+        },
+        {
+            "Name": "Wire",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 95,
+            "Level": 4,
+            "Customers": [
+                "Antigrav Generator Factory",
+                "Computation Mainframe Factory",
+                "Computer Component Factory",
+                "Laser Compressor Factory",
+                "Microchip Factory",
+                "Repair Dock",
+                "Shipyard",
+                "Equipment Dock",
+                "Targeting System Factory"
+            ],
+            "Manufacturer": [
+                "Wire Manufacturer"
+            ]
+        },
+        {
+            "Name": "Wood",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 350,
+            "Level": 1,
+            "Customers": [
+                "Biotope",
+                "Habitat",
+                "Paper Factory"
+            ],
+            "Manufacturer": [
+                "Wood Farm"
+            ]
+        },
+        {
+            "Name": "Zinc",
+            "Dangerous": false,
+            "Illegal": false,
+            "AvgPrice": 250,
+            "Level": 0,
+            "Customers": [
+                "Conductor Factory",
+                "Medical Supplies Factory",
+                "Solar Cell Factory"
+            ],
+            "Manufacturer": [
+                "Zinc Mine"
+            ]
+        }
+    ]
+}
