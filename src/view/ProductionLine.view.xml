@@ -6,6 +6,14 @@
     xmlns:c="sap.ui.core"
 	xmlns:mvc="sap.ui.core.mvc">
 <Page title="Avorion Production Line" id="prodPage" showNavButton="true" navButtonPress="onNavBack">
+<headerContent>
+    <Button
+        text="Export"
+        press="handleDownloadPress" />
+    <Button
+        text="Import"
+        press="openUploadDialog" />
+</headerContent>
 <content>
 	
     <Title text="Target Factory" 
@@ -40,31 +48,34 @@
     <!--  
         <Button press="checkSanity" text="check Sanity" />
     -->
+    <!-- This is where the Magic happens -->
     <VBox id="DetailedProdList" />
-
+    <!--  -->
     <List items="{path:'View>/requiredFactories'}"
-        headerText="Required Factories"
         width="42.5%"
-        class="sapUiLargeMarginTop bottomTwoListLeft" >
+        class="bottomTwoListLeft sapUiLargeMarginTop sapUiLargeMarginBottom" >
+        <headerToolbar>
+            <Toolbar>
+                <Text text="Required Factories" />
+            </Toolbar>
+        </headerToolbar>
         <items>
             <StandardListItem title="{View>}" />
         </items>
-        <dragDropConfig>
-            <dnd:DragInfo sourceAggregation="items" />
-            <dnd:DropInfo targetAggregation="items" dropPosition="Between" drop="onDropNeed" />
-        </dragDropConfig>
     </List>
-    <List items="{path:'View>/ownedFactories'}"
-        headerText="Owned Factories"
+    <List items="{path:'View>/availableGoods'}"
         width="42.5%"
-        class="sapUiLargeMarginTop bottomTwoListRight" >
+        class="bottomTwoListRight sapUiLargeMarginTop sapUiLargeMarginBottom" >
+        <headerToolbar>
+            <Toolbar>
+                <Text text="Available goods" />
+                <ToolbarSpacer />
+                <Button text="Add Good" press="addAvailableGood" />
+            </Toolbar>
+        </headerToolbar>
         <items>
             <StandardListItem title="{View>}" />
         </items>
-        <dragDropConfig>
-            <dnd:DragInfo sourceAggregation="items" />
-            <dnd:DropInfo targetAggregation="items" dropPosition="Between" drop="onDropHave" />
-        </dragDropConfig>
     </List>
 </content>
 </Page>

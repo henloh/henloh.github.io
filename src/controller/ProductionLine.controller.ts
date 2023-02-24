@@ -13,69 +13,418 @@ import Select from "sap/m/Select";
 import Item from "sap/ui/core/Item";
 import Title from "sap/m/Title";
 import Button from "sap/m/Button";
+import Fragment from "sap/ui/core/Fragment";
+import SelectDialog from "sap/m/SelectDialog";
+import Filter from "sap/ui/model/Filter";
+import FilterOperator from "sap/ui/model/FilterOperator";
+import File from "sap/ui/core/util/File";
+import Dialog from "sap/m/Dialog";
 
 /**
  * @namespace de.henloh.prodts.controller
  */
+/*
+.########..########...#######..########..##.....##..######..########
+.##.....##.##.....##.##.....##.##.....##.##.....##.##....##....##...
+.##.....##.##.....##.##.....##.##.....##.##.....##.##..........##...
+.########..########..##.....##.##.....##.##.....##.##..........##...
+.##........##...##...##.....##.##.....##.##.....##.##..........##...
+.##........##....##..##.....##.##.....##.##.....##.##....##....##...
+.##........##.....##..#######..########...#######...######.....##...
+*/
 class treeGood extends Product {
-	factoryOptions: treeFactory[];
-	path: string;
+	factoryOptions: treeFactory[]; 
+	id: string;
 	control: Control;
-	parent: string;
-	constructor(good: Product, path: string, control: Control, factoryOptions: treeFactory[], parent?: string) {
+	parent: object;
+	subs: {[k: string]: treeFactory};
+	game: factoryGame;
+	constructor(good: Product, game: factoryGame, parent: object) {
 		super(good.Name, good.Dangerous, good.Illegal, good.AvgPrice, good.Level, good.Customers, good.Manufacturer);
 
-		this.path = path;
-		this.control = control;
-		this.factoryOptions = factoryOptions;
 		this.parent = parent;
+		this.game = game;
+		this.factoryOptions = [];
+		this.subs = {};
 	}
-	public getActiveFactory(): treeFactory {
+	public getId():string {
+		// Parent ist entweder game oder factory
+		//@ts-ignore
+		if(this.parent.getId) {
+			//@ts-ignore
+			return this.parent.getId() + "/" + this.Name.replace(/\s/g, '');
+		} else {
+			return this.Name.replace(/\s/g, '');
+		}
+	}
+	public getActiveFactory(): string[] {
+		var facs:string[] = []
 		for (const factory of this.factoryOptions) {
 			if (factory.active) {
-				return factory;
+				facs = facs.concat(factory.getActiveSubs());
+				facs.indexOf(factory.Name) === -1 ? facs.push(factory.Name) : null;
+				return facs;
+			}
+		}
+	}
+	public getExportFactory(): any { 
+		var result:any = {};
+		for (const factory of this.factoryOptions) {
+			if (factory.active) {
+				result.Name = factory.Name;
+				result.requiredProducts = []
+				for (const product of factory.requiredProducts) {
+					result.requiredProducts.push({
+						Name: product.Name,
+						Factory: product.getExportFactory()
+					});
+				}
+			}
+		}
+		return result;
+	}
+	public getSubGoods(): treeGood[] {
+		var result:treeGood[] = [];
+		for (const factory of this.factoryOptions) {
+			result = result.concat(factory.getAllGoods());
+		}
+		return result;
+	}
+	public setActiveFactory(Name: string) {
+		if(!(this.factoryOptions.length > 0)) return;
+		for (const factory of this.factoryOptions) {
+			factory.active = false;
+			if (factory.Name == Name) {
+				factory.active = true;
+				if (this.factoryOptions.length > 1) {
+					// first content is select
+					var select = (this.control as Panel).getContent()[0] as Select;
+					select.setSelectedKey(factory.Name.replace(/\s/g, ''));
+				}
+			}
+		}
+	}
+	// initial build select one
+	private setFactoryActive():treeFactory {
+		if(this.factoryOptions.length == 1) {
+			this.factoryOptions[0].active = true;
+			return this.factoryOptions[0];
+		} else if(this.factoryOptions.length > 1) {
+			var lowest = this.factoryOptions[0];
+			for (const factory of this.factoryOptions) {
+				var compare = lowest.getMaterialLevelCombined();
+				if (factory.getMaterialLevelCombined() < compare) {
+					lowest = factory;
+				}
+			}
+			lowest.active = true;
+			return lowest;
+		}
+	}
+	public setActiveFactoryRecursiv(Material: string, newFactoryName: string) {
+		if(this.Name == Material) {
+			this.setActiveFactory(newFactoryName);
+			return;
+		}
+		if(this.factoryOptions.length > 0) {
+			for (const factory of this.factoryOptions) {
+				console.log(factory.id);
+				factory.checkMaterialList(Material, newFactoryName);
+			}
+		}
+	}
+	public buildControl(panellevel: number) {
+		this.id = this.getId();
+		this.control = new Panel(this.Name.replace(/\s/g, '') + this.game.getPanelId(), {
+			expanded: false,
+			expandable: true,
+			headerText: `{View>/game/subs/${this.id}/Name}`
+		});
+		this.control.addStyleClass("avlevel" + panellevel);
+		this.game.deathZone.push(this.control);
+
+		panellevel++;
+		var factories = this.game.getFactoriesForProduct(this.Name);
+		try {
+			for (const factory of factories) {
+				var newFactory = new treeFactory(factory, this.game, this);
+				this.factoryOptions.push(newFactory);
+			}
+		} catch (error) {
+			console.warn("No factory for "+ this.Name);
+			(this.control as Panel).setExpandable(false);
+			(this.control as Panel).addStyleClass("dontShowContent");
+		}
+		if (this.factoryOptions.length == 1) {
+			this.factoryOptions[0].buildControl(this.Level, panellevel);
+			(this.control as Panel).addContent(this.factoryOptions[0].control);
+			// used for binding /LaserHead/LaserHeadFactory/Glass/GlassManufacturer/Ore/Name
+			//@ts-ignore
+			this[this.factoryOptions[0].Name.replace(/\s/g, '')] = this.factoryOptions[0];
+			this.setFactoryActive();
+		} else if(this.factoryOptions.length > 1) {
+			var newSelect = new Select(this.Name.replace(/\s/g, '') + this.game.getPanelId(), {
+				selectedItem: `View>/game/subs/${this.id}/activeChild`,
+				items: {
+					path: `View>/game/subs/${this.id}/factoryOptions`,
+					template: new Item({
+						text: "{View>Name}",
+						key: "{View>selectid}"
+					}),
+					templateShareable: true
+				},
+				change: this.game.that.selectFactory
+			});
+			this.game.deathZone.push(newSelect);
+			var lowest = this.setFactoryActive();
+			newSelect.setSelectedKey(lowest.Name.replace(/\s/g, ''));
+
+			var newButton = new Button(this.Name.replace(/\s/g, '') + this.game.getPanelId(), {
+				text: `Apply to all {View>/game/subs/${this.id}/Name} facilities.`,
+				press: this.game.that.setBaseFactory
+			}).addStyleClass("sapUiSmallMarginBegin");
+			this.game.deathZone.push(newButton);
+
+			(this.control as Panel).addContent(newSelect);
+			(this.control as Panel).addContent(newButton);
+			
+			for (var factory of this.factoryOptions) {
+				factory.buildControl(this.Level, panellevel);
+				// used for binding /LaserHead/LaserHeadFactory/Glass/GlassManufacturer/Ore/Name
+				//@ts-ignore
+				this[factory.Name.replace(/\s/g, '')] = factory;
+				(this.control as Panel).addContent(factory.control);
 			}
 		}
 	}
 }
+/*
+.########....###.....######..########..#######..########..##....##
+.##.........##.##...##....##....##....##.....##.##.....##..##..##.
+.##........##...##..##..........##....##.....##.##.....##...####..
+.######...##.....##.##..........##....##.....##.########.....##...
+.##.......#########.##..........##....##.....##.##...##......##...
+.##.......##.....##.##....##....##....##.....##.##....##.....##...
+.##.......##.....##..######.....##.....#######..##.....##....##...
+*/
 class treeFactory extends Factory {
 	requiredProducts: treeGood[];
-	path: string;
+	id: string;
 	selectid: string;
 	control: Control;
 	active: boolean;
-	parent: string;
-	constructor(factory: Factory, path: string, requiredProducts: treeGood[], control: Control, active: boolean, parent?: string) {
+	parent: treeGood;
+	subs: {[k: string]: treeGood};
+	game: factoryGame;
+	constructor(factory: Factory, game: factoryGame, parent: treeGood) {
 		super(factory.Name,factory.ProductionCap,factory.Cost,factory.Products,factory.Materials);
 
-		this.selectid = factory.Name.replace(/\s/g, '');
-		this.path = path;
-		this.requiredProducts = requiredProducts;
-		this.control = control;
-		this.active = active;
 		this.parent = parent;
+		this.game = game;
+		this.selectid = factory.Name.replace(/\s/g, '');
+		this.requiredProducts = [];
+		this.active = false;
+		this.subs = {};
 	}
-	public getMaterialLevelCombined(game: Game): int {
+	public getId() {
+		return this.parent.getId() + "/" + this.Name.replace(/\s/g, '');
+	}
+	public getMaterialLevelCombined(): int {
 		var result: int = 0;
 		for (const product of this.Materials) {
-			result += game.getProduct(product).Level;
+			result += this.game.getProduct(product).Level;
 		}
 		return result
 	}
+	public getAllGoods(): treeGood[] {
+		var allGoods:treeGood[] = [];
+		for (const good of this.requiredProducts) {
+			allGoods.push(good);
+			allGoods = allGoods.concat(good.getSubGoods())
+		}
+		return allGoods;
+	}
+	public getActiveSubs(): string[] {
+		var facs:string[] = [];
+		for (const requiredProduct of this.requiredProducts) {
+			facs = facs.concat(requiredProduct.getActiveFactory());
+		}
+		return facs
+	}
+	public checkMaterialList(Material: string, newFactoryName: string) {
+		if (this.Products.indexOf(Material) >= 0) this.active = (this.Name == newFactoryName);
+		for (const requiredProduct of this.requiredProducts) {
+			if(requiredProduct.Name == Material) {
+				requiredProduct.setActiveFactory(newFactoryName);
+			}
+			requiredProduct.setActiveFactoryRecursiv(Material, newFactoryName);
+		}
+	}
+	public buildControl(goodLvl: number, panellevel: number) {
+		this.id = this.getId();
+		if (goodLvl == 0) {
+			this.control = new Title(this.Name.replace(/\s/g, '') + this.game.getPanelId(), {
+				width: "100%",
+				// bool from binding
+				//@ts-ignore
+				visible: `{View>/game/subs/${this.id}/active}`,
+				text: `{View>/game/subs/${this.id}/Name}`
+			});
+		} else {
+			this.control = new Panel(this.Name.replace(/\s/g, '') + this.game.getPanelId(), {
+				expanded: true,
+				expandable: true,
+				// bool from binding
+				//@ts-ignore
+				visible: `{View>/game/subs/${this.id}/active}`,
+				headerText: `{View>/game/subs/${this.id}/Name}`
+			});
+			var mats = this.game.getMaterialsForFactory(this.Name);
+			for (const mat of mats) {
+				var newMat = new treeGood(mat, this.game, this);
+				this.requiredProducts.push(newMat)
+			}
+			for (var reqMaterial of this.requiredProducts) {
+				reqMaterial.buildControl(panellevel);
+				(this.control as Panel).addContent(reqMaterial.control);
+				// used for binding /LaserHead/LaserHeadFactory/Glass/GlassManufacturer/Ore/Name
+				//@ts-ignore
+				this[reqMaterial.Name.replace(/\s/g, '')] = reqMaterial;
+			}
+		}
+		
+		this.game.deathZone.push(this.control);
+	}
 }
+/*
+..######......###....##.....##.########
+.##....##....##.##...###...###.##......
+.##.........##...##..####.####.##......
+.##...####.##.....##.##.###.##.######..
+.##....##..#########.##.....##.##......
+.##....##..##.....##.##.....##.##......
+..######...##.....##.##.....##.########
+*/
+class factoryGame extends Game {
+	private panelCount: number;
+	that: ProductionLine;
+	availableGoods: string[];
+	reqFactories: treeFactory[];
+	prodTree: treeGood[];
+	products: Product[];
+	targetFactory: Factory;
+	deathZone: Control[];
+	subs: {[k: string]: treeGood};
+
+	constructor(goods: Product[], factories: Factory[]) {
+		super(goods, factories);
+		this.deathZone = [];
+		this.availableGoods = [];
+		this.reqFactories = [];
+		this.prodTree = [];
+		this.products = [];
+		this.panelCount = 0;
+		this.subs = {};
+	}
+	public setTargetFactory(factoryName: string): {[k: string]: treeGood} {
+		this.targetFactory = this.getFactory(factoryName);
+		this.products = this.getMaterialsForFactory(this.targetFactory.Name);
+
+		for (const good of this.products) {
+			var newGood = new treeGood(good, this, this);
+			this.prodTree.push(newGood);
+		}
+
+		// to get a Binding /tree/id/attribut 
+		// the array need to be changed ot objects 
+		for (var treeitem of this.prodTree) {
+			treeitem.buildControl(0);
+			this.subs[treeitem.id] = treeitem;
+		}
+
+		return this.subs;
+	}
+	public clearDeathZone(): void {
+		for (const control of this.deathZone) {
+			control.destroy();
+		}
+	}
+	public getActiveFactories(): string[] {
+		var facs:string[] = [];
+		for (var baseitem of this.prodTree) {
+			facs = facs.concat(baseitem.getActiveFactory())
+		}
+		// only Uniques
+		facs = [...new Set(facs)]
+		for (let index = facs.length - 1; index > -1; index--) {
+			const element = facs[index];
+			if (element == undefined) facs.splice(index, 1);
+		}
+		return facs;
+	}
+	public getExportTree(): any {
+		var exportTree = {};
+		for (var baseitem of this.prodTree) {
+			//@ts-ignore
+			exportTree[baseitem.Name] = {
+				Name: baseitem.Name,
+				Factory: baseitem.getExportFactory()
+			}
+		}
+		return exportTree;
+	}
+	public setBaseFactory(Material:string, newFactoryName:string) {
+		for (var name in this.subs) {
+			this.subs[name].setActiveFactoryRecursiv(Material, newFactoryName);
+		}
+	}
+	public setAvailableGood(Name: string) {
+		this.availableGoods.push(Name);
+		var allGoods:treeGood[] = [];
+		for (const good of this.prodTree) {
+			allGoods.push(good);
+			allGoods = allGoods.concat(good.getSubGoods());
+		}
+		//console.log(allGoods);
+		for (const good of allGoods) {
+			if (good.Name == Name) {
+				good.control.addStyleClass("dontShowContent");
+				(good.control as Panel).setExpandable(false);
+				for (const factory of good.factoryOptions) {
+					factory.active = false;
+				}
+			}
+		}
+
+	}
+	public getPanelId():number {
+		this.panelCount++;
+		return this.panelCount
+	}
+}
+/*
+..######...#######..##....##.########.########...#######..##.......##.......########.########.
+.##....##.##.....##.###...##....##....##.....##.##.....##.##.......##.......##.......##.....##
+.##.......##.....##.####..##....##....##.....##.##.....##.##.......##.......##.......##.....##
+.##.......##.....##.##.##.##....##....########..##.....##.##.......##.......######...########.
+.##.......##.....##.##..####....##....##...##...##.....##.##.......##.......##.......##...##..
+.##....##.##.....##.##...###....##....##....##..##.....##.##.......##.......##.......##....##.
+..######...#######..##....##....##....##.....##..#######..########.########.########.##.....##
+*/
 export default class ProductionLine extends BaseController {
 	private formatter = formatter;
-	
+	private selectDialog: SelectDialog;
+	private importDialog: Dialog;
 	public onInit(): void {
 		var Model = new JSONModel();
 		Model.setData({
 			TargetFactory: "",
 			products: [],
-            mainFactory: {},
-			deathZone: [],
-			tree: [],
-			ownedFactories: [],
-			requiredFactories: []
+			//mainFactory: {},
+			//deathZone: [],
+			//tree: [],
+			//ownedFactories: [],
+			//requiredFactories: []
 		});
 		this.getView().setModel(Model, "View");
 		this.getRouter().getRoute("productionLine").attachPatternMatched(this.onPatternMatched, this);
@@ -85,203 +434,60 @@ export default class ProductionLine extends BaseController {
 			return oItem.getText().match(new RegExp("^"+sTerm, "i"));
 		});
 	}
+	/*
+	.########..########...#######..########..........##.......####.##....##.########
+	.##.....##.##.....##.##.....##.##.....##.........##........##..###...##.##......
+	.##.....##.##.....##.##.....##.##.....##.........##........##..####..##.##......
+	.########..########..##.....##.##.....##.#######.##........##..##.##.##.######..
+	.##........##...##...##.....##.##.....##.........##........##..##..####.##......
+	.##........##....##..##.....##.##.....##.........##........##..##...###.##......
+	.##........##.....##..#######..########..........########.####.##....##.########
+	*/
 	public async generateProductionLine(event: Event): Promise<void> {
 		var that = this;
 		var view = this.getView();
-        var game = new Game(this.getModel("GoodModel").getProperty("/Goods"), this.getModel("FactorieModel").getProperty("/Factories"));
-		// avoid duplicate ID
-		var Panelcount = 0;
-		var currentPath = "";
 		var viewModel = this.getModel("View") as JSONModel;
-		// remove previos items 
-		var deathArray:Control[] = viewModel.getProperty("/deathZone");
-		for (const control of deathArray) {
-			control.destroy();
+		var game:factoryGame;
+		try {
+			game = viewModel.getProperty("/game");
+			if (game) {
+				game.clearDeathZone();
+			}
+			// Clear
+			game = new factoryGame(this.getModel("GoodModel").getProperty("/Goods"), this.getModel("FactorieModel").getProperty("/Factories"));
+		} catch (error) {
+			console.error(error);
 		}
-		deathArray = [];
-		// list of total required factories
-		var requiredFactories:string[] = [];
-		var TargerFactoryName = (view.byId("targetFactoryInput") as Input).getValue();
-		var TargetFactory = game.getFactory(TargerFactoryName);
-		viewModel.setProperty("/mainFactory", TargetFactory);
-		var TargetFactoryGoods = game.getProductsFromFactory(TargetFactory.Name);
-		viewModel.setProperty("/products", TargetFactoryGoods);
-		
-		var getFactoryMaterialPanels = function(good: treeGood, currentPath: string, factory: treeFactory): treeGood {
-			var materialarray = game.getMaterialsForFactory(factory.Name);
+		game.that = that;
 
-			//console.log(materialarray);
-			for (const material of materialarray) {
-				var path  = currentPath + "/" + material.Name.replace(/\s/g, '');
-				factory.requiredProducts.push( new treeGood(material, path, null, [], factory.path) );
-			}
-			for (var material of factory.requiredProducts) {
-				material = getFactoryOrSelectWithPanel(material, factory.active);
-				(factory.control as Panel).addContent(material.control);
-			}
-			return good;
-		}
-		var getFactoryOrSelectWithPanel = function(good: treeGood, isParentActive?: boolean): treeGood {
-			currentPath = currentPath + "/" + good.Name.replace(/\s/g, '');
-			//console.log(currentPath);
+		var TargetFactoryName = (view.byId("targetFactoryInput") as Input).getValue();
+		viewModel.setProperty("/products", game.getProductsFromFactory(TargetFactoryName));
+		game.setTargetFactory(TargetFactoryName);
+		for (var name in game.subs) {
+			(that.byId("DetailedProdList") as VBox).addItem(game.subs[name].control);
 			
-			var id = good.Name.replace(/\s/g, '');
-			//console.log(`{View>/tree${currentPath}/Name}`);
-			good.control = new Panel(id + Panelcount, {
-				expanded: false,
-				expandable: true,
-				headerText: `{View>/tree${currentPath}/Name}`
-			});
-			viewModel.setProperty("/tree" + currentPath, good);
-			deathArray.push(good.control);
-			Panelcount++;
-			var factories = game.getFactoriesForProduct(good.Name);
-			//console.log(factories);
-			try {
-				for (const factory of factories) {
-					var path = currentPath + "/" + factory.Name.replace(/\s/g, '');
-					good.factoryOptions.push(new treeFactory(factory, path ,[], null, false));
-				}
-			} catch (error) {
-				console.warn("No factory for "+ good.Name);
-				return good;
-			}
-			// für requiered factories dürfen nur die aktiven gewertet werden
-			if (good.factoryOptions.length == 0) return good;
-			if (factories.length == 1) {
-				good.factoryOptions[0].active = isParentActive;
-				var path = currentPath + "/" + good.factoryOptions[0].Name.replace(/\s/g, '');
-				// verhindern von endlos rekursion (Mine braucht Borher, Bohrer braucht Stahl, Stahl braucht Mine)
-				if (good.Level == 0) {
-					good.factoryOptions[0].control = new Title(id + Panelcount, {
-						//text: good.factoryOptions[0].Name
-						text: `{View>/tree${path}/Name}`
-					});
-					(good.control as Panel).addContent(good.factoryOptions[0].control);
-				} else {
-					good.factoryOptions[0].control = new Panel(id + Panelcount, {
-						expanded: true,
-						expandable: true,
-						headerText: `{View>/tree${path}/Name}`
-					});
-					(good.control as Panel).addContent(good.factoryOptions[0].control);
-					good = getFactoryMaterialPanels(good, currentPath, good.factoryOptions[0]);
-				}
-				Panelcount++;
-				deathArray.push(good.factoryOptions[0].control);
-				if (good.factoryOptions[0].active) {
-					requiredFactories.indexOf(good.factoryOptions[0].Name) === -1 ? requiredFactories.push(good.factoryOptions[0].Name) : null;
-				}
-				viewModel.setProperty(`/tree${path}`, good.factoryOptions[0]);
-			} else {
-				// auswahl an möglichen Produzenten
-				//viewModel.setProperty(`/tree${currentPath}/factoryOptions`, good.factoryOptions);
-				var select = new Select(id + Panelcount, {
-					selectedItem: `View>/tree${currentPath}/activeChild`,
-					items: {
-						path: `View>/tree${currentPath}/factoryOptions`,
-						template: new Item({
-							text: "{View>Name}",
-							key: "{View>selectid}"
-						}),
-						templateShareable: true
-					},
-					change: that.selectFactory
-				});
-				Panelcount++;
-				var button = new Button(id + Panelcount, {
-					text: `Apply to all {View>/tree${currentPath}/Name} facilities.`,
-					press: that.setBaseFactory
-				}).addStyleClass("sapUiSmallMarginBegin");
-				Panelcount++;
-				(good.control as Panel).addContent(select);
-				(good.control as Panel).addContent(button);
-				deathArray.push(select);
-				deathArray.push(button);
-				// ermittle welche fabrik die "einfachsten" komponenten hat
-				var easiestfactory:string;
-				var compare: int = -1;
-				for (const factory of good.factoryOptions) {
-					if (compare == -1) {
-						easiestfactory = factory.Name;
-						compare = factory.getMaterialLevelCombined(game);
-					}
-					if (factory.getMaterialLevelCombined(game) < compare) {
-						easiestfactory = factory.Name;
-						compare = factory.getMaterialLevelCombined(game);
-					}
-				}
-				select.setSelectedKey(easiestfactory.replace(/\s/g, ''));
-
-				for (var factory of good.factoryOptions) {
-					id = good.Name.replace(/\s/g, '') + factory.Name.replace(/\s/g, '');
-					var path = currentPath + "/" + factory.Name.replace(/\s/g, '');
-
-					if (good.Level == 0) {
-						factory.control = new Title(id + Panelcount, {
-							text: `{View>/tree${path}/Name}`,
-							width: "100%",
-							visible: `{View>/tree${path}/active}`
-						});
-						deathArray.push(factory.control);
-						Panelcount++;
-						(good.control as Panel).addContent(factory.control);
-						
-					} else {
-						factory.control = new Panel(id + Panelcount, {
-							expanded: true,
-							headerText: `{View>/tree${path}/Name}`,
-							expandable: true,
-							visible: `{View>/tree${path}/active}`
-						});
-						deathArray.push(factory.control);
-						Panelcount++;
-						(good.control as Panel).addContent(factory.control);
-						good = getFactoryMaterialPanels(good, currentPath, factory);
-					}
-					factory.parent = currentPath;
-					if (isParentActive) {
-						factory.active = (factory.Name == easiestfactory)
-					} else {
-						factory.active = false;
-					}
-					viewModel.setProperty("/tree"+path, factory);
-					if (factory.active) {
-						requiredFactories.indexOf(factory.Name) === -1 ? requiredFactories.push(factory.Name) : null;
-					}
-				}
-			}
-			currentPath = currentPath.substring(0, currentPath.lastIndexOf("/"));
-			return good
 		}
-		var productionGoods = game.getMaterialsForFactory(TargetFactory.Name);
-		var finalTree:treeGood[] = [];
-		for (const good of productionGoods) {
-			finalTree.push(new treeGood(good, "/" + good.Name.replace(/\s/g, ''), null, []));
-		}
-		for (var treeitem of finalTree) {
-			treeitem = getFactoryOrSelectWithPanel(treeitem, true);
-			// var panel = getPanelWithSelect(good.Name)
-			// var treeitem = new treeGood(good, panel, await buildTree(good, panel))
-			// panel.setModel(new JSONModel(treeitem.factoryOptions), "Binding")
-			// ProductionTree.push(treeitem)
-		}
-		for (const vboxItem of finalTree) {
-			(that.byId("DetailedProdList") as VBox).addItem(vboxItem.control);
-		}
-		//console.log(finalTree);
-		viewModel.setProperty("/prodTree", finalTree);
-		//console.log(viewModel.getProperty("/tree"));
+		//console.log(xtree);
 		
-		viewModel.setProperty("/deathZone", deathArray);
-		viewModel.setProperty("/requiredFactories", requiredFactories.sort());
+		viewModel.setProperty("/game", game);
+		viewModel.setProperty("/requiredFactories", game.getActiveFactories().sort());
 	}
+	/*
+	..######..##.....##....###....##....##..######...########
+	.##....##.##.....##...##.##...###...##.##....##..##......
+	.##.......##.....##..##...##..####..##.##........##......
+	.##.......#########.##.....##.##.##.##.##...####.######..
+	.##.......##.....##.#########.##..####.##....##..##......
+	.##....##.##.....##.##.....##.##...###.##....##..##......
+	..######..##.....##.##.....##.##....##..######...########
+	*/
 	public selectFactory(event: Event): void {
 		var select = event.getSource() as Select;
-		var item = event.getParameters().selectedItem;
+		// getParameters() returns a undefined Object
+		//@ts-ignore
+		var item = event.getParameters().selectedItem as Item;
 		var viewModel = this.getModel("View") as JSONModel;
-		//console.log(((event.getSource() as Select).getParent() as Panel).getContent());
-		var path = select.getBindingPath("items");
+		var path = select.getBindingPath("items"); // > game/subs/[Material]/.../factoryOptions
 		var factoryOptions = viewModel.getProperty(path);
 		for (var i = 0; i < factoryOptions.length; i++) {
 			viewModel.setProperty(path+`/${i}/active`, false);
@@ -290,110 +496,175 @@ export default class ProductionLine extends BaseController {
 				viewModel.setProperty(path+`/${i}/active`, true);
 			}
 		}
-		// Liste an Aktiven anpassen
-		var requiredFactories: string[] = [];
-		var getFlat = function(material: treeGood) {
-			try {
-				var factory = material.getActiveFactory();
-				requiredFactories.indexOf(factory.Name) === -1 ? requiredFactories.push(factory.Name) : null;
-				for(const supliment of factory.requiredProducts) {
-					getFlat(supliment);
-				}
-			} catch (error) {
-				console.warn("No factory")
-				// console.warn(error)
-			}
-		}
-		var supplements = (viewModel.getProperty("/mainFactory") as Factory).Materials;
-		for (const supplement of supplements) {
-			getFlat(viewModel.getProperty("/tree/"+ supplement.replace(/\s/g, '')));
-		}
-		//console.log(viewModel.getProperty("/prodTree"));
-		//console.log(requiredFactories);
-		
-		viewModel.setProperty("/requiredFactories", requiredFactories.sort());
+		var game = viewModel.getProperty("/game");
+		viewModel.setProperty("/requiredFactories", game.getActiveFactories().sort());
 	}
+	/*
+	..######..##.....##....###....##....##..######...########............###....##.......##......
+	.##....##.##.....##...##.##...###...##.##....##..##.................##.##...##.......##......
+	.##.......##.....##..##...##..####..##.##........##................##...##..##.......##......
+	.##.......#########.##.....##.##.##.##.##...####.######...#######.##.....##.##.......##......
+	.##.......##.....##.#########.##..####.##....##..##...............#########.##.......##......
+	.##....##.##.....##.##.....##.##...###.##....##..##...............##.....##.##.......##......
+	..######..##.....##.##.....##.##....##..######...########.........##.....##.########.########
+	*/
 	public setBaseFactory(event: Event): void {
-		var viewModel = this.getModel("View") as JSONModel;
-		// loop base products!
-		// get into details
-		// till infinity - also halt so viele ebenen dies gibt. 
-		// select setzten und richtige factory visible machen
-		// vorher rausfinden welche Fabrik geändert wurde!
-		// und ich brauch noch die neue factory!
+		var viewModel = this.getModel("View") as JSONModel;		
+		var game = viewModel.getProperty("/game") as factoryGame;
 		var button = event.getSource() as Button;
 		var path = button.getBindingPath("text");
+
 		var Material = viewModel.getProperty(path);
-		// erstes control ist immer das select da es den button nur bei Produkten gibt die mehrere hersteller haben
 		var newFactory = viewModel.getProperty(path.substring(0, path.lastIndexOf("/")));
+		// first control is the select
 		newFactory = ((newFactory.control.getContent()[0] as Select).getSelectedItem() as Item).getText();
+		console.log(Material, newFactory);
+		game.setBaseFactory(Material, newFactory);
 		
-		var supplements = (viewModel.getProperty("/mainFactory") as Factory).Materials;
-		var setFactory = function(supplement: treeGood) {
-			if (supplement.Name == Material) {
-				var select = (supplement.control as Panel).getContent()[0] as Select;
-				select.setSelectedKey(newFactory.replace(/\s/g, ''));
-				var basePath = "/tree" + supplement.path + "/factoryOptions/";
-				for (let i = 0; i < supplement.factoryOptions.length; i++) {
-					viewModel.setProperty(basePath + i + "/active", false);			
-				}
-				for (let i = 0; i < supplement.factoryOptions.length; i++) {
-					if (newFactory == viewModel.getProperty(basePath + i + "/Name")) {
-						viewModel.setProperty(basePath + i + "/active", true);
-						break;			
-					} 
-				}
-				//viewModel.setProperty("/tree" + supplement.path + "/" + newFactory.replace(/\s/g, '') + "/active", true)				
-				// console.log(viewModel.getProperty("/tree" + supplement.path + "/" + newFactory.replace(/\s/g, '') + "/active"));
-				// checken ob der change zu /i/ auch auf die /factoryname im material wirkt
-				// getflat funktioniert nicht richtig, wenn alle steel auf von 1 auf 2 gestellt werden wird 
-				// steel1 trotzdem gelistet was nicht sein kann denn alle wurden umgestellt
-			} else {
-				for (const factory of supplement.factoryOptions) {
-					for (const material of factory.requiredProducts) {
-						setFactory(material);
-					}
-				}
-			}
-		}
-		for (const supplement of supplements) {
-			setFactory(viewModel.getProperty("/tree/"+ supplement.replace(/\s/g, '')));
-		}
-		// Liste an Aktiven anpassen
-		var requiredFactories: string[] = [];
-		var getFlat = function(material: treeGood) {
-			try {
-				var factory = material.getActiveFactory();
-				requiredFactories.indexOf(factory.Name) === -1 ? requiredFactories.push(factory.Name) : null;
-				for(const supliment of factory.requiredProducts) {
-					getFlat(supliment);
-				}
-			} catch (error) {
-				console.warn("No factory");
-				// console.warn(error)
-			}
-		}
-		for (const supplement of supplements) {
-			getFlat(viewModel.getProperty("/tree/"+ supplement.replace(/\s/g, '')));
-		}
-		viewModel.setProperty("/requiredFactories", requiredFactories.sort());
+		viewModel.setProperty("/game", game);
+		viewModel.setProperty("/requiredFactories", game.getActiveFactories().sort());
 	}
-	public onDropHave(event: Event) {
-		var oDragged = event.getParameter("draggedControl"),
-			List = oDragged.getParent(),
-			iDragPosition = List.indexOfItem(oDragged);
+	/*
+	.########..####....###....##........#######...######..
+	.##.....##..##....##.##...##.......##.....##.##....##.
+	.##.....##..##...##...##..##.......##.....##.##.......
+	.##.....##..##..##.....##.##.......##.....##.##...####
+	.##.....##..##..#########.##.......##.....##.##....##.
+	.##.....##..##..##.....##.##.......##.....##.##....##.
+	.########..####.##.....##.########..#######...######..
+	*/
+	public addAvailableGood(event: Event) {
+		var oView = this.getView();
+		var that = this;
+		try {
+			(that.selectDialog as SelectDialog).open("")
+		} catch (error) {
+			Fragment.load({
+				id: "speccalDialog",
+				name: "de.henloh.prodts.view.Dialog",
+				controller: this
+			}).then(function (dialog: any){
+				(dialog as SelectDialog).setModel(oView.getModel("GoodModel"));
+				(dialog as SelectDialog).open("");
+				that.selectDialog = dialog;
+			}.bind(this));
+		}
+	}
+	public onDialogClose(event: Event) {
+		var aContexts = event.getParameter("selectedContexts");
+		var viewModel = this.getModel("View") as JSONModel;		
+		var game = viewModel.getProperty("/game") as factoryGame;
+		if (aContexts && aContexts.length) {
+			aContexts.map(function (oContext: any) { 
+				try {
+					game.setAvailableGood(oContext.getObject().Name)
+				} catch (error) {
+					console.warn(error);
+				} 
+			})	
+			viewModel.setProperty("/availableGoods", game.availableGoods);
+			viewModel.setProperty("/game", game);
+		}
+		// Binding is not definied. Filtering is possible here
+		//@ts-ignore 
+		(event.getSource() as SelectDialog).getBinding("items").filter([]);
+		viewModel.setProperty("/requiredFactories", game.getActiveFactories().sort());
+	}
+	public onSearch(event: Event) {
+		var sValue = event.getParameter("value");
+		var oFilter = new Filter("Name", FilterOperator.Contains, sValue);
+		var oBinding = event.getParameter("itemsBinding");
+		oBinding.filter([oFilter]);
+	}
+	/*
+	.####.##.....##.########.......####.......########.##.....##.########...#######..########..########
+	..##..###...###.##.....##.....##..##......##........##...##..##.....##.##.....##.##.....##....##...
+	..##..####.####.##.....##......####.......##.........##.##...##.....##.##.....##.##.....##....##...
+	..##..##.###.##.########......####........######......###....########..##.....##.########.....##...
+	..##..##.....##.##...........##..##.##....##.........##.##...##........##.....##.##...##......##...
+	..##..##.....##.##...........##...##......##........##...##..##........##.....##.##....##.....##...
+	.####.##.....##.##............####..##....########.##.....##.##.........#######..##.....##....##...
+	*/
+	public handleDownloadPress(): void {	
+		// Convert the JSON data to a string
 		var viewModel = this.getModel("View") as JSONModel;
-		var aItems = viewModel.getProperty("/requiredFactories");
-		var resultItems = viewModel.getProperty("/ownedFactories");
-			
-		// remove the item
-		var oItem = aItems[iDragPosition];
-		aItems.splice(iDragPosition, 1);
+		var game = viewModel.getProperty("/game") as factoryGame;
+		var data:any = {
+			targetFactory:     viewModel.getProperty("/TargetFactory"),
+			availableGoods:    viewModel.getProperty("/availableGoods"),
+			requiredFactories: viewModel.getProperty("/requiredFactories"),
+			products:          viewModel.getProperty("/products"),
+			basicTree: 		   game.getExportTree()
+		};
+		var jsonString = JSON.stringify(data);
+	
+		// Use the FileSaver.js library to trigger a download
+		File.save(jsonString, "data", "json", "application/json", "utf-8");
+	}
+	public openUploadDialog(event: Event) {
+		//var oView = this.getView();
+		var that = this;
+		try {
+			(that.importDialog as Dialog).open()
+		} catch (error) {
+			Fragment.load({
+				id: "speccalDialog2",
+				name: "de.henloh.prodts.view.Import",
+				controller: this
+			}).then(function (dialog: any){
+				//(dialog as Dialog).setModel(oView.getModel("GoodModel"));
+				(dialog as Dialog).open();
+				that.importDialog = dialog;
+			}.bind(this));
+		}
+	}
+	public closeDialog(event: Event): void { 
+		this.importDialog.close()
+	}
+	public handleUploadPress(event: Event): void {
+		// Get the selected file from the input element
+		var file = event.getParameters().item.getFileObject();
+		var that = this;
+		var reader = new FileReader();
+		var viewModel = this.getModel("View") as JSONModel;
 
-		resultItems.push(oItem);
+		// Read the file as text
+		reader.readAsText(file);
 
-		viewModel.setProperty("/ownedFactories", resultItems);
-		viewModel.setProperty("/requiredFactories", aItems);
+		// When the file has been read, convert it to a JavaScript object
+		reader.onload = function() {
+			var data = JSON.parse(reader.result as string);
+			//console.log(data);
+			try {
+				viewModel.setProperty("/TargetFactory", data.targetFactory);
+				viewModel.setProperty("/availableGoods", data.availableGoods);
+				viewModel.setProperty("/requiredFactories", data.requiredFactories);
+				viewModel.setProperty("/products", data.products);
+
+				var basicTree: any = data.basicTree;
+
+				var game:factoryGame;
+				game = viewModel.getProperty("/game");
+				if (game) {
+					game.clearDeathZone();
+				}
+				// Clear
+				game = new factoryGame(that.getModel("GoodModel").getProperty("/Goods"), that.getModel("FactorieModel").getProperty("/Factories"));
+
+				game.that = that;
+				game.setTargetFactory(data.targetFactory);
+
+				for (var name in game.subs) {
+					(that.byId("DetailedProdList") as VBox).addItem(game.subs[name].control);
+				}
+				
+				viewModel.setProperty("/game", game);
+
+			} catch (error) {
+				MessageBox.show("Uploaded data does not contain a production-tree.")
+			}
+			// Do something with the JavaScript object
+		}
 	}
 	public onPatternMatched(event: Event): void {
 		 
