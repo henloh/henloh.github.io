@@ -2830,3 +2830,4 @@ sap.ui.define([],function(){"use strict";var e=function e(t,i){t=typeof t==="str
  * Licensed under the Apache License, Version 2.0 - see LICENSE.txt.
  */
 sap.ui.define([],function(){"use strict";var e=function e(t,i){var n="noopener,noreferrer";return window.open(t,i,n)};return e})}});sap.ui.requireSync("sap/ui/core/Core");sap.ui.getCore().boot&&sap.ui.getCore().boot();
+//# sourceMappingURL=sap-ui-custom.js.map

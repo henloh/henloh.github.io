@@ -1,97 +1,95 @@
 {
-  "name": "prodts",
-  "version": "1.0.0",
-  "description": "UI5 Application: prodts",
-  "author": "Henloh",
-  "license": "Apache-2.0",
-  "scripts": {
-    "start": "npm-run-all --parallel watch:ts start:ui5",
-    "build": "npm-run-all build:ts build:dest build:complete",
-    "build:complete": "node ./lib/copyRelevantfiles",
-    "build:dest": "ui5 build self-contained --all --clean-dest",
-    "build:ts": "babel src --out-dir webapp --source-maps true --extensions \".ts,.js\" --copy-files",
-    "watch:ts": "babel src --out-dir webapp --source-maps true --extensions \".ts,.js\" --copy-files --watch",
-    "start:ui5": "ui5 serve --port 8080 -o index.html",
-    "start:dist": "ui5 serve  --port 8080 -o index.html --config ui5-dist.yaml",
-    "ts-typecheck": "tsc --noEmit",
-    "lint": "eslint src"
-  },
-  "devDependencies": {
-    "@babel/cli": "^7.16.0",
-    "@babel/core": "^7.16.0",
-    "@babel/preset-env": "^7.16.4",
-    "@babel/preset-typescript": "^7.16.0",
-    "@openui5/ts-types-esm": "1.108.0",
-    "@typescript-eslint/eslint-plugin": "^5.6.0",
-    "@typescript-eslint/parser": "^5.6.0",
-    "babel-preset-transform-ui5": "^7.0.5",
-    "eslint": "^8.4.1",
-    "npm-run-all": "^4.1.5",
-    "typescript": "^4.5.3",
-    "ui5-middleware-livereload": "^0.5.8"
-  },
-  "ui5": {
-    "dependencies": [
-      "ui5-middleware-livereload"
-    ],
-    "relevantFiles": [
-      [
-        "resources/",
-        "sap-ui-custom.js"
-      ],
-      [
-        "resources/",
-        "sap-ui-core.js"
-      ],
-      [
-        "resources/sap/m/",
-        "messagebundle_en.properties"
-      ],
-      [
-        "resources/sap/ui/core/",
-        "messagebundle_en.properties"
-      ],
-      [
-        "resources/sap/ui/layout/",
-        "messagebundle_en.properties"
-      ],
-      [
-        "resources/sap/ui/core/cldr/",
-        "de.json"
-      ],
-      [
-        "resources/sap/ui/core/themes/base/fonts/",
-        "SAP-icons.woff2"
-      ],
-      [
-        "resources/sap/ui/core/themes/sap_fiori_3_dark/fonts/",
-        "72-Bold.woff2"
-      ],
-      [
-        "resources/sap/ui/core/themes/sap_fiori_3_dark/fonts/",
-        "72-Regular.woff2"
-      ],
-      [
-        "resources/sap/ui/core/themes/sap_fiori_3_dark/",
-        "library.css"
-      ],
-      [
-        "resources/sap/ui/layout/themes/sap_fiori_3_dark/",
-        "library.css"
-      ],
-      [
-        "resources/sap/ui/unified/themes/sap_fiori_3_dark/",
-        "library.css"
-      ],
-      [
-        "resources/sap/m/themes/sap_fiori_3_dark/",
-        "library.css"
-      ]
-    ]
-  },
-  "dependencies": {
-    "@openui5/sap.m": "^1.108.0",
-    "@openui5/sap.ui.core": "^1.108.0",
-    "@openui5/themelib_sap_fiori_3": "^1.108.0"
-  }
+    "name": "prodts",
+    "version": "1.0.0",
+    "description": "UI5 Application: prodts",
+    "author": "Henloh",
+    "license": "Apache-2.0",
+    "scripts": {
+        "start": "npm-run-all --parallel watch:ts start:ui5",
+        "build": "npm-run-all build:ts build:dest build:complete",
+        "build:complete": "node ./lib/copyRelevantfiles",
+        "build:dest": "ui5 build self-contained --all --clean-dest",
+        "build:ts": "babel src --out-dir webapp --source-maps true --extensions \".ts,.js\" --copy-files",
+        "watch:ts": "babel src --out-dir webapp --source-maps true --extensions \".ts,.js\" --copy-files --watch",
+        "start:ui5": "ui5 serve --port 8080 -o index.html",
+        "start:dist": "ui5 serve  --port 8080 -o index.html --config ui5-dist.yaml",
+        "ts-typecheck": "tsc --noEmit",
+        "lint": "eslint src"
+    },
+    "devDependencies": {
+        "@babel/cli": "^7.16.0",
+        "@babel/core": "^7.16.0",
+        "@babel/preset-env": "^7.16.4",
+        "@babel/preset-typescript": "^7.16.0",
+        "@openui5/ts-types-esm": "1.108.0",
+        "@typescript-eslint/eslint-plugin": "^5.6.0",
+        "@typescript-eslint/parser": "^5.6.0",
+        "babel-preset-transform-ui5": "^7.0.5",
+        "eslint": "^8.4.1",
+        "npm-run-all": "^4.1.5",
+        "typescript": "^4.5.3",
+        "ui5-middleware-livereload": "^0.5.8",
+        "@openui5/sap.m": "^1.108.0",
+        "@openui5/sap.ui.core": "^1.108.0",
+        "@openui5/themelib_sap_fiori_3": "^1.108.0"
+    },
+    "ui5": {
+        "dependencies": [
+            "ui5-middleware-livereload"
+        ],
+        "relevantFiles": [
+            [
+                "resources/",
+                "sap-ui-custom.js"
+            ],
+            [
+                "resources/",
+                "sap-ui-core.js"
+            ],
+            [
+                "resources/sap/m/",
+                "messagebundle_en.properties"
+            ],
+            [
+                "resources/sap/ui/core/",
+                "messagebundle_en.properties"
+            ],
+            [
+                "resources/sap/ui/layout/",
+                "messagebundle_en.properties"
+            ],
+            [
+                "resources/sap/ui/core/cldr/",
+                "de.json"
+            ],
+            [
+                "resources/sap/ui/core/themes/base/fonts/",
+                "SAP-icons.woff2"
+            ],
+            [
+                "resources/sap/ui/core/themes/sap_fiori_3_dark/fonts/",
+                "72-Bold.woff2"
+            ],
+            [
+                "resources/sap/ui/core/themes/sap_fiori_3_dark/fonts/",
+                "72-Regular.woff2"
+            ],
+            [
+                "resources/sap/ui/core/themes/sap_fiori_3_dark/",
+                "library.css"
+            ],
+            [
+                "resources/sap/ui/layout/themes/sap_fiori_3_dark/",
+                "library.css"
+            ],
+            [
+                "resources/sap/ui/unified/themes/sap_fiori_3_dark/",
+                "library.css"
+            ],
+            [
+                "resources/sap/m/themes/sap_fiori_3_dark/",
+                "library.css"
+            ]
+        ]
+    }
 }
