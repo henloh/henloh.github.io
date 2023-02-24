@@ -2,8 +2,11 @@ sap.ui.define(["sap/ui/core/UIComponent", "sap/ui/Device", "./model/models", "sa
   function _interopRequireDefault(obj) {
     return obj && obj.__esModule && typeof obj.default !== "undefined" ? obj.default : obj;
   }
+
   const support = sap_ui_Device["support"];
+
   const models = _interopRequireDefault(__models);
+
   /**
    * @namespace de.henloh.prodts
    */
@@ -21,9 +24,8 @@ sap.ui.define(["sap/ui/core/UIComponent", "sap/ui/Device", "./model/models", "sa
       FactorieModel.setDefaultBindingMode("TwoWay");
       this.setModel(GoodModel, "GoodModel");
       this.setModel(FactorieModel, "FactorieModel");
-      this.setModel(models.createDeviceModel(), "device");
+      this.setModel(models.createDeviceModel(), "device"); // create the views based on the url/hash
 
-      // create the views based on the url/hash
       this.getRouter().initialize();
     },
     getContentDensityClass: function _getContentDensityClass() {
@@ -39,6 +41,7 @@ sap.ui.define(["sap/ui/core/UIComponent", "sap/ui/Device", "./model/models", "sa
           this.contentDensityClass = "sapUiSizeCozy";
         }
       }
+
       return this.contentDensityClass;
     }
   });

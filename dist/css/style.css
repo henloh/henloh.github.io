@@ -13,3 +13,30 @@
     margin-right: 4.9%;
     margin-left: 2.5%;
 }
+.avlevel1 .sapMPanelContent {
+    padding-right: .25em;
+}
+.sapMPanel.dontShowContent>.sapMPanelContent {
+    display: none;
+}
+.sapMPanel.dontShowContent h2 {
+    padding-left: 1em;
+}
+.sapMPanel.avlevel1 {
+    background-color: #2c353e;
+}
+.sapMPanel.avlevel2 {
+    background-color: #3d4954;
+}
+.sapMPanel.avlevel3 {
+    background-color: #536474;
+}
+.sapMPanel.avlevel4 {
+    background-color: #63788b;
+}
+.sapMPanel.avlevel5 {
+    background-color: #708ca5;
+}
+.sapMPanel.avlevel6 {
+    background-color: #5c83a7;
+}
