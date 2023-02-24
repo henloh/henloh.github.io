@@ -6,10 +6,9 @@
   "license": "Apache-2.0",
   "scripts": {
     "start": "npm-run-all --parallel watch:ts start:ui5",
-    "build": "npm-run-all build:ts build:dest",
-    "complete": "node ./lib/copyRelevantfiles",
+    "build": "npm-run-all build:ts build:dest build:complete",
+    "build:complete": "node ./lib/copyRelevantfiles",
     "build:dest": "ui5 build self-contained --all --clean-dest",
-    "build:min": "npm-run-all build:ts build:ui5",
     "build:ts": "babel src --out-dir webapp --source-maps true --extensions \".ts,.js\" --copy-files",
     "watch:ts": "babel src --out-dir webapp --source-maps true --extensions \".ts,.js\" --copy-files --watch",
     "start:ui5": "ui5 serve --port 8080 -o index.html",

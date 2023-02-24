@@ -11,7 +11,6 @@ sap.ui.define([], function () {
       if (!value) {
         return "";
       }
-
       try {
         return parseFloat(value).toFixed(2);
       } catch (error) {
