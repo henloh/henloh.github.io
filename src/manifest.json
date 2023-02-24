@@ -90,7 +90,7 @@
                 "name": "productionLine",
                 "target": "productionLine"
             },{
-                "pattern": "permutation",
+                "pattern": "Permutation",
                 "name": "permutation",
                 "target": "permutation"
             }],
