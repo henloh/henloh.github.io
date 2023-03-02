@@ -229,8 +229,8 @@ class treeFactory extends Factory {
 	public getId() {
 		return this.parent.getId() + "/" + this.Name.replace(/\s/g, '');
 	}
-	public getMaterialLevelCombined(): int {
-		var result: int = 0;
+	public getMaterialLevelCombined(): number {
+		var result: number = 0;
 		for (const product of this.Materials) {
 			result += this.game.getProduct(product).Level;
 		}
@@ -430,7 +430,8 @@ export default class ProductionLine extends BaseController {
 		this.getRouter().getRoute("productionLine").attachPatternMatched(this.onPatternMatched, this);
 
 		var inputF = this.byId("targetFactoryInput") as Input;
-		inputF.setFilterFunction(function (sTerm: string, oItem:SuggestionItem) {
+		//@ts-ignore
+		inputF.setFilterFunction(function(sTerm: string, oItem: SuggestionItem) {
 			return oItem.getText().match(new RegExp("^"+sTerm, "i"));
 		});
 	}

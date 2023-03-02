@@ -2,11 +2,8 @@ sap.ui.define(["./BaseController", "../model/formatter", "sap/ui/model/json/JSON
   function _interopRequireDefault(obj) {
     return obj && obj.__esModule && typeof obj.default !== "undefined" ? obj.default : obj;
   }
-
   const BaseController = _interopRequireDefault(__BaseController);
-
   const formatter = _interopRequireDefault(__formatter);
-
   /**
    * @namespace de.henloh.prodts.controller
    */
@@ -37,9 +34,11 @@ sap.ui.define(["./BaseController", "../model/formatter", "sap/ui/model/json/JSON
       this.getRouter().getRoute("main").attachPatternMatched(this.onPatternMatched, this);
       var inputG = this.byId("productInput");
       var inputF = this.byId("factoryInput");
+      //@ts-ignore
       inputG.setFilterFunction(function (sTerm, oItem) {
         return oItem.getText().match(new RegExp("^" + sTerm, "i"));
       });
+      //@ts-ignore
       inputF.setFilterFunction(function (sTerm, oItem) {
         return oItem.getText().match(new RegExp("^" + sTerm, "i"));
       });
@@ -52,15 +51,12 @@ sap.ui.define(["./BaseController", "../model/formatter", "sap/ui/model/json/JSON
       Model.setData(this.getData());
       this.getView().setModel(Model, "Data");
       var ViewModel = this.getView().getModel("View");
-
       try {
         var query = event.getParameter("arguments")["?query"];
-
         if (query.factory) {
           ViewModel.setProperty("/Factory", query.factory.replace("%2520", " "));
           this.submitFactory(event);
         }
-
         if (query.good) {
           ViewModel.setProperty("/Product", query.good.replace("%2520", " "));
           this.submitGood(event);
@@ -129,8 +125,8 @@ sap.ui.define(["./BaseController", "../model/formatter", "sap/ui/model/json/JSON
       Model.setProperty("/Cost", "");
       Model.setProperty("/ProductionCap", "");
       Model.setProperty("/Materials", []);
-      var data = that.getData().Goods; //console.log(data);
-
+      var data = that.getData().Goods;
+      //console.log(data);
       Model.setProperty("/Products", data);
     },
     showAllFactories: function _showAllFactories(event) {
@@ -143,8 +139,8 @@ sap.ui.define(["./BaseController", "../model/formatter", "sap/ui/model/json/JSON
       Model.setProperty("/AvgPrice", "");
       Model.setProperty("/Level", "");
       Model.setProperty("/BoughtBy", []);
-      var data = that.getData().Factories; //console.log(data);
-
+      var data = that.getData().Factories;
+      //console.log(data);
       Model.setProperty("/ProducedBy", data);
     }
   });

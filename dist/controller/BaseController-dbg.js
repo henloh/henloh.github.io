@@ -1,6 +1,5 @@
 sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/UIComponent", "./Types", "sap/ui/core/routing/History"], function (Controller, UIComponent, ___Types, History) {
   const Game = ___Types["Game"];
-
   /**
    * @namespace de.henloh.prodts.controller
    */
@@ -27,7 +26,6 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/UIComponent", "./Types
     },
     onNavBack: function _onNavBack() {
       const sPreviousHash = History.getInstance().getPreviousHash();
-
       if (sPreviousHash !== undefined) {
         window.history.go(-1);
       } else {
@@ -36,7 +34,8 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/UIComponent", "./Types
     },
     getData: function _getData() {
       var products = this.getOwnerComponent().getModel("Goods");
-      var factories = this.getOwnerComponent().getModel("Factories"); //console.log(products);
+      var factories = this.getOwnerComponent().getModel("Factories");
+      //console.log(products);
       //console.log(
       //	factories.getProperty("/"));
 

@@ -2,19 +2,14 @@ sap.ui.define(["sap/m/MessageBox", "./BaseController", "../model/formatter", "sa
   function _interopRequireDefault(obj) {
     return obj && obj.__esModule && typeof obj.default !== "undefined" ? obj.default : obj;
   }
-
   const BaseController = _interopRequireDefault(__BaseController);
-
   const formatter = _interopRequireDefault(__formatter);
-
   const Factory = ___Types["Factory"];
   const Game = ___Types["Game"];
   const Product = ___Types["Product"];
-
   /**
    * @namespace de.henloh.prodts.controller
    */
-
   /*
   .########..########...#######..########..##.....##..######..########
   .##.....##.##.....##.##.....##.##.....##.##.....##.##....##....##...
@@ -32,7 +27,6 @@ sap.ui.define(["sap/m/MessageBox", "./BaseController", "../model/formatter", "sa
       this.factoryOptions = [];
       this.subs = {};
     }
-
     getId() {
       // Parent ist entweder game oder factory
       //@ts-ignore
@@ -43,10 +37,8 @@ sap.ui.define(["sap/m/MessageBox", "./BaseController", "../model/formatter", "sa
         return this.Name.replace(/\s/g, '');
       }
     }
-
     getActiveFactory() {
       var facs = [];
-
       for (const factory of this.factoryOptions) {
         if (factory.active) {
           facs = facs.concat(factory.getActiveSubs());
@@ -55,15 +47,12 @@ sap.ui.define(["sap/m/MessageBox", "./BaseController", "../model/formatter", "sa
         }
       }
     }
-
     getExportFactory() {
       var result = {};
-
       for (const factory of this.factoryOptions) {
         if (factory.active) {
           result.Name = factory.Name;
           result.requiredProducts = [];
-
           for (const product of factory.requiredProducts) {
             result.requiredProducts.push({
               Name: product.Name,
@@ -72,29 +61,21 @@ sap.ui.define(["sap/m/MessageBox", "./BaseController", "../model/formatter", "sa
           }
         }
       }
-
       return result;
     }
-
     getSubGoods() {
       var result = [];
-
       for (const factory of this.factoryOptions) {
         result = result.concat(factory.getAllGoods());
       }
-
       return result;
     }
-
     setActiveFactory(Name) {
       if (!(this.factoryOptions.length > 0)) return;
-
       for (const factory of this.factoryOptions) {
         factory.active = false;
-
         if (factory.Name == Name) {
           factory.active = true;
-
           if (this.factoryOptions.length > 1) {
             // first content is select
             var select = this.control.getContent()[0];
@@ -102,35 +83,29 @@ sap.ui.define(["sap/m/MessageBox", "./BaseController", "../model/formatter", "sa
           }
         }
       }
-    } // initial build select one
-
-
+    }
+    // initial build select one
     setFactoryActive() {
       if (this.factoryOptions.length == 1) {
         this.factoryOptions[0].active = true;
         return this.factoryOptions[0];
       } else if (this.factoryOptions.length > 1) {
         var lowest = this.factoryOptions[0];
-
         for (const factory of this.factoryOptions) {
           var compare = lowest.getMaterialLevelCombined();
-
           if (factory.getMaterialLevelCombined() < compare) {
             lowest = factory;
           }
         }
-
         lowest.active = true;
         return lowest;
       }
     }
-
     setActiveFactoryRecursiv(Material, newFactoryName) {
       if (this.Name == Material) {
         this.setActiveFactory(newFactoryName);
         return;
       }
-
       if (this.factoryOptions.length > 0) {
         for (const factory of this.factoryOptions) {
           //console.log(factory.id);
@@ -138,7 +113,6 @@ sap.ui.define(["sap/m/MessageBox", "./BaseController", "../model/formatter", "sa
         }
       }
     }
-
     buildControl(panellevel) {
       this.id = this.getId();
       this.control = new Panel(this.Name.replace(/\s/g, '') + this.game.getPanelId(), {
@@ -150,7 +124,6 @@ sap.ui.define(["sap/m/MessageBox", "./BaseController", "../model/formatter", "sa
       this.game.deathZone.push(this.control);
       panellevel++;
       var factories = this.game.getFactoriesForProduct(this.Name);
-
       try {
         for (const factory of factories) {
           var newFactory = new treeFactory(factory, this.game, this);
@@ -161,12 +134,11 @@ sap.ui.define(["sap/m/MessageBox", "./BaseController", "../model/formatter", "sa
         this.control.setExpandable(false);
         this.control.addStyleClass("dontShowContent");
       }
-
       if (this.factoryOptions.length == 1) {
         this.factoryOptions[0].buildControl(this.Level, panellevel);
-        this.control.addContent(this.factoryOptions[0].control); // used for binding /LaserHead/LaserHeadFactory/Glass/GlassManufacturer/Ore/Name
+        this.control.addContent(this.factoryOptions[0].control);
+        // used for binding /LaserHead/LaserHeadFactory/Glass/GlassManufacturer/Ore/Name
         //@ts-ignore
-
         this[this.factoryOptions[0].Name.replace(/\s/g, '')] = this.factoryOptions[0];
         this.setFactoryActive();
       } else if (this.factoryOptions.length > 1) {
@@ -192,17 +164,15 @@ sap.ui.define(["sap/m/MessageBox", "./BaseController", "../model/formatter", "sa
         this.game.deathZone.push(newButton);
         this.control.addContent(newSelect);
         this.control.addContent(newButton);
-
         for (var factory of this.factoryOptions) {
-          factory.buildControl(this.Level, panellevel); // used for binding /LaserHead/LaserHeadFactory/Glass/GlassManufacturer/Ore/Name
+          factory.buildControl(this.Level, panellevel);
+          // used for binding /LaserHead/LaserHeadFactory/Glass/GlassManufacturer/Ore/Name
           //@ts-ignore
-
           this[factory.Name.replace(/\s/g, '')] = factory;
           this.control.addContent(factory.control);
         }
       }
     }
-
   }
   /*
   .########....###.....######..########..#######..########..##....##
@@ -213,8 +183,6 @@ sap.ui.define(["sap/m/MessageBox", "./BaseController", "../model/formatter", "sa
   .##.......##.....##.##....##....##....##.....##.##....##.....##...
   .##.......##.....##..######.....##.....#######..##.....##....##...
   */
-
-
   class treeFactory extends Factory {
     constructor(factory, game, parent) {
       super(factory.Name, factory.ProductionCap, factory.Cost, factory.Products, factory.Materials);
@@ -225,57 +193,42 @@ sap.ui.define(["sap/m/MessageBox", "./BaseController", "../model/formatter", "sa
       this.active = false;
       this.subs = {};
     }
-
     getId() {
       return this.parent.getId() + "/" + this.Name.replace(/\s/g, '');
     }
-
     getMaterialLevelCombined() {
       var result = 0;
-
       for (const product of this.Materials) {
         result += this.game.getProduct(product).Level;
       }
-
       return result;
     }
-
     getAllGoods() {
       var allGoods = [];
-
       for (const good of this.requiredProducts) {
         allGoods.push(good);
         allGoods = allGoods.concat(good.getSubGoods());
       }
-
       return allGoods;
     }
-
     getActiveSubs() {
       var facs = [];
-
       for (const requiredProduct of this.requiredProducts) {
         facs = facs.concat(requiredProduct.getActiveFactory());
       }
-
       return facs;
     }
-
     checkMaterialList(Material, newFactoryName) {
       if (this.Products.indexOf(Material) >= 0) this.active = this.Name == newFactoryName;
-
       for (const requiredProduct of this.requiredProducts) {
         if (requiredProduct.Name == Material) {
           requiredProduct.setActiveFactory(newFactoryName);
         }
-
         requiredProduct.setActiveFactoryRecursiv(Material, newFactoryName);
       }
     }
-
     buildControl(goodLvl, panellevel) {
       this.id = this.getId();
-
       if (goodLvl == 0) {
         this.control = new Title(this.Name.replace(/\s/g, '') + this.game.getPanelId(), {
           width: "100%",
@@ -294,24 +247,20 @@ sap.ui.define(["sap/m/MessageBox", "./BaseController", "../model/formatter", "sa
           headerText: `{View>/game/subs/${this.id}/Name}`
         });
         var mats = this.game.getMaterialsForFactory(this.Name);
-
         for (const mat of mats) {
           var newMat = new treeGood(mat, this.game, this);
           this.requiredProducts.push(newMat);
         }
-
         for (var reqMaterial of this.requiredProducts) {
           reqMaterial.buildControl(panellevel);
-          this.control.addContent(reqMaterial.control); // used for binding /LaserHead/LaserHeadFactory/Glass/GlassManufacturer/Ore/Name
+          this.control.addContent(reqMaterial.control);
+          // used for binding /LaserHead/LaserHeadFactory/Glass/GlassManufacturer/Ore/Name
           //@ts-ignore
-
           this[reqMaterial.Name.replace(/\s/g, '')] = reqMaterial;
         }
       }
-
       this.game.deathZone.push(this.control);
     }
-
   }
   /*
   ..######......###....##.....##.########
@@ -322,8 +271,6 @@ sap.ui.define(["sap/m/MessageBox", "./BaseController", "../model/formatter", "sa
   .##....##..##.....##.##.....##.##......
   ..######...##.....##.##.....##.########
   */
-
-
   class factoryGame extends Game {
     constructor(goods, factories) {
       super(goods, factories);
@@ -335,53 +282,42 @@ sap.ui.define(["sap/m/MessageBox", "./BaseController", "../model/formatter", "sa
       this.panelCount = 0;
       this.subs = {};
     }
-
     setTargetFactory(factoryName) {
       this.targetFactory = this.getFactory(factoryName);
       this.products = this.getMaterialsForFactory(this.targetFactory.Name);
-
       for (const good of this.products) {
         var newGood = new treeGood(good, this, this);
         this.prodTree.push(newGood);
-      } // to get a Binding /tree/id/attribut 
+      }
+
+      // to get a Binding /tree/id/attribut 
       // the array need to be changed ot objects 
-
-
       for (var treeitem of this.prodTree) {
         treeitem.buildControl(0);
         this.subs[treeitem.id] = treeitem;
       }
-
       return this.subs;
     }
-
     clearDeathZone() {
       for (const control of this.deathZone) {
         control.destroy();
       }
     }
-
     getActiveFactories() {
       var facs = [];
-
       for (var baseitem of this.prodTree) {
         facs = facs.concat(baseitem.getActiveFactory());
-      } // only Uniques
-
-
+      }
+      // only Uniques
       facs = [...new Set(facs)];
-
       for (let index = facs.length - 1; index > -1; index--) {
         const element = facs[index];
         if (element == undefined) facs.splice(index, 1);
       }
-
       return facs;
     }
-
     getExportTree() {
       var exportTree = {};
-
       for (var baseitem of this.prodTree) {
         //@ts-ignore
         exportTree[baseitem.Name] = {
@@ -389,43 +325,35 @@ sap.ui.define(["sap/m/MessageBox", "./BaseController", "../model/formatter", "sa
           Factory: baseitem.getExportFactory()
         };
       }
-
       return exportTree;
     }
-
     setBaseFactory(Material, newFactoryName) {
       for (var name in this.subs) {
         this.subs[name].setActiveFactoryRecursiv(Material, newFactoryName);
       }
     }
-
     setAvailableGood(Name) {
       this.availableGoods.push(Name);
       var allGoods = [];
-
       for (const good of this.prodTree) {
         allGoods.push(good);
         allGoods = allGoods.concat(good.getSubGoods());
-      } //console.log(allGoods);
-
-
+      }
+      //console.log(allGoods);
       for (const good of allGoods) {
         if (good.Name == Name) {
           good.control.addStyleClass("dontShowContent");
           good.control.setExpandable(false);
-
           for (const factory of good.factoryOptions) {
             factory.active = false;
           }
         }
       }
     }
-
     getPanelId() {
       this.panelCount++;
       return this.panelCount;
     }
-
   }
   /*
   ..######...#######..##....##.########.########...#######..##.......##.......########.########.
@@ -436,25 +364,24 @@ sap.ui.define(["sap/m/MessageBox", "./BaseController", "../model/formatter", "sa
   .##....##.##.....##.##...###....##....##....##..##.....##.##.......##.......##.......##....##.
   ..######...#######..##....##....##....##.....##..#######..########.########.########.##.....##
   */
-
-
   class ProductionLine extends BaseController {
     formatter = formatter;
-
     onInit() {
       var Model = new JSONModel();
       Model.setData({
         TargetFactory: "",
-        products: [] //mainFactory: {},
+        products: []
+        //mainFactory: {},
         //deathZone: [],
         //tree: [],
         //ownedFactories: [],
         //requiredFactories: []
-
       });
+
       this.getView().setModel(Model, "View");
       this.getRouter().getRoute("productionLine").attachPatternMatched(this.onPatternMatched, this);
       var inputF = this.byId("targetFactoryInput");
+      //@ts-ignore
       inputF.setFilterFunction(function (sTerm, oItem) {
         return oItem.getText().match(new RegExp("^" + sTerm, "i"));
       });
@@ -468,36 +395,29 @@ sap.ui.define(["sap/m/MessageBox", "./BaseController", "../model/formatter", "sa
     .##........##....##..##.....##.##.....##.........##........##..##...###.##......
     .##........##.....##..#######..########..........########.####.##....##.########
     */
-
-
     async generateProductionLine(event) {
       var that = this;
       var view = this.getView();
       var viewModel = this.getModel("View");
       var game;
-
       try {
         game = viewModel.getProperty("/game");
-
         if (game) {
           game.clearDeathZone();
-        } // Clear
-
-
+        }
+        // Clear
         game = new factoryGame(this.getModel("GoodModel").getProperty("/Goods"), this.getModel("FactorieModel").getProperty("/Factories"));
       } catch (error) {
         console.error(error);
       }
-
       game.that = that;
       var TargetFactoryName = view.byId("targetFactoryInput").getValue();
       viewModel.setProperty("/products", game.getProductsFromFactory(TargetFactoryName));
       game.setTargetFactory(TargetFactoryName);
-
       for (var name in game.subs) {
         that.byId("DetailedProdList").addItem(game.subs[name].control);
-      } //console.log(xtree);
-
+      }
+      //console.log(xtree);
 
       viewModel.setProperty("/game", game);
       viewModel.setProperty("/requiredFactories", game.getActiveFactories().sort());
@@ -511,26 +431,20 @@ sap.ui.define(["sap/m/MessageBox", "./BaseController", "../model/formatter", "sa
     .##....##.##.....##.##.....##.##...###.##....##..##......
     ..######..##.....##.##.....##.##....##..######...########
     */
-
-
     selectFactory(event) {
-      var select = event.getSource(); // getParameters() returns a undefined Object
+      var select = event.getSource();
+      // getParameters() returns a undefined Object
       //@ts-ignore
-
       var item = event.getParameters().selectedItem;
       var viewModel = this.getModel("View");
       var path = select.getBindingPath("items"); // > game/subs/[Material]/.../factoryOptions
-
       var factoryOptions = viewModel.getProperty(path);
-
       for (var i = 0; i < factoryOptions.length; i++) {
         viewModel.setProperty(path + `/${i}/active`, false);
-
         if (viewModel.getProperty(path + `/${i}/Name`) == item.getText()) {
           viewModel.setProperty(path + `/${i}/active`, true);
         }
       }
-
       var game = viewModel.getProperty("/game");
       viewModel.setProperty("/requiredFactories", game.getActiveFactories().sort());
     }
@@ -543,18 +457,16 @@ sap.ui.define(["sap/m/MessageBox", "./BaseController", "../model/formatter", "sa
     .##....##.##.....##.##.....##.##...###.##....##..##...............##.....##.##.......##......
     ..######..##.....##.##.....##.##....##..######...########.........##.....##.########.########
     */
-
-
     setBaseFactory(event) {
       var viewModel = this.getModel("View");
       var game = viewModel.getProperty("/game");
       var button = event.getSource();
       var path = button.getBindingPath("text");
       var Material = viewModel.getProperty(path);
-      var newFactory = viewModel.getProperty(path.substring(0, path.lastIndexOf("/"))); // first control is the select
-
-      newFactory = newFactory.control.getContent()[0].getSelectedItem().getText(); // console.log(Material, newFactory);
-
+      var newFactory = viewModel.getProperty(path.substring(0, path.lastIndexOf("/")));
+      // first control is the select
+      newFactory = newFactory.control.getContent()[0].getSelectedItem().getText();
+      // console.log(Material, newFactory);
       game.setBaseFactory(Material, newFactory);
       viewModel.setProperty("/game", game);
       viewModel.setProperty("/requiredFactories", game.getActiveFactories().sort());
@@ -568,12 +480,9 @@ sap.ui.define(["sap/m/MessageBox", "./BaseController", "../model/formatter", "sa
     .##.....##..##..##.....##.##.......##.....##.##....##.
     .########..####.##.....##.########..#######...######..
     */
-
-
     addAvailableGood(event) {
       var oView = this.getView();
       var that = this;
-
       try {
         that.selectDialog.open("");
       } catch (error) {
@@ -588,12 +497,10 @@ sap.ui.define(["sap/m/MessageBox", "./BaseController", "../model/formatter", "sa
         }.bind(this));
       }
     }
-
     onDialogClose(event) {
       var aContexts = event.getParameter("selectedContexts");
       var viewModel = this.getModel("View");
       var game = viewModel.getProperty("/game");
-
       if (aContexts && aContexts.length) {
         aContexts.map(function (oContext) {
           try {
@@ -604,14 +511,12 @@ sap.ui.define(["sap/m/MessageBox", "./BaseController", "../model/formatter", "sa
         });
         viewModel.setProperty("/availableGoods", game.availableGoods);
         viewModel.setProperty("/game", game);
-      } // Binding is not definied. Filtering is possible here
+      }
+      // Binding is not definied. Filtering is possible here
       //@ts-ignore 
-
-
       event.getSource().getBinding("items").filter([]);
       viewModel.setProperty("/requiredFactories", game.getActiveFactories().sort());
     }
-
     onSearch(event) {
       var sValue = event.getParameter("value");
       var oFilter = new Filter("Name", FilterOperator.Contains, sValue);
@@ -627,8 +532,6 @@ sap.ui.define(["sap/m/MessageBox", "./BaseController", "../model/formatter", "sa
     ..##..##.....##.##...........##...##......##........##...##..##........##.....##.##....##.....##...
     .####.##.....##.##............####..##....########.##.....##.##.........#######..##.....##....##...
     */
-
-
     handleDownloadPress() {
       // Convert the JSON data to a string
       var viewModel = this.getModel("View");
@@ -640,15 +543,14 @@ sap.ui.define(["sap/m/MessageBox", "./BaseController", "../model/formatter", "sa
         products: viewModel.getProperty("/products"),
         basicTree: game.getExportTree()
       };
-      var jsonString = JSON.stringify(data); // Use the FileSaver.js library to trigger a download
+      var jsonString = JSON.stringify(data);
 
+      // Use the FileSaver.js library to trigger a download
       File.save(jsonString, "data", "json", "application/json", "utf-8");
     }
-
     openUploadDialog(event) {
       //var oView = this.getView();
       var that = this;
-
       try {
         that.importDialog.open();
       } catch (error) {
@@ -663,23 +565,23 @@ sap.ui.define(["sap/m/MessageBox", "./BaseController", "../model/formatter", "sa
         }.bind(this));
       }
     }
-
     closeDialog(event) {
       this.importDialog.close();
     }
-
     handleUploadPress(event) {
       // Get the selected file from the input element
       var file = event.getParameters().item.getFileObject();
       var that = this;
       var reader = new FileReader();
-      var viewModel = this.getModel("View"); // Read the file as text
+      var viewModel = this.getModel("View");
 
-      reader.readAsText(file); // When the file has been read, convert it to a JavaScript object
+      // Read the file as text
+      reader.readAsText(file);
 
+      // When the file has been read, convert it to a JavaScript object
       reader.onload = function () {
-        var data = JSON.parse(reader.result); //console.log(data);
-
+        var data = JSON.parse(reader.result);
+        //console.log(data);
         try {
           viewModel.setProperty("/TargetFactory", data.targetFactory);
           viewModel.setProperty("/availableGoods", data.availableGoods);
@@ -688,32 +590,26 @@ sap.ui.define(["sap/m/MessageBox", "./BaseController", "../model/formatter", "sa
           var basicTree = data.basicTree;
           var game;
           game = viewModel.getProperty("/game");
-
           if (game) {
             game.clearDeathZone();
-          } // Clear
-
-
+          }
+          // Clear
           game = new factoryGame(that.getModel("GoodModel").getProperty("/Goods"), that.getModel("FactorieModel").getProperty("/Factories"));
           game.that = that;
           game.setTargetFactory(data.targetFactory);
-
           for (var name in game.subs) {
             that.byId("DetailedProdList").addItem(game.subs[name].control);
           }
-
           viewModel.setProperty("/game", game);
         } catch (error) {
           MessageBox.show("Uploaded data does not contain a production-tree.");
-        } // Do something with the JavaScript object
-
+        }
+        // Do something with the JavaScript object
       };
     }
 
     onPatternMatched(event) {}
-
   }
-
   return ProductionLine;
 });
 //# sourceMappingURL=ProductionLine.controller.js.map

@@ -37,9 +37,11 @@ export default class Main extends BaseController {
 
 		var inputG = this.byId("productInput") as Input
 		var inputF = this.byId("factoryInput") as Input
+		//@ts-ignore
 		inputG.setFilterFunction(function (sTerm: string, oItem:SuggestionItem) {
 			return oItem.getText().match(new RegExp("^"+sTerm, "i"));
 		});
+		//@ts-ignore
 		inputF.setFilterFunction(function (sTerm: string, oItem:SuggestionItem) {
 			return oItem.getText().match(new RegExp("^"+sTerm, "i"));
 		});
