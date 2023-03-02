@@ -133,7 +133,7 @@ sap.ui.define(["sap/m/MessageBox", "./BaseController", "../model/formatter", "sa
 
       if (this.factoryOptions.length > 0) {
         for (const factory of this.factoryOptions) {
-          console.log(factory.id);
+          //console.log(factory.id);
           factory.checkMaterialList(Material, newFactoryName);
         }
       }
@@ -553,8 +553,8 @@ sap.ui.define(["sap/m/MessageBox", "./BaseController", "../model/formatter", "sa
       var Material = viewModel.getProperty(path);
       var newFactory = viewModel.getProperty(path.substring(0, path.lastIndexOf("/"))); // first control is the select
 
-      newFactory = newFactory.control.getContent()[0].getSelectedItem().getText();
-      console.log(Material, newFactory);
+      newFactory = newFactory.control.getContent()[0].getSelectedItem().getText(); // console.log(Material, newFactory);
+
       game.setBaseFactory(Material, newFactory);
       viewModel.setProperty("/game", game);
       viewModel.setProperty("/requiredFactories", game.getActiveFactories().sort());

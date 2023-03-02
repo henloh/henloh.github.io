@@ -128,7 +128,7 @@ class treeGood extends Product {
 		}
 		if(this.factoryOptions.length > 0) {
 			for (const factory of this.factoryOptions) {
-				console.log(factory.id);
+				//console.log(factory.id);
 				factory.checkMaterialList(Material, newFactoryName);
 			}
 		}
@@ -518,7 +518,7 @@ export default class ProductionLine extends BaseController {
 		var newFactory = viewModel.getProperty(path.substring(0, path.lastIndexOf("/")));
 		// first control is the select
 		newFactory = ((newFactory.control.getContent()[0] as Select).getSelectedItem() as Item).getText();
-		console.log(Material, newFactory);
+		// console.log(Material, newFactory);
 		game.setBaseFactory(Material, newFactory);
 		
 		viewModel.setProperty("/game", game);
