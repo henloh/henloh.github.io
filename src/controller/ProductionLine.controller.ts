@@ -552,9 +552,9 @@ export default class ProductionLine extends BaseController {
 		}
 	}
 	public onDialogClose(event: Event) {
-		var aContexts = event.getParameter("selectedContexts");
-		var viewModel = this.getModel("View") as JSONModel;		
-		var game = viewModel.getProperty("/game") as factoryGame;
+		let aContexts = event.getParameter("selectedContexts");
+		let viewModel = this.getModel("View") as JSONModel;		
+		let game = viewModel.getProperty("/game") as factoryGame;
 		if (aContexts && aContexts.length) {
 			aContexts.map(function (oContext: any) { 
 				try {
@@ -571,7 +571,7 @@ export default class ProductionLine extends BaseController {
 		(event.getSource() as SelectDialog).getBinding("items").filter([]);
 		viewModel.setProperty("/requiredFactories", game.getActiveFactories().sort());
 	}
-	public onSearch(event: Event) {
+	public onSearch(event: Event/* <$InputBaseChangeEventParameters> */) {
 		var sValue = event.getParameter("value");
 		var oFilter = new Filter("Name", FilterOperator.Contains, sValue);
 		var oBinding = event.getParameter("itemsBinding");

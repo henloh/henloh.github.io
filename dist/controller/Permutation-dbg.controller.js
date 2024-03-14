@@ -1,4 +1,6 @@
 sap.ui.define(["./BaseController", "../model/formatter", "sap/ui/model/json/JSONModel"], function (__BaseController, __formatter, JSONModel) {
+  "use strict";
+
   function _interopRequireDefault(obj) {
     return obj && obj.__esModule && typeof obj.default !== "undefined" ? obj.default : obj;
   }
@@ -22,6 +24,114 @@ sap.ui.define(["./BaseController", "../model/formatter", "sap/ui/model/json/JSON
       this.getRouter().getRoute("main").attachPatternMatched(this.onPatternMatched, this);
     },
     onPatternMatched: function _onPatternMatched(event) {},
+    zooExample: function _zooExample(event) {
+      var model = this.getView().getModel("View");
+      model.setProperty("/text", `{
+	"columns": [{
+		"title": "Animal",
+		"parts": [["animals", "animal"],["colors", "color"],["foods", "food"]]
+	},{
+		"title": "Home",
+		"parts": [["continent"]]
+	},{
+		"title": "Weight and Height",
+		"parts": [["animals", "weight"],["space"],["animals", "height"]]
+	}],
+	"data": {
+		"animals": [
+			{"animal": "Zebras are ",
+				"weight": "800kg",
+				"height": "200cm"},
+			{"animal": "Lions are ",
+				"weight": "400kg",
+				"height": "100cm"}
+		],
+		"colors": [
+			{"color": "black and white"},
+			{"color": "purple"},
+			{"color": "green"}
+		],
+		"foods": [
+			{"food": " and likes to eat grass."},
+			{"food": " and likes to eat lions."},
+			{"food": " and likes to eat girafes."}
+		],
+		"continent": ["Africa"],
+		"space": [" "]
+	}
+}`);
+      this.generateCSV(event);
+    },
+    doorExample: function _doorExample(event) {
+      var model = this.getView().getModel("View");
+      model.setProperty("/text", `{
+	"columns": [{
+		"title": "Year of Production",
+		"parts": [["yop"]]
+	},{
+		"title": "Part number",
+		"parts": [["handles", "partno"], ["frames", "partno"], ["minus"], ["doors", "partno"]]
+	},{
+		"title": "Handle",
+		"parts": [["handles", "Name"]]
+	},{
+		"title": "Frame",
+		"parts": [["frames", "Name"]]
+	},{
+		"title": "Door",
+		"parts": [["doors", "Name"]]
+	}],
+	"data": {
+		"yop": ["2024"],
+		"minus": ["-"],
+		"handles": [
+			{"partno": "700",
+			 "Name": "Silver"},
+			{"partno": "800",
+			 "Name": "Gold"},
+			{"partno": "801",
+			 "Name": "Rosegold"},
+			{"partno": "900",
+			 "Name": "Stainless"},
+			{"partno": "300",
+			 "Name": "Brass"},
+			{"partno": "600",
+			 "Name": "No handle"},
+			{"partno": "601",
+			 "Name": "No lock"}
+		],
+		"frames": [
+			{"partno": "010",
+			 "Name": "Ash"},
+			{"partno": "020",
+			 "Name": "Birch"},
+			{"partno": "030",
+			 "Name": "Cherry"},
+			{"partno": "040",
+			 "Name": "Oak"},
+			{"partno": "050",
+			 "Name": "Spruce"},
+			{"partno": "060",
+			 "Name": "Stainless"},
+			{"partno": "001",
+			 "Name": "No frame"}
+		],
+		"doors": [
+			{"partno": "888",
+			 "Name": "Ash"},
+			{"partno": "999",
+			 "Name": "Oak"},
+			{"partno": "777",
+			 "Name": "Birch"},
+			{"partno": "444",
+			 "Name": "Spruce"},
+			{"partno": "001",
+			 "Name": "No door"}
+		]
+	}
+}`);
+      this.generateCSV(event);
+    },
     clearData: function _clearData(event) {
       var model = this.getView().getModel("View");
       model.setProperty("/Final", " ");
@@ -162,4 +272,4 @@ sap.ui.define(["./BaseController", "../model/formatter", "sap/ui/model/json/JSON
   });
   return Permutation;
 });
-//# sourceMappingURL=Permutation.controller.js.map
+//# sourceMappingURL=Permutation-dbg.controller.js.map

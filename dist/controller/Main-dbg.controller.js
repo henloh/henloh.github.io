@@ -1,4 +1,6 @@
 sap.ui.define(["./BaseController", "../model/formatter", "sap/ui/model/json/JSONModel", "sap/ui/core/format/NumberFormat"], function (__BaseController, __formatter, JSONModel, NumberFormat) {
+  "use strict";
+
   function _interopRequireDefault(obj) {
     return obj && obj.__esModule && typeof obj.default !== "undefined" ? obj.default : obj;
   }
@@ -146,4 +148,4 @@ sap.ui.define(["./BaseController", "../model/formatter", "sap/ui/model/json/JSON
   });
   return Main;
 });
-//# sourceMappingURL=Main.controller.js.map
+//# sourceMappingURL=Main-dbg.controller.js.map

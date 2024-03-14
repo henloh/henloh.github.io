@@ -1,4 +1,6 @@
 sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/UIComponent", "./Types", "sap/ui/core/routing/History"], function (Controller, UIComponent, ___Types, History) {
+  "use strict";
+
   const Game = ___Types["Game"];
   /**
    * @namespace de.henloh.prodts.controller
@@ -44,4 +46,4 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/UIComponent", "./Types
   });
   return BaseController;
 });
-//# sourceMappingURL=BaseController.js.map
+//# sourceMappingURL=BaseController-dbg.js.map

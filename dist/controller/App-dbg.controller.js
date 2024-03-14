@@ -1,4 +1,6 @@
 sap.ui.define(["./BaseController"], function (__BaseController) {
+  "use strict";
+
   function _interopRequireDefault(obj) {
     return obj && obj.__esModule && typeof obj.default !== "undefined" ? obj.default : obj;
   }
@@ -14,4 +16,4 @@ sap.ui.define(["./BaseController"], function (__BaseController) {
   });
   return App;
 });
-//# sourceMappingURL=App.controller.js.map
+//# sourceMappingURL=App-dbg.controller.js.map

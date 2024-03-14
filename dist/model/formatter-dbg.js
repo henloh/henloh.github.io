@@ -1,4 +1,6 @@
 sap.ui.define([], function () {
+  "use strict";
+
   var __exports = {
     /**
      * Rounds the currency value to 2 digits
@@ -20,4 +22,4 @@ sap.ui.define([], function () {
   };
   return __exports;
 });
-//# sourceMappingURL=formatter.js.map
+//# sourceMappingURL=formatter-dbg.js.map

@@ -1,4 +1,6 @@
 sap.ui.define([], function () {
+  "use strict";
+
   class Product {
     constructor(Name, Dangerous, Illegal, AvgPrice, Level, Customers, Manufacturer) {
       this.Name = Name;
@@ -83,4 +85,4 @@ sap.ui.define([], function () {
   __exports.Game = Game;
   return __exports;
 });
-//# sourceMappingURL=Types.js.map
+//# sourceMappingURL=Types-dbg.js.map
