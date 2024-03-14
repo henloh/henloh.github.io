@@ -1,0 +1,113 @@
+{
+    "_version": "1.12.0",
+    "sap.app": {
+        "id": "de.henloh.prodts",
+        "type": "application",
+        "i18n": "i18n/i18n.properties",
+        "title": "{{appTitle}}",
+        "description": "{{appDescription}}",
+        "applicationVersion": {
+            "version": "1.0.0"
+        },
+        "dataSources": {
+            "products": {
+                "uri": "data/Products.json",
+                "type": "JSON"
+            },
+            "factories": {
+                "uri": "data/Factories.json",
+                "type": "JSON"
+            }
+        }
+    },
+    "sap.ui": {
+        "technology": "UI5",
+        "icons": {},
+        "deviceTypes": {
+            "desktop": true,
+            "tablet": true,
+            "phone": true
+        }
+    },
+    "sap.ui5": {
+        "rootView": {
+            "viewName": "de.henloh.prodts.view.App",
+            "type": "XML",
+            "async": true,
+            "id": "app"
+        },
+        "dependencies": {
+            "minUI5Version": "1.108.0",
+            "libs": {
+                "sap.ui.core": {},
+                "sap.ui.layout": {},
+                "sap.ui.unified": {},
+                "sap.m": {}
+            }
+        },
+        "resources": {
+            "css": [{
+                "uri": "css/style.css"
+            }],
+            "js": []
+        },
+        "handleValidation": true,
+        "contentDensities": {
+            "compact": true,
+            "cozy": true
+        },
+        "models": {
+            "i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "settings": {
+                    "bundleName": "de.henloh.prodts.i18n.i18n"
+                }
+            },
+            "Goods": {
+                "type": "sap.ui.model.json.JSONModel",
+                "dataSource": "products"
+            },
+            "Factories": {
+                "type": "sap.ui.model.json.JSONModel",
+                "dataSource": "factories"
+            }
+        },
+        "routing": {
+            "config": {
+                "routerClass": "sap.m.routing.Router",
+                "viewType": "XML",
+                "viewPath": "de.henloh.prodts.view",
+                "controlId": "app",
+                "controlAggregation": "pages",
+                "async": true
+            },
+            "routes": [{
+                "pattern": ":?query:",
+                "name": "main",
+                "target": "main"
+            },{
+                "pattern": "productionLine/:?query:",
+                "name": "productionLine",
+                "target": "productionLine"
+            },{
+                "pattern": "Permutation",
+                "name": "permutation",
+                "target": "permutation"
+            }],
+            "targets": {
+                "main": {
+                    "viewId": "main",
+                    "viewName": "Main"
+                },
+                "productionLine": {
+                    "viewId": "productionLine",
+                    "viewName": "ProductionLine"
+                },
+                "permutation": {
+                    "viewId": "permutation",
+                    "viewName": "Permutation"
+                }
+            }
+        }
+    }
+}

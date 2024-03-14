@@ -1,0 +1,17 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:u="sap.m.upload"
+    xmlns:core="sap.ui.core">
+	<Dialog title="Upload JSON" 
+        stretch="true" 
+        horizontalScrolling="false" 
+        verticalScrolling="false">
+		<content>
+			<u:UploadSet fileTypes="json" afterItemAdded="handleUploadPress" />
+		</content>
+		<buttons>
+			<Button text="Cancel" press="closeDialog" />
+			<Button text="Upload" press="handleUploadPress" />
+		</buttons>
+	</Dialog>
+</core:FragmentDefinition>

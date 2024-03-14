@@ -1,0 +1,26 @@
+<mvc:View
+	controllerName="de.henloh.prodts.controller.Permutation"
+	displayBlock="true"
+	xmlns="sap.m"
+	xmlns:f="sap.ui.layout.form"
+    xmlns:c="sap.ui.core"
+	xmlns:mvc="sap.ui.core.mvc">
+<Page title="Permutation" id="permutationPage">
+    <headerContent>
+        <!-- <Button text="Build production line" press="buildProdLine" /> -->
+    </headerContent>
+<content>
+	<Button text="Löschen" press="clearData" class="sapUiSmallMarginBegin" />
+	<TextArea class="sapUiSmallMargin" value="{View>/text}" width="96%" growingMaxLines="50" growing="true" />
+	<Button text="Generieren" press="generateCSV" class="sapUiSmallMarginBegin" />
+	<Label text="Generierte Zeilen: {View>/rowCount}" class="sapUiTinyMargin"  />
+	<Label text=" " width="100%" />
+	<Button text="Download" press="downloadCSV" class="sapUiSmallMarginBegin" />
+	<TextArea class="sapUiSmallMargin" value="{View>/Final}" width="96%" growing="true" />
+	
+	<Button text="Zoo example" press="zooExample" class="sapUiSmallMarginBegin" />
+	<Button text="Door example" press="doorExample" class="sapUiSmallMarginBegin" />
+</content>
+</Page>
+
+</mvc:View>
