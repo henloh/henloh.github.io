@@ -14,7 +14,8 @@
         "start:ui5": "ui5 serve --port 8080 -o index.html",
         "start:dist": "ui5 serve  --port 8080 -o index.html --config ui5-dist.yaml",
         "ts-typecheck": "tsc --noEmit",
-        "lint": "eslint src"
+        "lint": "eslint src",
+        "main": "http-server ./ -c-1 --proxy http://localhost:8080"
     },
     "devDependencies": {
         "@babel/cli": "^7.16.0",
@@ -88,5 +89,11 @@
                 "library.css"
             ]
         ]
+    },
+    "dependencies": {
+        "clean-css": "^5.3.3",
+        "html-minifier": "^4.0.0",
+        "sass": "^1.72.0",
+        "uglify-js": "^3.17.4"
     }
 }

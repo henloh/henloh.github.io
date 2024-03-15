@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Henloh - Main</title>
+    <link rel="stylesheet" href="main/main.css">
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.getElementById("lock").addEventListener("click", function() {
+                document.getElementById("lock").classList.add("checked");
+                setTimeout(function() {
+                    document.getElementById("mail").innerHTML = "&#109;&#97;i&#110;(@)&#104;&#101;&#110;&#108;&#111;&#104;&#46;de"
+                }, 500);
+            });
+            document.getElementById("page-main").addEventListener("click", function() {
+                document.getElementById("main").classList.toggle("hidden");
+                document.getElementById("page-main").classList.toggle("h2buttonrotated");
+            });
+            document.getElementById("page-devs").addEventListener("click", function() {
+                document.getElementById("devs").classList.toggle("hidden");
+                document.getElementById("page-devs").classList.toggle("h2buttonrotated");
+            });
+            document.getElementById("page-cont").addEventListener("click", function() {
+                document.getElementById("cont").classList.toggle("hidden");
+                document.getElementById("page-cont").classList.toggle("h2buttonrotated");
+            });
+            document.getElementById("menu-main").addEventListener("click", function() {
+                const cont = document.getElementById("main");
+                const anchor = document.getElementById("anchor-main");
+                const button = document.getElementById("page-main");
+                
+                if (!button.classList.contains("h2buttonrotated")) {
+                    button.classList.add("h2buttonrotated");
+                }
+                if (cont.classList.contains("hidden")) {
+                    cont.classList.remove("hidden");
+                }
+                if (anchor) {
+                    anchor.scrollIntoView({ behavior: "smooth" });
+                }
+            });
+            document.getElementById("menu-devs").addEventListener("click", function() {
+                const cont = document.getElementById("devs");
+                const anchor = document.getElementById("anchor-devs");
+                const button = document.getElementById("page-devs");
+                
+                if (!button.classList.contains("h2buttonrotated")) {
+                    button.classList.add("h2buttonrotated");
+                }
+                if (cont.classList.contains("hidden")) {
+                    cont.classList.remove("hidden");
+                }
+                if (anchor) {
+                    anchor.scrollIntoView({ behavior: "smooth" });
+                }
+            });
+            document.getElementById("menu-cont").addEventListener("click", function() {
+                const cont = document.getElementById("cont");
+                const anchor = document.getElementById("anchor-cont");
+                const button = document.getElementById("page-cont");
+                
+                if (!button.classList.contains("h2buttonrotated")) {
+                    button.classList.add("h2buttonrotated");
+                }
+                if (cont.classList.contains("hidden")) {
+                    cont.classList.remove("hidden");
+                }
+                if (anchor) {
+                    anchor.scrollIntoView({ behavior: "smooth" });
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="scrollbar" id="style-1">
+        <div class="force-overflow"></div>
+    </div>
+    <div class="container">
+        <h1>Henloh.de</h1>
+        <div id="menu">
+            <button id="menu-main" class="menubutton">Leistungen</button>
+            <button id="menu-devs" class="menubutton">Entwicklungen</button>
+            <button id="menu-cont" class="menubutton">Kontakt</button>
+        </div>
+        <h2>Schlanke Lösungen, die funktionieren</h2>
+        
+        <div class="section">
+            <!-- <h3>Individuelle Ansätze auf Sie zugeschnitten</h3> -->
+            <p>
+                Damit der Alltag nicht von der IT aufgehalten wird, liegt mein Fokus auf einer flachen Struktur. 
+                Das ermöglicht störungsfreies Arbeiten und schnelle Problemlösungen. 
+                IT muss nicht umständlich sein. Sind doch komplexe Lösungen erforderlich, 
+                unterstütze ich bei der richtigen Partnerauswahl.
+            </p>
+        </div>
+        <div class="spacer spacer1"></div>
+
+        <a href="#anchor-main" id="anchor-main"></a>
+        <button id="page-main" class="h2button">
+            Leistungen
+        </button>
+        <div id="main" class="page hidden">
+                
+            <div class="section">
+                <h3>Womit ich helfen kann</h3>
+                <p>
+                    Durch meine Ausbildung zum Fachinformatiker und jahrelange Berufserfahrung 
+                    konnte ich in vielen Bereichen der IT Erfahrung und Praxiswissen sammeln.
+                </p>
+            </div>
+            
+            <div class="section">
+                <h3>Webserver mit Individuallösung</h3>
+                <p>
+                    Wenn Daten gut sichtbar, aufbereitet und strukturiert dargestellt werden sollen, gibt es kein besseres 
+                    Medium als Webserver. Ob im Internet oder nur im eigenen Netzwerk, PC oder Tablet. Sind die Daten über 
+                    ein API-Management oder andere Schnittstellen abrufbar, können wir eine dynamische Anwendung erstellen. 
+                    Auch statische Anwendungen sind möglich. Damit die Lösung wirklich zu Ihnen passt, lerne ich gerne die 
+                    Details über Ihre Prozesse kennen.
+                </p>
+            </div>
+            <div class="section">
+                <h3>Netzwerkaufbau</h3>
+                <p>
+                    Vom Einrichten eines Druckers bis zum Aufbau des gesamten Netzwerks. 
+                    Switche, Bridge, Router und Repeater wollen alle im gleichen Netz sein und miteinander sprechen können.
+                </p>
+            </div>
+            <div class="section">
+                <h3>Backup Einrichtung</h3>
+                <p>
+                    Jeder sollte ein automatisiertes Backup-System haben, um den Verlust von Daten zu verhindern. 
+                    Durch eine einmalige Einrichtung kann man viel Aufwand bei der Wiederherstellung sparen.
+                </p>
+            </div>
+            <div class="section">
+                <h3>Mobile Verfügbarkeit</h3>
+                <p>
+                    Daten sind unser wertvollstes Gut, die Cloud ermöglicht uns den Zugriff von überall. 
+                    Das Angebot an Diensten ist riesig und einen Überblick zu bekommen, aufwändig. 
+                    Um die passenden Services zu finden, hilft es, die Anforderungen zu strukturieren. 
+                    Wenn die Anforderungen klar sind, kann auch ein gutes Preis-Leistungsverhältnis erzielt werden.
+                </p>
+            </div>
+            <div class="section">
+                <h3>Unterstützung durch KI</h3>
+                <p>
+                    Manche Themen benötigen den Menschen, andere nicht. 
+                    ChatGPT hat die KI auf den Markt gebracht und sie ist gekommen, um zu bleiben. 
+                    Mit ein wenig Übung können diese Tools schnell einen Mehrwert schaffen. 
+                    Mit Informationen über Ihre Prozesse kann man in vielen Bereichen einen Nutzen finden.
+                </p>
+            </div>
+        </div>
+        <div class="spacer spacer2"></div>
+        <!-- <h2>Beispielentwicklungen</h2> -->
+        
+        <button id="page-devs" class="h2button">
+            Beispielentwicklungen 
+        </button>
+        <a href="#anchor-devs" id="anchor-devs"></a>
+        <div id="devs" class="page hidden">
+
+            <div class="section">
+                <h3>Permitationen erstellen</h3>
+                <p>
+                    Wenn Teilelisten vollständig erstellt werden müssen, ist das händisch ein hoher Aufwand. 
+                    Das manuelle Erweitern birgt ein hohes Potenzial für Fehler.
+                    Der Generator arbeitet mit einem JSON-Input und gibt eine vollständige Liste aller möglichen 
+                    Kombinationen aus. Beispiele sind in der App enthalten.
+                </p>
+                <a class="githublink" 
+                    href="https://henloh.github.io/dist/index.html#/Permutation" 
+                    target="_blank">Permutationen
+                    <div class="external-link">
+                        <div class="box"></div>
+                        <div class="corner"></div>
+                        <div class="arrow"></div>
+                        <div class="arrowline"></div>
+                    </div></a>
+            </div>
+            <div class="section">
+                <h3>Produktionsübersicht</h3>
+                <p>
+                    Einfache Liste, in der man sieht, welches Produkt wo gekauft wird, welche Komponenten zur 
+                    Herstellung benötigt werden und ein paar Metadaten zu den Produkten. Basierend auf der 
+                    Produktionskette im Spiel Avorion. Der Button "Show all" ermöglicht einen einfachen Einstieg 
+                    über die Auflistung aller Produkte oder Fabriken.
+                </p>
+                <a class="githublink" 
+                    href="https://henloh.github.io/dist/index.html#" 
+                    target="_blank">Produktionsübersicht
+                    <div class="external-link">
+                        <div class="box"></div>
+                        <div class="corner"></div>
+                        <div class="arrow"></div>
+                        <div class="arrowline"></div>
+                    </div></a>
+            </div>
+        </div>
+        <div class="spacer spacer3"></div>
+        <!-- <h2>Beispielentwicklungen</h2> -->
+        
+        <button id="page-cont" class="h2button h2buttonrotated">
+            Kontakt
+        </button>
+        <a href="#anchor-cont" id="anchor-cont"></a>
+        <div id="cont" class="page">
+
+            <div class="section">
+                <h3>E-Mail</h3>
+                <p>
+                    Für die erste Kontaktaufnahme bitte senden Sie mir eine E-Mail. 
+                    Gerne antworte ich darauf oder rufe Sie an.
+                    <br>
+                    <button id="lock">
+                        <input type="checkbox" class="lockframe" id="toggleCheckbox">
+                        <div class="arch"></div>
+                        <div class="archarm"></div>
+                        <div class="keyhole"></div>
+                        <div class="mail">E-Mail</div>
+                        <div class="bottom"></div>
+                    </button>
+                    <span id="mail"></span>
+                </p>
+            </div>
+        </div>
+            <!-- Add more project blocks as needed -->
+        <div class="spacer spacer4"></div>
+    </div>
+    <div id="background"></div>
+    <footer>
+        <a class="githublink" 
+            href="https:/github.com/henloh">Github
+            <div class="external-link">
+                <div class="box"></div>
+                <div class="corner"></div>
+                <div class="arrow"></div>
+                <div class="arrowline"></div>
+            </div>
+        </a>
+    </footer>
+</body>
+</html>

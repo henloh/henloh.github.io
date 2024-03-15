@@ -39,6 +39,9 @@ node_modules/
 gen/
 mta_archives/
 dist/resources/
+# UI5 ist im src Pfad
+webapp
+webapp/
 
 # Typescript v1 declaration files
 typings/
