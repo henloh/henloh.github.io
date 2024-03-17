@@ -5,6 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Henloh - Main</title>
     <link rel="stylesheet" href="main/main.css">
+
+    <link rel="apple-touch-icon" sizes="152x152" href="/main/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/main/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/main/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/main/favicon/site.webmanifest">
+    <link rel="mask-icon" href="/main/favicon/safari-pinned-tab.svg" color="#374b67">
+    <meta name="msapplication-TileColor" content="#374b67">
+    <meta name="theme-color" content="#ffffff">
+
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             document.getElementById("lock").addEventListener("click", function() {
@@ -25,6 +34,9 @@
                 document.getElementById("cont").classList.toggle("hidden");
                 document.getElementById("page-cont").classList.toggle("h2buttonrotated");
             });
+            document.getElementById("buttonimpressum").addEventListener("click", function() {
+                document.getElementById("impressum").classList.toggle("hidden");
+            });impressum
             document.getElementById("menu-main").addEventListener("click", function() {
                 const cont = document.getElementById("main");
                 const anchor = document.getElementById("anchor-main");
@@ -89,7 +101,8 @@
         <div class="section">
             <!-- <h3>Individuelle Ansätze auf Sie zugeschnitten</h3> -->
             <p>
-                Damit der Alltag nicht von der IT aufgehalten wird, liegt mein Fokus auf einer flachen Struktur. 
+                Für Privatpersonen und kleine Firmen ist eine flache IT Infrastruktur die wenig 
+                Wartung benötigt genau das richtige. Deshalb liegt genau darauf mein Fokus. 
                 Das ermöglicht störungsfreies Arbeiten und schnelle Problemlösungen. 
                 IT muss nicht umständlich sein. Sind doch komplexe Lösungen erforderlich, 
                 unterstütze ich bei der richtigen Partnerauswahl.
@@ -112,6 +125,14 @@
             </div>
             
             <div class="section">
+                <h3>Hardware upgrade und neubau</h3>
+                <p>
+                    Vom PC in der Fertigung bis zum Gamer-PC. <br>
+                    Mit Budgt oder ohne. <br>
+                    Zusammen finden wir die Lösung für Sie.
+                </p>
+            </div>
+            <div class="section">
                 <h3>Webserver mit Individuallösung</h3>
                 <p>
                     Wenn Daten gut sichtbar, aufbereitet und strukturiert dargestellt werden sollen, gibt es kein besseres 
@@ -125,14 +146,14 @@
                 <h3>Netzwerkaufbau</h3>
                 <p>
                     Vom Einrichten eines Druckers bis zum Aufbau des gesamten Netzwerks. 
-                    Switche, Bridge, Router und Repeater wollen alle im gleichen Netz sein und miteinander sprechen können.
+                    Switch, Bridge, Router und Repeater wollen alle im gleichen Netz sein und miteinander sprechen können.
                 </p>
             </div>
             <div class="section">
                 <h3>Backup Einrichtung</h3>
                 <p>
                     Jeder sollte ein automatisiertes Backup-System haben, um den Verlust von Daten zu verhindern. 
-                    Durch eine einmalige Einrichtung kann man viel Aufwand bei der Wiederherstellung sparen.
+                    Durch eine einmalige Einrichtung könne Sie viel Aufwand bei der Wiederherstellung sparen und Datenverlust vermeiden.
                 </p>
             </div>
             <div class="section">
@@ -150,7 +171,7 @@
                     Manche Themen benötigen den Menschen, andere nicht. 
                     ChatGPT hat die KI auf den Markt gebracht und sie ist gekommen, um zu bleiben. 
                     Mit ein wenig Übung können diese Tools schnell einen Mehrwert schaffen. 
-                    Mit Informationen über Ihre Prozesse kann man in vielen Bereichen einen Nutzen finden.
+                    Mit Informationen über Ihre Prozesse kann ich in vielen Bereichen einen Nutzen finden.
                 </p>
             </div>
         </div>
@@ -171,7 +192,7 @@
                     Der Generator arbeitet mit einem JSON-Input und gibt eine vollständige Liste aller möglichen 
                     Kombinationen aus. Beispiele sind in der App enthalten.
                 </p>
-                <a class="githublink" 
+                <a class="githublink headspace" 
                     href="https://henloh.github.io/dist/index.html#/Permutation" 
                     target="_blank">Permutationen
                     <div class="external-link">
@@ -184,12 +205,12 @@
             <div class="section">
                 <h3>Produktionsübersicht</h3>
                 <p>
-                    Einfache Liste, in der man sieht, welches Produkt wo gekauft wird, welche Komponenten zur 
+                    Einfache Liste, in der Sie sehen, welches Produkt wo gekauft wird, welche Komponenten zur 
                     Herstellung benötigt werden und ein paar Metadaten zu den Produkten. Basierend auf der 
                     Produktionskette im Spiel Avorion. Der Button "Show all" ermöglicht einen einfachen Einstieg 
                     über die Auflistung aller Produkte oder Fabriken.
                 </p>
-                <a class="githublink" 
+                <a class="githublink headspace" 
                     href="https://henloh.github.io/dist/index.html#" 
                     target="_blank">Produktionsübersicht
                     <div class="external-link">
@@ -233,14 +254,64 @@
     <div id="background"></div>
     <footer>
         <a class="githublink" 
-            href="https:/github.com/henloh">Github
-            <div class="external-link">
+            href="https:/github.com/henloh">Github<div class="external-link">
                 <div class="box"></div>
                 <div class="corner"></div>
                 <div class="arrow"></div>
                 <div class="arrowline"></div>
             </div>
         </a>
+        <button id="buttonimpressum" class="menubutton">Impressum
+        </button>
     </footer>
+    <div class="hidden container" id="impressum">
+        <h1>Impressum</h1>
+        <div class="section">
+    
+            <p>
+                Lennard Abel<br />
+                Firma Lennard Abel (Einzelunternehmer)<br />
+                Haller Str. 29<br />
+                74532 Ilshofen
+            </p>
+            
+        </div>
+        <div class="section">
+            <h3>Kontakt</h3>
+            <p>E-Mail: Zum Anzeigen der E-Mail das Schloss unter "Kontakt" öffnen.</p>
+        </div>
+        
+        <div class="section">
+
+            <h3>Haftungsausschluss</h3>
+            <p>
+                Der Inhalt dieser Website wurde mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte kann jedoch keine 
+                Gewähr übernommen werden. Als Diensteanbieter sind wir gemäß § 7 Abs.1 TMG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen 
+                verantwortlich. Nach §§ 8 bis 10 TMG sind wir als Diensteanbieter jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen 
+                zu überwachen. Bei Bekanntwerden von Rechtsverletzungen werden wir diese Inhalte umgehend entfernen. Eine diesbezügliche Haftung übernehmen 
+                wir erst ab dem Zeitpunkt der Kenntnis einer möglichen Rechtsverletzung.
+            </p>
+        </div>
+        
+        <div class="section">
+
+            <h3>Verbraucher&shy;streit&shy;beilegung/Universal&shy;schlichtungs&shy;stelle</h3>
+            <p>
+                Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.
+            </p>
+        </div>
+        
+        <div class="section">
+            
+            <a href="https://www.e-recht24.de">Quelle: eRecht24
+                <div class="external-link">
+                    <div class="box"></div>
+                    <div class="corner"></div>
+                    <div class="arrow"></div>
+                    <div class="arrowline"></div>
+                </div>
+            </a>
+        </div>
+    </div>
 </body>
 </html>

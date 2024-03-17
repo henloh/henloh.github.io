@@ -214,6 +214,7 @@ h3 {
 
 a {
     font-size: 1.5rem;
+    position: relative;
 }
 
 .page {
@@ -225,8 +226,10 @@ a {
 }
 
 .hidden {
-    overflow: hidden;
-    height: 0;
+    overflow: hidden !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 #mail {
@@ -374,6 +377,13 @@ a {
     }
 }
 
+.headspace {    
+    display: inline-block;
+    margin: 0.5rem 0 0 0;
+    .external-link {
+        top: 9px;
+    }
+}
 
 
 footer {
@@ -383,35 +393,53 @@ footer {
     background: $footer;
 
     a {
+        font-size: 1.3rem;
         color: $footer-text-color;
-        padding: 0 1rem 0 0;
+        margin: 0 2.5rem 0 0;
         text-decoration: none;
+        .external-link {
+            right: -12px;
+            .box {
+                background-color: $footer;
+                border: 2px solid $footer-text-color;
+            }
+    
+            .arrow {
+                border-right: 2px solid $footer-text-color;
+                border-top: 2px solid $footer-text-color;
+            }
+            .arrowline {
+                background-color: $footer-text-color;
+            }
+            .corner {
+                background: $footer;
+            }
+        }
     }
 
-    .external-link {
-        .box {
-            background-color: $footer;
-            border: 2px solid $footer-text-color;
-        }
 
-        .arrow {
-            border-right: 2px solid $footer-text-color;
-            border-top: 2px solid $footer-text-color;
-        }
-        .arrowline {
-            background-color: $footer-text-color;
-        }
-        .corner {
-            background: $footer;
+    button {
+        border: none;
+        background: transparent;
+        font-size: 1.3rem;
+        text-decoration: underline;
+        border-radius: 0;
+        margin: 0 .2rem 0 0;
+        color: $footer-text-color;
+
+        &:hover {
+            cursor: pointer;
         }
     }
 }
 
 .external-link {
-    position: relative;
+    position: absolute;
     width: 14px;
     height: 14px;
-    display: inline-block;
+    display: block;
+    top: 5px;
+    right: -21px;
 
     .box {
         width: 100%;
