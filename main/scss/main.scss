@@ -72,6 +72,19 @@ h3 {
         width: 33%;
     }
 }
+#noise {
+    background-image: url("./noise.png");
+    background-position: left;
+    background-size: cover;
+    background-repeat: no-repeat;    
+    width: 150vh;
+    height: 150vh;
+    position: fixed;
+    left: -20vh;
+    top: -20vh;
+    z-index: -1;
+    opacity: 0.06;
+}
 
 ::-webkit-scrollbar {
     width: 12px;
@@ -96,12 +109,12 @@ h3 {
 .container {
     max-width: 800px;
     margin: 0 0 0 .4rem;
-    box-shadow: -5px 0px 5px;
-    border-left: 2px solid $border-color;
     padding: 0 0 2rem;
 
-    @media (min-width: 800px) {
+    @media (min-width: 802px) {
         margin: 0 auto;
+        box-shadow: -5px 0px 5px;
+        border-left: 2px solid $border-color;
     }
 }
 
@@ -175,11 +188,22 @@ h3 {
 
     padding: 0 0 1rem 2rem;
     border-bottom: 2px solid $border-color;
-}
-
-.section p {
-    font-size: 1.3rem;
-    line-height: 1.2;
+    p {
+        font-size: 1.3rem;
+        line-height: 1.2;
+        button {
+            border: none;
+            background: transparent;
+            font-size: 1.3rem;
+            text-decoration: underline;
+            border-radius: 0;
+            margin: 0 .2rem 0 0;
+    
+            &:hover {
+                cursor: pointer;
+            }
+        }
+    }
 }
 
 .spacer {
